@@ -193,10 +193,6 @@
             <button onclick="toggleSidebar()" class="md:hidden p-2 -ml-2 text-textSecondary hover:text-textPrimary rounded-lg">
                 <i class="ph-bold ph-list text-2xl"></i>
             </button>
-            <div class="relative w-full hidden md:block group">
-                <i class="ph-bold ph-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-textSecondary group-focus-within:text-primary transition-colors text-lg"></i>
-                <input type="text" oninput="window.handleGlobalSearch(this.value)" placeholder="Search for query" class="w-full bg-surface border-none rounded-full py-3.5 pl-12 pr-6 text-xs text-textPrimary focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm transition-all font-medium placeholder:text-textSecondary/60">
-            </div>
             <h1 id="page-title" class="md:hidden text-lg font-bold text-textPrimary tracking-tight">Portal</h1>
         </div>
         <div class="flex items-center gap-5 relative">
@@ -942,11 +938,6 @@
                             <div class="flex flex-wrap items-center gap-3 w-full xl:w-auto">
                                 <!-- Search & Filter Group -->
                                 <div class="flex items-center gap-2 bg-background/50 border border-border p-1 rounded-2xl w-full sm:w-auto">
-                                    <div class="relative flex-1 sm:flex-initial">
-                                        <i class="ph-bold ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-textSecondary text-xs"></i>
-                                        <input type="text" oninput="window.searchSiswa = this.value; window.renderTabelSiswa()" placeholder="Cari nama..." class="w-full sm:w-36 h-9 pl-8 pr-2.5 bg-transparent text-xs font-semibold text-textPrimary outline-none focus:ring-0">
-                                    </div>
-                                    <span class="w-[1px] h-4 bg-border"></span>
                                     <div class="relative flex-1 sm:flex-initial">
                                         <select onchange="window.filterSiswa = this.value; window.renderTabelSiswa()" class="w-full sm:w-32 h-9 pl-3.5 pr-7 bg-transparent text-xs font-bold text-textPrimary outline-none cursor-pointer appearance-none">
                                             <option value="Semua">Semua Kelas</option>
@@ -2301,13 +2292,6 @@
                     <button onclick="window.tutupKotakPesan()" class="text-textSecondary hover:text-primary p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors md:hidden">
                         <i class="ph-bold ph-x text-lg"></i>
                     </button>
-                </div>
-                <!-- Search Kontak -->
-                <div class="p-3 border-b border-slate-50 dark:border-slate-800/50">
-                    <div class="relative">
-                        <i class="ph-bold ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="text" id="chat-search-contact" oninput="window.filterKontakChat()" placeholder="Cari nama..." class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl py-2 pl-8 pr-3 text-[11px] text-textPrimary dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400">
-                    </div>
                 </div>
                 <!-- Daftar Kontak (Scrollable) -->
                 <div id="chat-contact-list" class="flex-grow overflow-y-auto custom-scroll divide-y divide-slate-50 dark:divide-slate-800/50">

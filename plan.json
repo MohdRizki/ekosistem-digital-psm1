@@ -1,0 +1,29 @@
+{
+  "projectId": "8446df92-2b1b-4d0a-928e-d2d7868e0932",
+  "type": "frontend",
+  "name": "Admin login succeeds with valid credentials",
+  "description": "Verify that logging in with the correct default username and PIN successfully opens the admin dashboard screen.",
+  "priority": "p0",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navigate to the admin login page"
+    },
+    {
+      "type": "action",
+      "description": "Type 'admin' into the Username input field"
+    },
+    {
+      "type": "action",
+      "description": "Type '123456' into the PIN security field"
+    },
+    {
+      "type": "action",
+      "description": "Click the login button to submit"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify that the main dashboard layout and sidebar are visible"
+    }
+  ]
+}

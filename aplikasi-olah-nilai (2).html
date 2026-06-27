@@ -245,10 +245,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <div id="search-container" class="relative w-40 sm:w-64 group">
-                        <i class="ph-bold ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-textSecondary text-sm"></i>
-                        <input id="search-input" type="text" placeholder="Cari nama..." class="w-full pl-9 pr-4 py-2.5 db-input text-xs">
-                    </div>
+
                 </div>
             </header>
 
@@ -2553,10 +2550,13 @@
 
         // --- RUNNING APPLICATION ON STARTUP ---
         window.onload = async () => {
-            document.getElementById('search-input').oninput = (e) => { 
-                state.search = e.target.value; 
-                window.renderActiveView(); 
-            };
+            const searchInputEl = document.getElementById('search-input');
+            if (searchInputEl) {
+                searchInputEl.oninput = (e) => { 
+                    state.search = e.target.value; 
+                    window.renderActiveView(); 
+                };
+            }
 
             window.addEventListener('resize', window.updatePreviewScale);
             lucide.createIcons();
