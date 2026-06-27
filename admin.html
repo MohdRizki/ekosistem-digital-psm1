@@ -378,11 +378,7 @@
                     <i class="ph-bold ph-caret-right text-textSecondary opacity-0 group-hover:opacity-100 transition-opacity"></i>
                 </button>
             </div>
-            <div class="mt-6">
-                <button onclick="window.backupKeGoogleSheet()" class="bg-emerald-50 border border-emerald-200 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 font-bold text-xs rounded-2xl px-5 py-3 transition-all flex items-center gap-2 shadow-sm w-full sm:w-auto justify-center">
-                    <i class="ph-bold ph-cloud-arrow-up text-lg"></i> Backup Semua Data ke Google Sheet
-                </button>
-            </div>
+
         </div>
 
         <div id="dasbor" class="tab-content active">
@@ -1016,14 +1012,7 @@
                                 <button type="submit" class="db-btn-primary w-full">Simpan Kredensial</button>
                             </form>
 
-                            <div class="mt-8 pt-6 border-t border-border">
-                                <h3 class="text-base font-bold text-textPrimary mb-2 flex items-center gap-2"><i class="ph-bold ph-google-logo text-lg text-emerald-600"></i> Integrasi Google Sheet</h3>
-                                <p class="text-xs text-textSecondary mb-4 leading-relaxed font-medium">Masukkan URL Web App Google Apps Script untuk fitur sinkronisasi / backup data otomatis.</p>
-                                <form class="flex flex-col gap-4" onsubmit="window.simpanUrlGoogleSheet(event)">
-                                    <input type="url" id="admin-google-sheet-url" placeholder="URL Web App Google Apps Script" class="db-input w-full">
-                                    <button type="submit" class="bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 font-bold text-xs rounded-xl px-4 py-3 transition-all flex items-center justify-center gap-2 w-full"><i class="ph-bold ph-floppy-disk text-sm"></i> Simpan URL</button>
-                                </form>
-                            </div>
+
 
                             <div class="mt-10 pt-8 border-t border-border">
                                 <h3 class="text-base font-bold text-red-600 mb-2 flex items-center gap-2"><i class="ph-bold ph-warning-circle text-lg"></i> Zona Berbahaya</h3>
@@ -2366,85 +2355,4 @@
         </div>
     </div>
 
-    <!-- Google Sheet Backup Logic -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const urlInput = document.getElementById('admin-google-sheet-url');
-            if (urlInput) {
-                urlInput.value = localStorage.getItem('googleSheetBackupUrl') || '';
-            }
-        });
-
-        window.simpanUrlGoogleSheet = (e) => {
-            e.preventDefault();
-            const url = document.getElementById('admin-google-sheet-url').value;
-            localStorage.setItem('googleSheetBackupUrl', url);
-            showToast('URL Google Sheet berhasil disimpan!');
-        };
-
-        window.backupKeGoogleSheet = async () => {
-            const url = localStorage.getItem('googleSheetBackupUrl');
-            if (!url) {
-                showToast('Harap atur URL Web App Google Sheet di Pengaturan Admin terlebih dahulu!', true);
-                switchTab('admin');
-                return;
-            }
-
-            showToast('Memulai sinkronisasi ke Google Sheet...');
-
-            // Prepare payload
-            const dataSiswa = (window.dataSiswaLokal || []).map(s => ({
-                id: s.id || '',
-                nama: s.nama || '',
-                nis: s.nis || '',
-                nisn: s.nisn || '',
-                kelas: s.kelas || '',
-                jk: s.jk || '',
-                pin: s.pin || ''
-            }));
-
-            const dataGuru = Object.values(window.adminDataStore.guru || {}).map(g => ({
-                id: g.id || '',
-                nama: g.nama || '',
-                nip: g.nip || '',
-                kelas: g.kelas || '',
-                username: g.username || '',
-                pin: g.pin || ''
-            }));
-
-            const payload = {
-                siswa: dataSiswa,
-                guru: dataGuru
-            };
-
-            try {
-                // To avoid CORS issues directly on the frontend for non-configured Apps Scripts, 
-                // we send as form data or text/plain JSON, or use no-cors. Let's use text/plain.
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'text/plain;charset=utf-8' // Helps bypass strict CORS preflight
-                    },
-                    body: JSON.stringify(payload)
-                });
-                showToast('Proses sinkronisasi berhasil. Cek Google Sheet Anda!');
-            } catch (err) {
-                console.error("Backup error:", err);
-                // Fallback attempt with no-cors if standard request blocked
-                try {
-                    await fetch(url, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(payload)
-                    });
-                    showToast('Sinkronisasi dikirim (no-cors). Cek Google Sheet Anda!');
-                } catch(err2) {
-                    showToast('Gagal sinkronisasi. Periksa koneksi atau URL!', true);
-                }
-            }
-        };
-    </script>
 </body></html>
