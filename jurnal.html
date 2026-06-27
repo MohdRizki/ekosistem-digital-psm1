@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="id" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="app-primary" content="#FC6B58">
+    <title>SIJURU - Aplikasi Jurnal Guru</title>
+    <link rel="icon" type="image/x-icon" href="reezapps.ico">
+    
+    <!-- Design System (theme.js handles Poppins + Tailwind config + shared components) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/theme.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- App Libraries -->
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+    </style>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { initializeFirestore, collection, doc, setDoc, getDocs, addDoc, updateDoc, deleteDoc, onSnapshot, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- 1. FIREBASE CONFIG ---
+        const firebaseConfig = typeof __firebase_config !== 'undefined' && __firebase_config ? JSON.parse(__firebase_config) : {
+            apiKey: "AIzaSyBL7-vUv3Kqcpxjaq_6AWGgFFirc7p-jhs",
+            authDomain: "sd-negeri-pasirmae-1.firebaseapp.com",
+            projectId: "sd-negeri-pasirmae-1",
+            appId: "1:19037387384:web:f396f39545f54ac7818b8d"
+        };
+        
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'sd-negeri-pasirmae-1'; 
+        const hubUrl = "https://mohdrizki.github.io/";
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = initializeFirestore(app, { experimentalForceLongPolling: true });
+
+        // --- GLOBAL HELPER ---
+        window.getDayName = (dateStr) => {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('id-ID', { weekday: 'long' });
+        };
+
+        window.isHoliday = (dateStr) => {
+            if (!dateStr) return false;
+            const date = new Date(dateStr);
+            const isSunday = date.getDay() === 0;
+            const isNationalHoliday = window.appState.holidays.some(h => h.tanggal === dateStr);
+            return isSunday || isNationalHoliday;
+        };
+
+        window.getHolidayDescription = (dateStr) => {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            const holiday = window.appState.holidays.find(h => h.tanggal === dateStr);
+            if (holiday) return holiday.keterangan;
+            if (date.getDay() === 0) return 'Libur Akhir Pekan';
+            return '';
+        };
+
+        // --- AUDIO HELPERS ---
+        window.playBeep = () => {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = 'sine';
+            osc.frequency.value = 880; // Nada A5
+            gain.gain.value = 0.1;
+            osc.start();
+            setTimeout(() => osc.stop(), 150);
+        };
+
+        // Pre-load voices for TTS
+        let availableVoices = [];
+        const loadVoices = () => {
+            availableVoices = window.speechSynthesis.getVoices();
+        };
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+            loadVoices();
+        }
+
+        window.speakText = (text) => {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'id-ID';
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            
+            // Try to find Indonesian voice
+            if (availableVoices.length === 0) availableVoices = window.speechSynthesis.getVoices();
+            const idVoice = availableVoices.find(v => v.lang === 'id-ID' || v.lang === 'id_ID');
+            if (idVoice) utterance.voice = idVoice;
+            
+            // Fallback to beep if error
+            utterance.onerror = (e) => {
+                console.warn('TTS Error:', e);
+                window.playBeep();
+            };
+            
+            window.speechSynthesis.speak(utterance);
+        };
+
+        // --- 2. GLOBAL STATE ---
+        window.appState = {
+            currentView: 'dashboard',
+            user: null,
+            teacherId: null, 
+            loading: true,
+            isAuthenticated: false,
+            isLoggingIn: false,
+            isScannerStarting: false,
+            loginError: '',
+            settings: { 
+                nama_guru: '', nip_guru: '', nama_sekolah: '', nama_kepsek: '', nip_kepsek: '', lokasi: '', semester: '1', tahun_ajaran: '2024/2025', kelas_diampu: [], 
+                voiceMode: 'mute' 
+            },
+            students: [],
+            journals: [],
+            attendance: [], 
+            mapels: [],
+            holidays: [],
+            selectedKelas: '', 
+            selectedMapel: '',
+            selectedDate: new Date().toISOString().split('T')[0],
+            reportMonth: new Date().toISOString().slice(0, 7),
+            historyMonth: new Date().toISOString().slice(0, 7),
+            reportSearch: '',
+            attendanceSearch: '',
+            reportViewType: 'rekap', 
+            lastFocusedId: null,
+            lastCaretPos: 0,
+            mobileMenuOpen: false,
+            sidebarCollapsed: false, 
+            populationExpanded: false,
+            scannerActive: false,
+            html5QrCode: null,
+            cameraFacingMode: "user", 
+            modal: { show: false, title: '', message: '', onConfirm: null },
+            qrModal: { show: false, student: null },
+            editModal: { show: false, id: null, name: '' },
+            // NEW: MODAL UNTUK EDIT IZIN BERJANGKA
+            longTermEditModal: { show: false, studentId: null, date: null, type: '' },
+            scannerLock: false,
+            scanSuccessPopup: { show: false, studentName: '' },
+            lastScans: {},
+            
+            // --- STATE PRESENSI MANUAL ---
+            finishStep: 0, 
+            missingStudentsCache: []
+        };
+
+        // UPDATED: Menu Names V2
+        const viewTitles = {
+            'dashboard': 'Beranda',
+            'scanner': 'Scan QR Presensi',
+            'input': 'Isi Jurnal Harian',
+            'mapel': 'Mata Pelajaran',
+            'history': 'Riwayat Jurnal',  // Changed from Riwayat
+            'reports': 'Laporan Presensi', // Changed from Laporan
+            'students': 'Pengelolaan Siswa',
+            'holidays': 'Izin & Hari Libur',
+            'settings': 'Pengaturan Sistem',
+            'info': 'Tentang Aplikasi'
+        };
+
+        // --- 3. UI HELPERS ---
+        window.showNotif = (msg, tipe = 'success') => {
+            const wadah = document.getElementById('notif-anchor');
+            if (!wadah) return;
+            const kotak = document.createElement('div');
+            kotak.className = `bg-surface border-l-4 ${tipe === 'error' ? 'border-rose-500 text-error' : 'border-blue-600 text-primary'} shadow-xl rounded-2xl p-4 animate-slideDown flex items-center gap-3 pointer-events-auto mb-2 w-72 z-[99999] text-left transition-all`;
+            kotak.innerHTML = `<i class="ph-bold ph-info"></i> <span class="text-[10px] font-black uppercase tracking-tight">${msg}</span>`;
+            wadah.appendChild(kotak);
+            setTimeout(() => { kotak.style.opacity='0'; setTimeout(()=>kotak.remove(), 400); }, 3000);
+        };
+
+        window.confirmAction = (title, message, onConfirm) => {
+            window.appState.modal = { show: true, title, message, onConfirm };
+            window.renderOverlays();
+        };
+
+        // --- NEW: LOGIKA ALUR SELESAIKAN PRESENSI ---
+        window.initFinishAttendance = async () => {
+            await window.stopScanner();
+            const allStudents = window.appState.students.filter(s => String(s.kelas) === String(window.appState.selectedKelas));
+            const presentIds = window.appState.attendance
+                .filter(a => a.date === window.appState.selectedDate && String(a.studentClass) === String(window.appState.selectedKelas))
+                .map(a => a.studentId);
+            window.appState.missingStudentsCache = allStudents
+                .filter(s => !presentIds.includes(s.id))
+                .sort((a, b) => a.nama_siswa.localeCompare(b.nama_siswa)); 
+            window.appState.finishStep = 1; 
+            window.renderOverlays(); 
+        };
+
+        window.goToFinishList = () => { window.appState.finishStep = 2; window.renderOverlays(); };
+
+        window.markManualQuick = async (id, status) => {
+            const rowEl = document.getElementById(`manual-row-${id}`);
+            if (rowEl) { rowEl.style.transition = "all 0.3s ease"; rowEl.style.opacity = "0"; rowEl.style.transform = "translateX(50px)"; setTimeout(() => rowEl.remove(), 300); }
+            await window.markAttendance(id, status);
+            window.appState.missingStudentsCache = window.appState.missingStudentsCache.filter(s => s.id !== id);
+            const countEl = document.getElementById('manual-remaining-count');
+            if (countEl) countEl.textContent = `${window.appState.missingStudentsCache.length} Sisa`;
+            if (window.appState.missingStudentsCache.length === 0) {
+                const listContainer = document.getElementById('manual-confirm-list');
+                if (listContainer) setTimeout(() => { listContainer.innerHTML = '<p class="text-center text-xs text-textSecondary font-bold py-10 animate-fadeIn">Semua siswa sudah diabsen!</p>'; }, 300);
+            }
+        };
+
+        window.finishAttendanceProcess = () => { window.appState.finishStep = 3; window.renderOverlays(); };
+
+        window.confirmJournal = (yes) => {
+            if (yes) { window.appState.finishStep = 0; window.renderOverlays(); window.setView('input'); } 
+            else { window.appState.finishStep = 4; window.renderOverlays(); }
+        };
+
+        window.closeFinishAttendance = () => { window.appState.finishStep = 0; window.renderOverlays(); window.setView('dashboard'); };
+
+        // --- NEW: HANDLING IZIN JANGKA PANJANG & EDIT ---
+        window.handleSaveLongTerm = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const studentId = formData.get('studentId');
+            const startDate = new Date(formData.get('startDate'));
+            const endDate = new Date(formData.get('endDate'));
+            const status = formData.get('status');
+            const note = formData.get('note');
+
+            if (!studentId || !startDate || !endDate) return window.showNotif("Mohon lengkapi data", "error");
+            if (startDate > endDate) return window.showNotif("Tanggal akhir harus setelah tanggal awal", "error");
+
+            const student = window.appState.students.find(s => s.id === studentId);
+            if(!student) return;
+
+            window.showNotif("Menyimpan data...");
+            const batch = writeBatch(db);
+            let loopDate = new Date(startDate);
+
+            while(loopDate <= endDate) {
+                const dateStr = loopDate.toISOString().split('T')[0];
+                if (loopDate.getDay() !== 0) { // Skip Minggu
+                     const existing = window.appState.attendance.find(a => a.studentId === studentId && a.date === dateStr);
+                     const attRef = existing 
+                        ? doc(db, 'artifacts', appId, 'users', window.appState.teacherId, 'attendance', existing.id)
+                        : doc(collection(db, 'artifacts', appId, 'users', window.appState.teacherId, 'attendance'));
+                     
+                     batch.set(attRef, {
+                        studentId: studentId,
+                        studentName: student.nama_siswa,
+                        studentClass: student.kelas,
+                        date: dateStr,
+                        status: status,
+                        note: note || '',
+                        timestamp: new Date().toISOString(),
+                        semester: window.appState.settings.semester
+                     }, { merge: true });
+                }
+                loopDate.setDate(loopDate.getDate() + 1);
+            }
+            
+            await batch.commit();
+            window.showNotif("Izin/Sakit Berhasil Disimpan");
+            e.target.reset();
+            window.renderApp(); // Refresh view to show updated data
+        };
+
+        // Fungsi Hapus Izin Per Tanggal (bukan range, karena di DB disimpan per hari)
+        window.deleteAttendanceDay = (attId) => {
+            window.confirmAction("Hapus Izin", "Yakin ingin menghapus status izin/sakit siswa pada tanggal ini?", async () => {
+                await deleteDoc(doc(db, 'artifacts', appId, 'users', window.appState.teacherId, 'attendance', attId));
+                window.showNotif("Status Dihapus");
+                window.appState.modal.show = false;
+                window.renderOverlays();
+                window.renderApp();
+            });
+        };
+
+        // --- 4. FIREBASE LISTENERS ---
+        window.initDataListeners = () => {
+            if (!auth.currentUser || !window.appState.teacherId) return;
+            const tId = window.appState.teacherId;
+            const userRef = (col) => collection(db, 'artifacts', appId, 'users', tId, col);
+            const profileRef = doc(db, 'artifacts', appId, 'public', 'data', 'guru', tId);
+            
+            onSnapshot(profileRef, (snap) => { 
+                if (snap.exists()) { 
+                    const d = snap.data();
+                    window.appState.settings = { 
+                        ...window.appState.settings, 
+                        ...d,
+                        nama_guru: d.nama,
+                        kelas_diampu: d.kelas ? [d.kelas] : []
+                    }; 
+                    if (!window.appState.selectedKelas && window.appState.settings.kelas_diampu.length > 0) {
+                        window.appState.selectedKelas = window.appState.settings.kelas_diampu[0];
+                    } else if (!window.appState.selectedKelas) {
+                        window.appState.selectedKelas = '1';
+                    }
+                    window.renderApp(); 
+                } 
+            });
+            
+            // Ecosystem: Students
+            const publicSiswaRef = collection(db, 'artifacts', appId, 'public', 'data', 'siswa');
+            onSnapshot(publicSiswaRef, (snap) => { 
+                const diampu = window.appState.settings.kelas_diampu || [];
+                window.appState.students = snap.docs.map(d => {
+                    const data = d.data();
+                    const numKelas = (data.kelas || "").replace(/Kelas /i, '').trim();
+                    return { id: d.id, nama_siswa: data.nama || data.nama_siswa, kelas: numKelas, jk: data.jk, nisn: data.nisn, ...data };
+                }).filter(s => diampu.includes(String(s.kelas)));
+                window.renderApp(); 
+            });
+            
+            // Ecosystem: Mapels (Subjects)
+            const globalSettingsRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global');
+            onSnapshot(globalSettingsRef, (snap) => {
+                if (snap.exists() && snap.data().subjects) {
+                    const subjects = snap.data().subjects;
+                    // Jurnal expects mapels with 'nama' and 'tp' arrays. We'll map them per kelas_diampu so the UI doesn't break.
+                    const diampu = window.appState.settings.kelas_diampu || [];
+                    let newMapels = [];
+                    diampu.forEach(k => {
+                        subjects.forEach(sub => {
+                            newMapels.push({ id: `global_${k}_${sub.id}`, nama: sub.label, kelas: k, tp: [] });
+                        });
+                    });
+                    // Merge with custom mapels from teacher to preserve custom TP
+                    const customMapels = window.appState.mapels.filter(m => !m.id.startsWith('global_'));
+                    window.appState.mapels = [...newMapels, ...customMapels];
+                    window.renderApp();
+                }
+            });
+
+            onSnapshot(userRef('journals'), (snap) => { window.appState.journals = snap.docs.map(d => ({ id: d.id, ...d.data() })); window.renderApp(); });
+            onSnapshot(userRef('attendance'), (snap) => { 
+                window.appState.attendance = snap.docs.map(d => ({ id: d.id, ...d.data() })); 
+                if (window.appState.finishStep !== 2) { window.renderApp(); }
+            });
+            // Keep custom mapels listener
+            onSnapshot(userRef('mapels'), (snap) => { 
+                const customMapels = snap.docs.map(d => ({ id: d.id, ...d.data() })); 
+                const globalMapels = window.appState.mapels.filter(m => m.id.startsWith('global_'));
+                
+                // Overwrite TP if custom mapel has the same name and class as global mapel
+                globalMapels.forEach(gm => {
+                    const matchingCustom = customMapels.find(cm => cm.nama === gm.nama && String(cm.kelas) === String(gm.kelas));
+                    if (matchingCustom && matchingCustom.tp) {
+                        gm.tp = matchingCustom.tp;
+                    }
+                });
+                
+                window.appState.mapels = [...globalMapels, ...customMapels.filter(cm => !globalMapels.some(gm => gm.nama === cm.nama && String(gm.kelas) === String(cm.kelas)))];
+                window.renderApp(); 
+            });
+            onSnapshot(userRef('holidays'), (snap) => { window.appState.holidays = snap.docs.map(d => ({ id: d.id, ...d.data() })); window.renderApp(); });
+        };
+
+        // --- 5. AUTH ---
+        window.handleLogin = async (e) => {
+            e.preventDefault();
+            const u = document.getElementById('login-username').value.trim().toLowerCase();
+            const p = document.getElementById('login-pin').value.trim();
+            if(!u || !p) { window.showNotif("Username dan PIN wajib diisi!", "error"); return; }
+            
+            window.appState.isLoggingIn = true;
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalBtnHtml = btn.innerHTML;
+            if(btn) { btn.innerHTML = '<i class="ph-bold ph-spinner-gap animate-spin mr-2"></i> Memeriksa...'; btn.classList.add('opacity-75', 'cursor-wait'); btn.disabled = true; }
+            
+            try {
+                const guruRef = collection(db, 'artifacts', appId, 'public', 'data', 'guru');
+                const snap = await getDocs(guruRef);
+                let matchedGuru = null;
+                
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    if ((data.username || "").toLowerCase() === u && data.pin === p) {
+                        matchedGuru = { id: doc.id, ...data };
+                    }
+                });
+                
+                if (matchedGuru) {
+                    window.appState.teacherId = matchedGuru.id; 
+                    window.appState.user = matchedGuru;
+                    const numKelas = (matchedGuru.kelas || "").replace(/Kelas /i, '').trim();
+                    // Auto update settings based on matchedGuru
+                    window.appState.settings = {
+                        ...window.appState.settings,
+                        nama_guru: matchedGuru.nama || matchedGuru.username,
+                        nip_guru: matchedGuru.nip || '',
+                        kelas_diampu: numKelas ? [numKelas] : []
+                    };
+                    window.appState.selectedKelas = numKelas || '';
+                    
+                    window.appState.isAuthenticated = true; 
+                    window.initDataListeners(); 
+                    window.setView('dashboard');
+                } else { 
+                    window.showNotif("Username atau PIN Salah!", "error"); 
+                    window.appState.isLoggingIn = false; 
+                    if(btn) { btn.innerHTML = originalBtnHtml; btn.classList.remove('opacity-75', 'cursor-wait'); btn.disabled = false; }
+                    window.renderApp(); 
+                }
+            } catch (err) { 
+                console.error(err);
+                window.appState.loginError = "Gagal Verifikasi"; 
+                window.appState.isLoggingIn = false; 
+                if(btn) { btn.innerHTML = originalBtnHtml; btn.classList.remove('opacity-75', 'cursor-wait'); btn.disabled = false; }
+                window.renderApp(); 
+            }
+        };
+
+        window.handleLogout = async () => {
+            await window.stopScanner();
+            window.appState.isAuthenticated = false; window.appState.teacherId = null; window.appState.selectedKelas = '';
+            window.renderApp(); setTimeout(() => { const pinInput = document.querySelector('input[name="pin"]'); if (pinInput) pinInput.value = ''; }, 100);
+            window.open(hubUrl, '_blank');
+        };
+
+        window.toggleSemester = async () => {
+            const newSem = window.appState.settings.semester === '1' ? '2' : '1';
+            await setDoc(doc(db, 'artifacts', appId, 'users', window.appState.teacherId, 'settings', 'profile'), { semester: newSem }, { merge: true });
+            window.appState.settings.semester = newSem; window.renderApp(); window.showNotif(`Semester diubah ke ${newSem}`);
+        };
+
+        // --- 6. DATA ACTIONS ---
+        const getColRef = (col) => collection(db, 'artifacts', appId, 'users', window.appState.teacherId, col);
+
+        window.deleteDocData = (col, id) => {
+            window.confirmAction("Hapus Data", "Data akan dihapus permanen. Lanjutkan?", async () => {
+                await deleteDoc(doc(db, 'artifacts', appId, 'users', window.appState.teacherId, col, id));
+                window.showNotif("Terhapus"); window.appState.modal.show = false; window.renderOverlays(); window.renderApp();
+            });
+        };
+
+        window.deleteTP = (mapelId, tpIdx) => {
+            window.confirmAction("Hapus TP", "TP ini akan dihapus. Lanjutkan?", async () => {
+                const mapel = window.appState.mapels.find(m => m.id === mapelId);
+                if (!mapel) return;
+                const newTP = [...mapel.tp]; newTP.splice(tpIdx, 1);
+                await updateDoc(doc(db, 'artifacts', appId, 'users', window.appState.teacherId, 'mapels', mapelId), { tp: newTP });
+                window.showNotif("TP Terhapus"); window.appState.modal.show = false; window.renderOverlays(); window.renderApp();
+            });
+        };
+
+        window.addTPToExisting = async (mapelId) => {
+            const input = document.getElementById(`new-tp-${mapelId}`);
+            const val = input.value.trim(); if (!val) return;
+            const mapel = window.appState.mapels.find(m => m.id === mapelId); if (!mapel) return;
+            const newTP = Array.isArray(mapel.tp) ? [...mapel.tp, val] : [val];
+            await updateDoc(doc(db, 'artifacts', appId, 'users', window.appState.teacherId, 'mapels', mapelId), { tp: newTP });
+            input.value = ''; window.showNotif("TP Berhasil Ditambahkan"); window.renderApp();
+        };
+
+        window.handleEditStudent = (id) => {
+            const student = window.appState.students.find(s => s.id === id); if (!student) return;
+            window.appState.editModal = { show: true, id, name: student.nama_siswa }; window.renderOverlays();
+            setTimeout(() => { const inp = document.getElementById('edit-student-input'); if(inp) { inp.focus(); inp.select(); } }, 50);
+        };
+
+        window.saveStudentName = async () => {
+            const { id } = window.appState.editModal; const newName = document.getElementById('edit-student-input').value;
+            if (newName && newName.trim() !== "") {
+                await updateDoc(doc(db, 'artifacts', appId, 'users', window.appState.teacherId, 'students', id), { nama_siswa: newName.trim() });
+                window.showNotif("Nama berhasil diubah"); window.appState.editModal.show = false; window.renderOverlays(); window.renderApp();
+            }
+        };
+
+        window.handleResetAttendance = async () => {
+            const month = document.getElementById('reset-month-picker').value; if (!month) return window.showNotif("Pilih bulan terlebih dahulu!", "error");
+            window.confirmAction("Reset Presensi", `Hapus seluruh data presensi di bulan ${month}? Tindakan ini tidak dapat dibatalkan.`, async () => {
+                const toDelete = window.appState.attendance.filter(a => a.date.startsWith(month));
+                if (toDelete.length === 0) { window.showNotif("Tidak ada data presensi", "error"); window.appState.modal.show = false; window.renderOverlays(); return; }
+                window.showNotif("Sedang menghapus...");
+                const batchSize = 400; 
+                for (let i = 0; i < toDelete.length; i += batchSize) {
+                    const batch = writeBatch(db); const chunk = toDelete.slice(i, i + batchSize);
+                    chunk.forEach(a => { batch.delete(doc(db, 'artifacts', appId, 'users', window.appState.teacherId, 'attendance', a.id)); });
+                    await batch.commit();
+                }
+                window.showNotif(`Sukses mereset ${toDelete.length} data`); window.appState.modal.show = false; window.renderOverlays(); window.renderApp();
+            });
+        };
+
+        window.handleBulkStudents = async (e) => {
+            e.preventDefault(); const formData = new FormData(e.target);
+            const grade = formData.get('grade'); const namesText = formData.get('names');
+            let names = [...new Set(namesText.split('\n').map(n => n.trim()).filter(n => n.length > 0))];
+            const existing = window.appState.students.filter(s => s.kelas === grade).map(s => s.nama_siswa.toLowerCase());
+            const newNames = names.filter(n => !existing.includes(n.toLowerCase()));
+            if (newNames.length === 0) { window.showNotif("Nama sudah ada", "error"); return; }
+            const batch = writeBatch(db);
+            newNames.forEach(nama => { const newDoc = doc(getColRef('students')); batch.set(newDoc, { nama_siswa: nama, kelas: grade, createdAt: new Date().toISOString() }); });
+            await batch.commit(); e.target.reset(); window.showNotif(`${newNames.length} Siswa Tersimpan`);
+        };
+
+        window.handleSaveMapel = async (e) => {
+            e.preventDefault(); const data = Object.fromEntries(new FormData(e.target).entries());
+            const isDup = window.appState.mapels.some(m => m.kelas === data.kelas && m.nama.toLowerCase() === data.nama_mapel.toLowerCase());
+            if (isDup) { window.showNotif("Mapel sudah ada", "error"); return; }
+            await addDoc(getColRef('mapels'), { kelas: data.kelas, nama: data.nama_mapel, tp: data.tujuan_pembelajaran.split('\n').filter(t => t.trim().length > 0) });
+            e.target.reset(); window.showNotif("Mapel Tersimpan");
+        };
+
+        window.handleSaveJournal = async (e) => {
+            e.preventDefault(); const data = Object.fromEntries(new FormData(e.target).entries());
+            const isDup = window.appState.journals.some(j => j.tanggal === data.tanggal && j.kelas_mengajar === data.kelas_mengajar && j.jam_ke === data.jam_ke);
+            if (isDup) { window.showNotif("Jurnal jam ini sudah ada!", "error"); return; }
+            const isHoliday = window.appState.holidays.find(h => h.tanggal === data.tanggal);
+            if (isHoliday && !data.is_kerja_khusus) { window.showNotif("Hari Libur!", "error"); return; }
+            data.createdAt = new Date().toISOString(); data.semester = window.appState.settings.semester;
+            const classStudents = window.appState.students.filter(s => String(s.kelas) === String(data.kelas_mengajar));
+            const attToday = window.appState.attendance.filter(a => a.date === data.tanggal && String(a.studentClass) === String(data.kelas_mengajar));
+            data.hadir = attToday.filter(a => a.status === 'Hadir').length; data.izin = attToday.filter(a => a.status === 'Izin').length;
+            data.sakit = attToday.filter(a => a.status === 'Sakit').length; data.alpa = classStudents.length - (data.hadir + data.izin + data.sakit);
+            await addDoc(getColRef('journals'), data); window.showNotif("Jurnal Tersimpan"); window.setView('history');
+        };
+
+        window.handleSaveHoliday = async (e) => {
+            e.preventDefault(); const data = Object.fromEntries(new FormData(e.target).entries());
+            if (window.appState.holidays.some(h => h.tanggal === data.tanggal)) { window.showNotif("Tanggal sudah ada", "error"); return; }
+            await addDoc(getColRef('holidays'), data); e.target.reset(); window.showNotif("Libur Ditambahkan");
+        };
+
+        window.handleSaveSettings = async (e) => { 
+            e.preventDefault(); const formData = new FormData(e.target); const data = Object.fromEntries(formData.entries()); 
+            data.kelas_diampu = formData.getAll('kelas_diampu');
+            await setDoc(doc(db, 'artifacts', appId, 'users', window.appState.teacherId, 'settings', 'profile'), data); 
+            window.showNotif("Profil Disimpan"); 
+        };
+
+        window.handlePromotion = () => {
+            window.confirmAction("Naik Kelas", "Siswa akan naik tingkat.", async () => {
+                const class6 = window.appState.students.filter(s => s.kelas === "6");
+                if (class6.length > 0) {
+                    let csv = "Nama,Kelas,H,I,S,A\n";
+                    class6.forEach(s => { const att = window.appState.attendance.filter(a => a.studentId === s.id); csv += `${s.nama_siswa},6,${att.filter(x=>x.status==='Hadir').length},${att.filter(x=>x.status==='Izin').length},${att.filter(x=>x.status==='Sakit').length},${att.filter(x=>x.status==='Alpa').length}\n`; });
+                    saveAs(new Blob([csv], { type: 'text/csv;charset=utf-8;' }), `Arsip_Lulusan_Kelas6.csv`);
+                }
+                const batch = writeBatch(db);
+                window.appState.students.forEach(s => { const sRef = doc(db, 'artifacts', appId, 'users', window.appState.teacherId, 'students', s.id); if (s.kelas === "6") batch.delete(sRef); else batch.update(sRef, { kelas: String(Number(s.kelas) + 1) }); });
+                await batch.commit(); window.showNotif("Kenaikan Kelas Berhasil"); window.appState.modal.show = false; window.renderOverlays(); window.renderApp();
+            });
+        };
+
+        window.handleClearData = () => {
+            window.confirmAction("BERSIHKAN DATABASE", "Seluruh data akun Anda akan dihapus permanen! Lanjutkan?", async () => {
+                const collections = ['students', 'journals', 'attendance', 'mapels', 'holidays'];
+                for (const colName of collections) { const snap = await getDocs(getColRef(colName)); const batch = writeBatch(db); snap.forEach(d => batch.delete(d.ref)); await batch.commit(); }
+                window.showNotif("Database Bersih"); window.appState.modal.show = false; window.renderOverlays(); window.renderApp();
+            });
+        };
+
+        // --- 8. QR CODE VIEW ---
+        window.viewQR = (student) => { window.appState.qrModal = { show: true, student }; window.renderOverlays(); };
+        window.downloadQR = (name) => { const container = document.getElementById('qr-canvas-render'); const canvas = container.querySelector('canvas'); const img = container.querySelector('img'); let src = canvas ? canvas.toDataURL("image/png") : (img ? img.src : ""); if (src) { const link = document.createElement('a'); link.href = src; link.download = `QR_${name.replace(/\s+/g, '_')}.png`; link.click(); } else window.showNotif("Gagal unduh QR", "error"); };
+        window.downloadBulkQR = async () => { const zip = new JSZip(); const folder = zip.folder("QR_Siswa_Database"); window.showNotif("Memproses ZIP...", "warning"); const tempDiv = document.createElement('div'); tempDiv.style.position = "absolute"; tempDiv.style.left = "-9999px"; document.body.appendChild(tempDiv); for (const s of window.appState.students) { tempDiv.innerHTML = ""; new QRCode(tempDiv, { text: s.nama_siswa, width: 300, height: 300 }); await new Promise(r => setTimeout(r, 200)); const canvas = tempDiv.querySelector('canvas'); let src = canvas ? canvas.toDataURL("image/png") : null; if (src) folder.file(`KLS${s.kelas}_${s.nama_siswa.replace(/\s+/g, '_')}.png`, src.split(',')[1], {base64: true}); } document.body.removeChild(tempDiv); const content = await zip.generateAsync({type:"blob"}); saveAs(content, "Database_QR_Siswa.zip"); window.showNotif("Selesai"); };
+
+        // --- 9. SCANNER ---
+        window.switchCamera = async () => { window.appState.cameraFacingMode = window.appState.cameraFacingMode === "environment" ? "user" : "environment"; const readerEl = document.getElementById('reader'); if (readerEl) { if (window.appState.cameraFacingMode === 'user') { readerEl.classList.add('mirror-mode'); } else { readerEl.classList.remove('mirror-mode'); } } await window.stopScanner(); setTimeout(window.startScanner, 200); };
+        window.restartScanner = async () => { await window.stopScanner(); setTimeout(window.startScanner, 200); };
+        window.startScanner = async () => {
+            const container = document.getElementById('reader'); if (!container || window.appState.isScannerStarting) return;
+            if (window.appState.cameraFacingMode === 'user') container.classList.add('mirror-mode'); else container.classList.remove('mirror-mode');
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost') { window.showNotif("HTTPS diperlukan untuk akses kamera.", "error"); return; }
+            window.appState.isScannerStarting = true;
+            try {
+                await window.stopScanner(); window.appState.html5QrCode = new window.Html5Qrcode("reader");
+                window.appState.scannerActive = true; 
+                await window.appState.html5QrCode.start({ facingMode: window.appState.cameraFacingMode }, { fps: 20, qrbox: (viewfinderWidth, viewfinderHeight) => { const minEdge = Math.min(viewfinderWidth, viewfinderHeight); const qrboxSize = Math.floor(minEdge * 0.85); return { width: qrboxSize, height: qrboxSize }; }, aspectRatio: 1.0 }, async (text) => {
+                        if (window.appState.scannerLock) return;
+                        const student = window.appState.students.find(s => (s.kode_qr && s.kode_qr === text) || s.nama_siswa.toLowerCase() === text.trim().toLowerCase());
+                        if (student) {
+                            const isAlreadyPresent = window.appState.attendance.some(a => a.studentId === student.id && a.date === window.appState.selectedDate && a.status === 'Hadir');
+                            if (!isAlreadyPresent) {
+                                window.appState.scannerLock = true; await window.markAttendance(student.id, 'Hadir');
+                                window.appState.scanSuccessPopup = { show: true, studentName: student.nama_siswa }; window.renderApp();
+                                const mode = window.appState.settings.voiceMode || 'mute';
+                                if (mode === 'tts') window.speakText(`${student.nama_siswa} Hadir`); else if (mode === 'beep') window.playBeep();
+                                if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                                await window.appState.html5QrCode.stop();
+                                setTimeout(async () => { window.appState.scanSuccessPopup.show = false; window.appState.scannerLock = false; window.renderApp(); await window.startScanner(); }, 2000);
+                            } else { window.appState.scannerLock = true; window.showNotif(`${student.nama_siswa} sudah presensi hari ini`, "warning"); setTimeout(() => { window.appState.scannerLock = false; }, 3000); }
+                        } else { window.appState.scannerLock = true; window.showNotif("QR Code tidak dikenal", "error"); setTimeout(() => { window.appState.scannerLock = false; }, 2000); }
+                    }, () => {});
+            } catch (err) { window.showNotif("Gagal akses kamera.", "error"); window.appState.scannerActive = false; } finally { window.appState.isScannerStarting = false; }
+        };
+        window.stopScanner = async () => { if (window.appState.html5QrCode) { try { if (window.appState.html5QrCode.isScanning) await window.appState.html5QrCode.stop(); await window.appState.html5QrCode.clear(); } catch(e) {} finally { window.appState.html5QrCode = null; window.appState.scannerActive = false; } } };
+
+        window.markAttendance = async (id, status = 'Hadir') => {
+            const today = window.appState.selectedDate;
+            const existing = window.appState.attendance.find(a => a.studentId === id && a.date === today);
+            const student = window.appState.students.find(s => s.id === id); if (!student) return;
+            const data = { studentId: id, studentName: student.nama_siswa, studentClass: student.kelas, date: today, status, timestamp: new Date().toISOString(), semester: window.appState.settings.semester };
+            if (existing) await updateDoc(doc(db, 'artifacts', appId, 'users', window.appState.teacherId, 'attendance', existing.id), data); else await addDoc(getColRef('attendance'), data);
+        };
+
+        window.markAllPresent = async (kelas) => {
+            const students = window.appState.students.filter(s => String(s.kelas) === String(kelas));
+            if (students.length === 0) return; window.showNotif("Memproses Presensi Bulk..."); const batch = writeBatch(db); const today = window.appState.selectedDate;
+            for (const s of students) {
+                const existing = window.appState.attendance.find(a => a.studentId === s.id && a.date === today);
+                const data = { studentId: s.id, studentName: s.nama_siswa, studentClass: s.kelas, date: today, status: 'Hadir', timestamp: new Date().toISOString(), semester: window.appState.settings.semester };
+                if (existing) batch.update(doc(db, 'artifacts', appId, 'users', window.appState.teacherId, 'attendance', existing.id), data); else batch.set(doc(getColRef('attendance')), data);
+            }
+            await batch.commit(); window.showNotif("Semua Siswa Hadir");
+        };
+
+        // --- 10. EXPORTS (UPDATED V2) ---
+        window.exportFormal = (type, format) => {
+            const curSem = window.appState.settings.semester; const sets = window.appState.settings;
+            const targetMonth = type === 'reports' ? window.appState.reportMonth : window.appState.historyMonth;
+            const viewType = window.appState.reportViewType;
+            
+            if (format === 'csv') {
+                let csvContent = "\uFEFF"; // BOM for Excel
+                if (type === 'journals') {
+                    csvContent += "No,Hari,Tanggal,Jam Ke,Kelas,Mata Pelajaran,Materi/TP,Hadir,Izin,Sakit,Alpa,Catatan\n";
+                    window.appState.journals
+                        .filter(j => j.semester === curSem && j.tanggal.startsWith(targetMonth))
+                        .sort((a,b) => { if (a.tanggal !== b.tanggal) return b.tanggal.localeCompare(a.tanggal); return a.jam_ke - b.jam_ke; })
+                        .forEach((j, i) => {
+                            const tp = `"${(j.tujuan_pembelajaran || '').replace(/"/g, '""')}"`;
+                            const cat = `"${(j.catatan || '').replace(/"/g, '""')}"`;
+                            csvContent += `${i+1},${window.getDayName(j.tanggal)},${j.tanggal},${j.jam_ke},${j.kelas_mengajar},${j.mata_pelajaran},${tp},${j.hadir},${j.izin||0},${j.sakit||0},${j.alpa},${cat}\n`;
+                        });
+                } else if (type === 'reports') {
+                    if (viewType === 'rinci') {
+                        const year = parseInt(targetMonth.split('-')[0]);
+                        const month = parseInt(targetMonth.split('-')[1]);
+                        const daysInMonth = new Date(year, month, 0).getDate();
+                        let header = "No,Nama Siswa"; for (let i = 1; i <= daysInMonth; i++) { header += `,${i}`; } header += ",H,I,S,A\n";
+                        csvContent += header;
+                        window.appState.students
+                            .filter(s => String(s.kelas) === String(window.appState.selectedKelas))
+                            .sort((a,b)=>a.nama_siswa.localeCompare(b.nama_siswa))
+                            .forEach((s, idx) => {
+                                let row = `${idx+1},"${s.nama_siswa}"`;
+                                const attMonth = window.appState.attendance.filter(a => a.studentId === s.id && a.date.startsWith(targetMonth));
+                                for (let i = 1; i <= daysInMonth; i++) {
+                                    const dayStr = `${targetMonth}-${String(i).padStart(2, '0')}`;
+                                    const attDay = attMonth.find(a => a.date === dayStr);
+                                    let statusChar = '-';
+                                    if (attDay?.status === 'Hadir') statusChar = 'H';
+                                    else if (attDay?.status === 'Izin') statusChar = 'I';
+                                    else if (attDay?.status === 'Sakit') statusChar = 'S';
+                                    else if (attDay?.status === 'Alpa') statusChar = 'A';
+                                    row += `,${statusChar}`;
+                                }
+                                row += `,${attMonth.filter(x=>x.status==='Hadir').length},${attMonth.filter(x=>x.status==='Izin').length},${attMonth.filter(x=>x.status==='Sakit').length},${attMonth.filter(x=>x.status==='Alpa').length}\n`;
+                                csvContent += row;
+                            });
+                    } else {
+                        csvContent += "No,Nama Siswa,Hadir,Izin,Sakit,Alpa\n";
+                        window.appState.students
+                            .filter(s => String(s.kelas) === String(window.appState.selectedKelas))
+                            .sort((a,b)=>a.nama_siswa.localeCompare(b.nama_siswa))
+                            .forEach((s, i) => { 
+                                const att = window.appState.attendance.filter(a => a.studentId === s.id && a.semester === curSem && a.date.startsWith(targetMonth)); 
+                                csvContent += `${i+1},"${s.nama_siswa}",${att.filter(x=>x.status==='Hadir').length},${att.filter(x=>x.status==='Izin').length},${att.filter(x=>x.status==='Sakit').length},${att.filter(x=>x.status==='Alpa').length}\n`; 
+                            });
+                    }
+                }
+                saveAs(new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }), `Laporan_${targetMonth}_${type}_${viewType}.csv`);
+            } else {
+                const isLandscape = type === 'journals' || (type === 'reports' && viewType === 'rinci');
+                const { jsPDF } = window.jspdf; 
+                const docPdf = new jsPDF(isLandscape ? 'l' : 'p', 'mm', 'a4');
+                const pageWidth = docPdf.internal.pageSize.getWidth();
+                const pageHeight = docPdf.internal.pageSize.getHeight();
+
+                docPdf.setFont("helvetica", "bold"); docPdf.setFontSize(14); docPdf.text((sets.nama_sekolah || "SEKOLAH DASAR NEGERI CONTOH").toUpperCase(), pageWidth / 2, 15, { align: 'center' });
+                docPdf.setFontSize(10); docPdf.setFont("helvetica", "normal"); docPdf.text(`Tahun Pelajaran: ${sets.tahun_ajaran || '-'}`, pageWidth / 2, 20, { align: 'center' });
+                docPdf.setLineWidth(0.5); docPdf.line(10, 24, pageWidth - 10, 24);
+                
+                docPdf.setFont("helvetica", "bold"); docPdf.setFontSize(12);
+                let title = type === 'journals' ? "JURNAL KEGIATAN PEMBELAJARAN" : `LAPORAN ABSENSI SISWA (${viewType.toUpperCase()})`;
+                docPdf.text(title, pageWidth / 2, 32, { align: 'center' });
+                
+                docPdf.setFontSize(10); docPdf.setFont("helvetica", "normal");
+                docPdf.text(`Kelas: ${window.appState.selectedKelas || '-'}`, 14, 40); docPdf.text(`Bulan: ${targetMonth}`, 14, 45);
+                docPdf.text(`Semester: ${curSem}`, pageWidth - 14, 40, { align: 'right' }); docPdf.text(`Guru: ${sets.nama_guru || '-'}`, pageWidth - 14, 45, { align: 'right' });
+
+                const startY = 50;
+                const commonStyles = { fontSize: 8, cellPadding: 2, lineWidth: 0.1, lineColor: [200, 200, 200] };
+                const headStyles = { fillColor: [37, 99, 235], textColor: 255, fontStyle: 'bold', halign: 'center', valign: 'middle' };
+
+                if (type === 'journals') {
+                    let lastDate = '';
+                    const body = window.appState.journals.filter(j => j.semester === curSem && j.tanggal.startsWith(targetMonth)).sort((a,b) => { if (a.tanggal !== b.tanggal) return b.tanggal.localeCompare(a.tanggal); return a.jam_ke - b.jam_ke; }).map((j, i) => { let displayDate = j.tanggal; let displayDay = window.getDayName(j.tanggal); if (displayDate === lastDate) { displayDate = ''; displayDay = ''; } else { lastDate = j.tanggal; } return [i+1, displayDay, displayDate, j.jam_ke, j.kelas_mengajar, j.mata_pelajaran, j.tujuan_pembelajaran, j.hadir, j.izin||0, j.sakit||0, j.alpa, j.catatan||'-']; });
+                    docPdf.autoTable({ theme: 'grid', head: [['No', 'Hari', 'Tgl', 'Jam', 'Kls', 'Mapel', 'Materi/TP', 'H', 'I', 'S', 'A', 'Catatan']], body, startY, styles: commonStyles, headStyles, columnStyles: { 0: { cellWidth: 8, halign: 'center' }, 1: { cellWidth: 15 }, 2: { cellWidth: 18 }, 3: { cellWidth: 10, halign: 'center' }, 4: { cellWidth: 10, halign: 'center' }, 5: { cellWidth: 30 }, 6: { cellWidth: 'auto' }, 7: { cellWidth: 7, halign: 'center' }, 8: { cellWidth: 7, halign: 'center' }, 9: { cellWidth: 7, halign: 'center' }, 10: { cellWidth: 7, halign: 'center' }, 11: { cellWidth: 40 } } });
+                } else if (type === 'reports') {
+                    if (viewType === 'rinci') {
+                        const year = parseInt(targetMonth.split('-')[0]); const month = parseInt(targetMonth.split('-')[1]); const daysInMonth = new Date(year, month, 0).getDate();
+                        const dayHeaders = Array.from({length: daysInMonth}, (_, i) => { const dStr = `${targetMonth}-${String(i+1).padStart(2, '0')}`; const dateObj = new Date(dStr); const dayIndex = dateObj.getDay(); const dayInitials = ['M', 'S', 'S', 'R', 'K', 'J', 'S']; return `${i+1}\n${dayInitials[dayIndex]}`; });
+                        const head = [['No', 'Nama', ...dayHeaders, 'H', 'I', 'S', 'A']];
+                        const body = window.appState.students.filter(s => String(s.kelas) === String(window.appState.selectedKelas)).sort((a,b)=>a.nama_siswa.localeCompare(b.nama_siswa)).map((s, i) => { const attMonth = window.appState.attendance.filter(a => a.studentId === s.id && a.date.startsWith(targetMonth)); const dayCells = Array.from({length: daysInMonth}, (_, d) => { const dayStr = `${targetMonth}-${String(d+1).padStart(2, '0')}`; const attDay = attMonth.find(a => a.date === dayStr); if (attDay?.status === 'Hadir') return 'H'; if (attDay?.status === 'Izin') return 'I'; if (attDay?.status === 'Sakit') return 'S'; if (attDay?.status === 'Alpa') return 'A'; return ''; }); return [i+1, s.nama_siswa, ...dayCells, attMonth.filter(x=>x.status==='Hadir').length, attMonth.filter(x=>x.status==='Izin').length, attMonth.filter(x=>x.status==='Sakit').length, attMonth.filter(x=>x.status==='Alpa').length]; });
+                        docPdf.autoTable({ theme: 'grid', head, body, startY, styles: { ...commonStyles, fontSize: 7, cellPadding: 1 }, headStyles, columnStyles: { 0: { cellWidth: 10, halign: 'center' }, 1: { cellWidth: 50, fontStyle: 'bold' } }, didParseCell: function(data) { if (data.section === 'head' && data.column.index >= 2) { const dayIndex = data.column.index - 2; const dStr = `${targetMonth}-${String(dayIndex+1).padStart(2, '0')}`; if (window.isHoliday(dStr)) { data.cell.styles.textColor = [255, 200, 200]; } } } });
+                    } else {
+                        const body = window.appState.students.filter(s => String(s.kelas) === String(window.appState.selectedKelas)).sort((a,b)=>a.nama_siswa.localeCompare(b.nama_siswa)).map((s, i) => { const att = window.appState.attendance.filter(a => a.studentId === s.id && a.semester === curSem && a.date.startsWith(targetMonth)); return [i+1, s.nama_siswa, att.filter(x=>x.status==='Hadir').length, att.filter(x=>x.status==='Izin').length, att.filter(x=>x.status==='Sakit').length, att.filter(x=>x.status==='Alpa').length]; });
+                        docPdf.autoTable({ theme: 'grid', head: [['No', 'Nama Siswa', 'Hadir', 'Izin', 'Sakit', 'Alpa']], body, startY, styles: { ...commonStyles, fontSize: 10, cellPadding: 3 }, headStyles, columnStyles: { 0: { cellWidth: 15, halign: 'center' }, 1: { cellWidth: 'auto' }, 2: { cellWidth: 20, halign: 'center' }, 3: { cellWidth: 20, halign: 'center' }, 4: { cellWidth: 20, halign: 'center' }, 5: { cellWidth: 20, halign: 'center' } } });
+                    }
+                }
+                
+                const finalY = docPdf.lastAutoTable.finalY + 20; let sigY = finalY;
+                if (sigY + 40 > pageHeight) { docPdf.addPage(); sigY = 20; }
+                const dateSig = `${sets.lokasi || "Tempat"}, ${new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}`;
+                docPdf.setFont("helvetica", "normal"); docPdf.setFontSize(10);
+                docPdf.text("Mengetahui,", 20, sigY); docPdf.text("Kepala Sekolah", 20, sigY + 5);
+                docPdf.setFont("helvetica", "bold"); docPdf.text(sets.nama_kepsek || "(.......................)", 20, sigY + 30);
+                docPdf.setFont("helvetica", "normal"); docPdf.text(`NIP. ${sets.nip_kepsek || "-" }`, 20, sigY + 35);
+                const rightX = pageWidth - 60; 
+                docPdf.text(dateSig, rightX, sigY); docPdf.text("Guru Kelas", rightX, sigY + 5);
+                docPdf.setFont("helvetica", "bold"); docPdf.text(sets.nama_guru || "(.......................)", rightX, sigY + 30);
+                docPdf.setFont("helvetica", "normal"); docPdf.text(`NIP. ${sets.nip_guru || "-" }`, rightX, sigY + 35);
+                docPdf.save(`Laporan_${targetMonth}_${type}_${viewType}.pdf`);
+            }
+        };
+
+        // --- 11. ROUTING ---
+        window.setView = async (v) => { 
+            // Unlock TTS synchronusly on click
+            if ('speechSynthesis' in window && window.appState.settings.voiceMode === 'tts') {
+                const u = new SpeechSynthesisUtterance('');
+                window.speechSynthesis.speak(u);
+            }
+            await window.stopScanner(); window.appState.currentView = v; window.appState.mobileMenuOpen = false; window.renderApp(); lucide.createIcons();
+            if (v === 'scanner') setTimeout(() => { if (document.getElementById('reader')) window.startScanner(); const mode = window.appState.settings.voiceMode || 'mute'; if (mode === 'tts') setTimeout(() => window.speakText("Sistem presensi sudah siap"), 800); }, 500);
+            if (v === 'dashboard') setTimeout(() => window.initChart(), 500);
+        };
+
+        window.initChart = () => {
+            const canvas = document.getElementById('attendanceChart'); if (!canvas) return;
+            const dates = [...new Set(window.appState.attendance.filter(a=>a.semester===window.appState.settings.semester).map(a => a.date))].sort().slice(-7);
+            const dataHadir = dates.map(d => window.appState.attendance.filter(a => a.date === d && a.status === 'Hadir').length);
+            if (window.myChart) window.myChart.destroy();
+            window.myChart = new Chart(canvas.getContext('2d'), { type: 'bar', data: { labels: dates, datasets: [{ label: 'Jumlah Hadir', data: dataHadir, backgroundColor: '#2563eb', borderRadius: 8 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } } });
+        };
+
+        window.renderNavItem = (view, phIcon, label) => {
+            const active = window.appState.currentView === view;
+            return `<button onclick="window.setView('${view}')" style="justify-content: flex-start !important; text-align: left !important;" class="w-full flex items-center gap-3 py-2.5 px-4 rounded-xl text-xs font-bold transition-all relative ${active ? 'bg-primary/10 text-primary' : 'text-textSecondary hover:bg-slate-50 hover:text-textPrimary'}" title="${label}">
+                ${active ? '<div class="absolute left-1 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-primary rounded-full"></div>' : ''}
+                <i class="ph-bold ${phIcon} text-lg shrink-0"></i>
+                <span>${label}</span>
+            </button>`;
+        };
+
+        window.handleSearchInput = (el, stateKey) => { window.appState[stateKey] = el.value; window.appState.lastFocusedId = el.id; window.appState.lastCaretPos = el.selectionStart; window.renderApp(); };
+
+        window.renderOverlays = () => {
+            const mount = document.getElementById('overlay-mount'); if (!mount) return;
+            let content = '';
+            if (window.appState.modal.show) content += `<div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[99999] flex items-center justify-center p-6 pointer-events-auto"><div class="bg-surface rounded-[2.5rem] p-8 max-w-sm w-full shadow-2xl animate-popIn text-center"><h3 class="text-xl font-black uppercase text-error mb-2 text-center">${window.appState.modal.title}</h3><p class="text-sm text-textSecondary font-medium mb-8 text-center whitespace-pre-line">${window.appState.modal.message}</p><div class="flex gap-3 text-center"><button onclick="window.appState.modal.show = false; window.renderOverlays();" class="flex-1 bg-surface border border-border py-3 rounded-xl font-black uppercase text-[10px] tracking-widest text-center">Batal</button><button onclick="window.appState.modal.onConfirm()" class="flex-1 bg-rose-600 text-white py-3 rounded-xl font-black uppercase text-[10px] tracking-widest text-center">Ya, Lanjutkan</button></div></div></div>`;
+            if (window.appState.editModal.show) content += `<div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[99999] flex items-center justify-center p-6 pointer-events-auto"><div class="bg-surface rounded-[2.5rem] p-8 max-w-sm w-full shadow-2xl animate-popIn text-center"><h3 class="text-xl font-black uppercase text-primary mb-2 text-center">Edit Siswa</h3><input type="text" id="edit-student-input" value="${window.appState.editModal.name}" class="w-full bg-surface rounded-xl p-4 font-black text-center mb-6 border-none outline-none text-textPrimary" onkeydown="if(event.key === 'Enter') window.saveStudentName()"><div class="flex gap-3 text-center"><button onclick="window.appState.editModal.show = false; window.renderOverlays();" class="flex-1 bg-surface border border-border py-3 rounded-xl font-black uppercase text-[10px] tracking-widest text-center">Batal</button><button onclick="window.saveStudentName()" class="flex-1 bg-primary text-white py-3 rounded-xl font-black uppercase text-[10px] tracking-widest text-center">Simpan</button></div></div></div>`;
+            if (window.appState.qrModal.show) { content += `<div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[99999] flex items-center justify-center p-6 pointer-events-auto"><div class="bg-surface rounded-[3rem] p-8 md:p-10 max-w-[320px] w-full shadow-2xl text-center animate-popIn"><h3 class="text-lg font-black uppercase mb-6 text-center text-textPrimary">${window.appState.qrModal.student.nama_siswa}</h3><div id="qr-canvas-render" class="bg-surface p-4 rounded-3xl border-4 border-border flex justify-center items-center mb-8 mx-auto w-[200px] h-[200px] md:w-[256px] md:h-[256px] text-center overflow-hidden"></div><div class="flex flex-col gap-2 text-center"><button onclick="window.downloadQR('${window.appState.qrModal.student.nama_siswa}')" class="bg-primary text-white py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2 text-center transition-all hover:bg-primary shadow-lg"><i class="ph-bold ph-download mr-2"></i> Simpan PNG</button><button onclick="window.appState.qrModal.show = false; window.renderOverlays();" class="bg-surface border border-border text-textSecondary py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest text-center hover:bg-slate-200 transition-all">Tutup</button></div></div></div>`; setTimeout(() => { const container = document.getElementById('qr-canvas-render'); if (container && container.innerHTML === "") new QRCode(container, { text: window.appState.qrModal.student.nama_siswa, width: 256, height: 256, correctLevel : QRCode.CorrectLevel.H }); }, 10); }
+            if (window.appState.finishStep === 1) content += `<div class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[99999] flex items-center justify-center p-6 pointer-events-auto"><div class="bg-surface rounded-[2.5rem] p-8 max-w-sm w-full shadow-2xl text-center animate-popIn"><div class="w-20 h-20 bg-amber-100 text-warning rounded-3xl flex items-center justify-center text-3xl mx-auto mb-6 shadow-inner"><i class="ph-bold ph-users-viewfinder"></i></div><h3 class="text-xl font-black text-textPrimary uppercase mb-2">Ringkasan Kehadiran</h3><p class="text-xs text-textSecondary font-medium mb-6">Terdapat <span class="font-black text-warning text-lg">${window.appState.missingStudentsCache.length}</span> siswa yang belum melakukan presensi hari ini.</p><div class="flex flex-col gap-3"><button onclick="window.goToFinishList()" class="bg-primary text-white py-4 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:bg-primary transition-all">Cek Daftar Siswa</button><button onclick="window.closeFinishAttendance()" class="bg-surface border border-border text-textSecondary py-4 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-200 transition-all">Batal</button></div></div></div>`;
+            if (window.appState.finishStep === 2) content += `<div class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[99999] flex items-center justify-center p-6 pointer-events-auto"><div class="bg-surface rounded-[2.5rem] p-6 max-w-md w-full shadow-2xl flex flex-col max-h-[80vh] animate-popIn"><div class="flex justify-between items-center mb-6 shrink-0"><h3 class="text-lg font-black text-textPrimary uppercase">Konfirmasi Manual</h3><span id="manual-remaining-count" class="bg-amber-100 text-warning px-3 py-1 rounded-lg text-[10px] font-black">${window.appState.missingStudentsCache.length} Sisa</span></div><div id="manual-confirm-list" class="flex-grow overflow-y-auto custom-scroll pr-2 space-y-3 mb-6">${window.appState.missingStudentsCache.length > 0 ? window.appState.missingStudentsCache.sort((a,b)=>a.nama_siswa.localeCompare(b.nama_siswa)).map(s => `<div id="manual-row-${s.id}" class="bg-surface p-4 rounded-2xl flex flex-col gap-3 border border-border"><span class="font-black text-xs text-textPrimary uppercase">${s.nama_siswa}</span><div class="flex gap-2"><button onclick="window.markManualQuick('${s.id}', 'Hadir')" class="flex-1 bg-surface border border-border py-2 rounded-lg text-[9px] font-black text-textSecondary hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all">H</button><button onclick="window.markManualQuick('${s.id}', 'Izin')" class="flex-1 bg-surface border border-border py-2 rounded-lg text-[9px] font-black text-textSecondary hover:bg-info/10 hover:text-info hover:border-sky-200 transition-all">I</button><button onclick="window.markManualQuick('${s.id}', 'Sakit')" class="flex-1 bg-surface border border-border py-2 rounded-lg text-[9px] font-black text-textSecondary hover:bg-warning/10 hover:text-warning hover:border-amber-200 transition-all">S</button><button onclick="window.markManualQuick('${s.id}', 'Alpa')" class="flex-1 bg-surface border border-border py-2 rounded-lg text-[9px] font-black text-textSecondary hover:bg-error/10 hover:text-error hover:border-rose-200 transition-all">A</button></div></div>`).join('') : '<p class="text-center text-xs text-textSecondary font-bold py-10 animate-fadeIn">Semua siswa sudah diabsen!</p>'}</div><button onclick="window.finishAttendanceProcess()" class="w-full bg-success text-white py-4 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:bg-emerald-700 transition-all shrink-0">Selesai & Lanjut <i class="ph-bold ph-arrow-right ml-2"></i></button></div></div>`;
+            if (window.appState.finishStep === 3) content += `<div class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[99999] flex items-center justify-center p-6 pointer-events-auto"><div class="bg-surface rounded-[2.5rem] p-8 max-w-sm w-full shadow-2xl text-center animate-popIn"><div class="w-20 h-20 bg-primary/20 text-primary rounded-3xl flex items-center justify-center text-3xl mx-auto mb-6 shadow-inner"><i class="ph-bold ph-pencil-simple"></i></div><h3 class="text-xl font-black text-textPrimary uppercase mb-2">Isi Jurnal Kelas?</h3><p class="text-xs text-textSecondary font-medium mb-6">Presensi telah dicatat. Apakah Anda ingin langsung mengisi jurnal harian untuk sesi ini?</p><div class="flex gap-3"><button onclick="window.confirmJournal(false)" class="flex-1 bg-surface border border-border text-textSecondary py-4 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-200 transition-all">Tidak</button><button onclick="window.confirmJournal(true)" class="flex-1 bg-primary text-white py-4 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:bg-primary transition-all">Ya, Isi Jurnal</button></div></div></div>`;
+            if (window.appState.finishStep === 4) content += `<div class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[99999] flex items-center justify-center p-6 pointer-events-auto"><div class="bg-surface rounded-[2.5rem] p-8 max-w-sm w-full shadow-2xl text-center animate-popIn"><div class="w-20 h-20 bg-success/20 text-success rounded-3xl flex items-center justify-center text-3xl mx-auto mb-6 shadow-inner animate-bounce"><i class="ph-bold ph-check"></i></div><h3 class="text-xl font-black text-textPrimary uppercase mb-2">Selesai!</h3><p class="text-xs text-textSecondary font-medium mb-6">Presensi hari ini telah berhasil diselesaikan. Data telah tersimpan dengan aman.</p><button onclick="window.closeFinishAttendance()" class="w-full bg-success text-white py-4 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:bg-emerald-700 transition-all">Kembali ke Beranda</button></div></div>`;
+            if (mount.innerHTML !== content) mount.innerHTML = content;
+        }
+
+        window.renderApp = () => {
+            let savedScrollTop = 0; const container = document.getElementById('view-container'); if (container) savedScrollTop = container.scrollTop;
+            const root = document.getElementById('root');
+            if (window.appState.loading) { root.innerHTML = `<div class="h-screen flex items-center justify-center bg-background text-[10px] font-black uppercase tracking-widest text-textSecondary animate-pulse text-center font-poppins">Menghubungkan...</div>`; return; }
+            if (!window.appState.isAuthenticated) {
+                root.innerHTML = `<div id="login-screen" class="w-full h-screen bg-white relative overflow-hidden flex font-poppins">
+        
+        <!-- Cityscape Background (Paling Belakang & di-Blur) -->
+        <img src="./assets/kota.png" alt="Kota" class="absolute bottom-0 left-0 w-full h-[55vh] object-cover object-bottom z-0 opacity-60 blur-[1.5px] pointer-events-none" onerror="this.style.display='none'">
+
+        <!-- 1. BACKGROUND WAVE MASK -->
+        <div class="absolute inset-0 z-[1] pointer-events-none">
+            <div class="w-full h-full bg-gradient-to-br from-emerald-500 to-teal-600 scale-[1.02] origin-right" 
+                 style="-webkit-mask-image: url('./assets/wave.png'); -webkit-mask-size: auto 100%; -webkit-mask-position: right center; -webkit-mask-repeat: no-repeat; mask-image: url('./assets/wave.png'); mask-size: auto 100%; mask-position: right center; mask-repeat: no-repeat;">
+            </div>
+        </div>
+        
+        <!-- 2. LEFT COLUMN (LOGIN FORM) -->
+        <div class="w-full lg:w-1/2 h-full flex flex-col justify-center items-center lg:items-start lg:pl-[12%] p-6 relative z-30">
+            
+            <!-- Login Card -->
+            <div class="w-full max-w-[340px] bg-white/95 backdrop-blur-sm rounded-[2rem] p-8 text-center relative shadow-2xl shadow-slate-200/50 border border-slate-100/50 animate-slideDown">
+                <!-- School Logo -->
+                <div class="w-16 h-16 mx-auto mb-4 bg-white rounded-2xl flex items-center justify-center border border-slate-100 shadow-sm relative z-10">
+                    <img src="https://i.imgur.com/Y8Kue6a.png" class="w-10 h-10 object-contain" alt="Logo">
+                </div>
+                
+                <h2 class="text-[22px] font-black text-slate-800 tracking-tight mb-1">Portal Jurnal</h2>
+                <p class="text-slate-500 font-bold text-[10px] mb-8">SDN Pasirmae 1 — Jurnal Mengajar</p>
+                
+                <div id="login-error-msg" class="hidden text-red-600 bg-red-50 border border-red-100 p-2.5 rounded-xl text-[10px] font-bold mb-4 animate-fadeIn"></div>
+                
+                <form onsubmit="window.handleLogin(event)" class="flex flex-col gap-5 text-left">
+                    <div class="flex flex-col gap-1.5">
+                        <label class="block text-slate-500 font-bold text-[9px] uppercase tracking-wider pl-4">Username Guru</label>
+                        <div class="relative group">
+                            <i class="ph-bold ph-user absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-600 transition-colors text-lg"></i>
+                            <input type="text" id="login-username" placeholder="Masukkan username" required class="w-full bg-[#f8f9fb] border border-transparent text-slate-800 rounded-full px-4 py-3.5 pl-14 text-sm font-semibold focus:outline-none focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 transition-all">
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col gap-1.5">
+                        <label class="block text-slate-500 font-bold text-[9px] uppercase tracking-wider pl-4">PIN Keamanan</label>
+                        <div class="relative group">
+                            <i class="ph-bold ph-lock-key absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-600 transition-colors text-lg"></i>
+                            <input type="password" id="login-pin" maxlength="6" inputmode="numeric" placeholder="6 Digit PIN" required class="w-full bg-[#f8f9fb] border border-transparent text-slate-800 rounded-full px-4 py-3.5 pl-14 pr-12 text-sm tracking-[0.3em] font-mono font-bold focus:outline-none focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 transition-all">
+                            <button type="button" onclick="const p=document.getElementById('login-pin'); const i=document.getElementById('eye-icon-jurnal'); if(p.type==='password'){p.type='text';i.className='ph-bold ph-eye text-lg';}else{p.type='password';i.className='ph-bold ph-eye-closed text-lg';}" class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors outline-none">
+                                <i id="eye-icon-jurnal" class="ph-bold ph-eye-closed text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-full py-4 text-[11px] font-bold uppercase tracking-widest shadow-lg shadow-emerald-600/30 transition-all flex justify-center items-center gap-2">
+                        <i class="ph-bold ph-sign-in text-base"></i> Masuk Jurnal
+                    </button>
+                </form>
+                
+                <div class="mt-8 pt-6 border-t border-slate-100 text-[10px] text-slate-500 font-bold flex items-center justify-center gap-1.5">
+                    Akses terbatas untuk guru pengajar.
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. RIGHT COLUMN (TEXT) -->
+        <div class="hidden lg:flex w-1/2 h-full flex-col justify-start items-end absolute right-0 top-0 z-20 p-8 pt-[6%] pointer-events-none">
+            <div class="text-right flex flex-col items-end text-white max-w-[500px] pointer-events-auto">
+                <h1 class="text-4xl lg:text-[3.5rem] font-black mb-4 leading-[1.15] drop-shadow-md tracking-tight text-right w-full">Selamat Datang<br/>Bapak/Ibu Guru!</h1>
+                <p class="text-xs lg:text-sm font-medium opacity-90 leading-relaxed drop-shadow-sm text-right w-full max-w-[420px]">Kelola Jurnal Mengajar Harian dan Daftar Hadir Siswa dengan lebih interaktif, mudah, dan paperless.</p>
+            </div>
+        </div>
+
+        <!-- 4. ILLUSTRATIONS -->
+        <img src="./assets/lari.png" alt="Siswa Berlari" class="absolute bottom-[8%] right-[15%] w-[32vw] max-w-[480px] z-30 pointer-events-none hidden lg:block animate-slideUp" onerror="this.style.display='none'">
+        
+        <img src="./assets/lompat.png" alt="Siswa Melompat" class="absolute bottom-[2%] left-6 w-[16vw] max-w-[220px] z-30 pointer-events-none hidden lg:block" onerror="this.style.display='none'">
+
+        <!-- 5. CREDIT TEXT -->
+        <div class="absolute bottom-6 right-8 z-40 text-right pointer-events-auto">
+            <p class="text-[8px] font-bold text-white/60 uppercase tracking-[0.2em] mb-0.5">Developed By</p>
+            <p class="text-[9px] font-bold text-white/90">reezapps &middot; Mohamad Rizki, S.Pd., Gr.</p>
+        </div>
+        
+    </div>`;
+                return;
+            }
+
+            const v = window.appState.currentView;
+            root.innerHTML = `
+                <div class="h-screen h-[100dvh] bg-background flex flex-col md:flex-row overflow-hidden relative z-0 font-poppins">
+                    <div class="absolute top-10 right-10 w-80 h-80 bg-success/5 dark:bg-success/10 rounded-full blur-[100px] animate-blob pointer-events-none"></div>
+                    <div class="absolute bottom-10 left-10 w-96 h-96 bg-teal-500/5 dark:bg-teal-500/10 rounded-full blur-[120px] animate-blob animation-delay-2000 pointer-events-none"></div>
+                    <div class="absolute inset-0 bg-grid-pattern pointer-events-none opacity-40"></div>
+                    <header class="md:hidden bg-background/80 backdrop-blur-md px-6 py-4 flex justify-between items-center border-b border-border shrink-0 z-40">
+                        <div class="flex items-center gap-3">
+                            <div class="shrink-0 w-8 h-8 bg-white rounded-xl flex items-center justify-center border border-slate-100 shadow-sm">
+                                <img src="https://i.imgur.com/Y8Kue6a.png" class="w-5 h-5 object-contain" alt="Logo">
+                            </div>
+                            <h1 class="text-sm font-bold text-textPrimary tracking-tight">SIJURU</h1>
+                        </div>
+                        <button onclick="window.appState.mobileMenuOpen = !window.appState.mobileMenuOpen; window.renderApp();" class="p-2 -mr-2 text-textSecondary hover:text-textPrimary rounded-lg">
+                            <i class="ph-bold ph-list text-2xl"></i>
+                        </button>
+                    </header>
+                    <aside class="${window.appState.mobileMenuOpen ? 'flex' : 'hidden'} md:flex flex-col bg-surface border-r border-border transition-all duration-300 w-full md:w-64 md:relative absolute inset-y-0 left-0 z-[60] h-full shadow-[4px_0_24px_rgba(0,0,0,0.02)] shrink-0">
+                        <button onclick="window.appState.mobileMenuOpen = false; window.renderApp();" class="md:hidden absolute top-5 right-4 p-2 text-textSecondary hover:text-textPrimary rounded-lg"><i class="ph-bold ph-x text-xl"></i></button>
+                        
+                        <!-- LOGO IDENTIK DENGAN ADMIN -->
+                        <div class="h-24 flex items-center gap-3 shrink-0 px-6 mt-2">
+                            <div class="shrink-0 flex items-center justify-center">
+                                <div class="flex">
+                                    <div class="w-5 h-5 rounded-full bg-primary/80 mix-blend-multiply translate-x-1.5"></div>
+                                    <div class="w-5 h-5 rounded-full bg-accent/80 mix-blend-multiply -translate-x-1.5"></div>
+                                </div>
+                            </div>
+                            <h2 class="font-bold text-textPrimary text-xl tracking-tight">SDN Pasirmae</h2>
+                        </div>
+
+                        <!-- MENU DATAR (TANPA KATEGORI) -->
+                        <nav class="flex-1 overflow-y-auto custom-scrollbar px-4 py-6 flex flex-col gap-1">
+                            ${Object.keys(viewTitles).map(k => window.renderNavItem(k, {dashboard:'ph-squares-four',scanner:'ph-qr-code',input:'ph-pencil-simple',mapel:'ph-book-open',history:'ph-clock-counter-clockwise',reports:'ph-file-text',students:'ph-users',holidays:'ph-calendar',settings:'ph-gear',info:'ph-info'}[k], {dashboard:'Beranda',scanner:'Scan QR',input:'Isi Jurnal',mapel:'Mata Pelajaran',history:'Riwayat',reports:'Laporan',students:'Siswa',holidays:'Izin & Libur',settings:'Pengaturan',info:'Tentang'}[k])).join('')}
+                        </nav>
+
+                        <div class="p-6 shrink-0 mt-auto">
+                            <div class="bg-primary rounded-3xl p-5 relative overflow-hidden text-center shadow-lg shadow-primary/30 group">
+                                <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-xl pointer-events-none transition-transform group-hover:scale-110"></div>
+                                <div class="absolute -bottom-10 -left-10 w-24 h-24 bg-secondary/30 rounded-full blur-xl pointer-events-none transition-transform group-hover:scale-110"></div>
+                                
+                                <div class="relative z-10 flex flex-col items-center">
+                                    <img src="./assets/lompat.png" class="w-28 h-auto mb-4 drop-shadow-[0_10px_10px_rgba(0,0,0,0.15)] pointer-events-none" alt="Ilustrasi" onerror="this.style.display='none'">
+                                    
+                                    <button onclick="window.toggleSemester()" class="w-full bg-white text-primary font-bold text-xs py-3 rounded-2xl transition-transform hover:scale-105 shadow-sm mb-3 block">
+                                        Ganti Semester
+                                    </button>
+                                    <button onclick="window.handleLogout()" class="w-full text-white/80 hover:text-white font-bold text-[10px] uppercase tracking-wider transition-colors py-1">
+                                        Keluar Sesi
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                    <div onclick="window.appState.mobileMenuOpen = false; window.renderApp();" class="${window.appState.mobileMenuOpen ? 'block' : 'hidden'} absolute inset-0 bg-slate-900/20 backdrop-blur-sm z-40 md:hidden"></div>
+                    <div class="flex-1 flex flex-col h-full overflow-hidden relative">
+                        <header class="h-24 bg-background flex items-center justify-between px-8 shrink-0">
+                            <div class="flex items-center gap-4 w-full max-w-md">
+                                <button onclick="window.appState.mobileMenuOpen = !window.appState.mobileMenuOpen; window.renderApp();" class="md:hidden p-2 -ml-2 text-textSecondary hover:text-textPrimary rounded-lg"><i class="ph-bold ph-list text-2xl"></i></button>
+                                <div class="relative w-full hidden md:block group"><i class="ph-bold ph-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-textSecondary group-focus-within:text-primary transition-colors text-lg"></i><input type="text" placeholder="Search for query" class="w-full bg-surface border-none rounded-full py-3.5 pl-12 pr-6 text-xs text-textPrimary focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm transition-all font-medium placeholder:text-textSecondary/60"></div>
+                                <h1 class="md:hidden text-lg font-bold text-textPrimary tracking-tight">${viewTitles[v]||v}</h1>
+                            </div>
+                            <div class="flex items-center gap-5">
+                                <button onclick="window.toggleSemester()" class="hidden md:flex bg-surface border border-border text-textSecondary hover:text-textPrimary font-bold text-xs rounded-xl px-3 py-2 items-center gap-1.5 shadow-sm"><i class="ph-bold ph-arrows-clockwise"></i> Smt ${window.appState.settings.semester}</button>
+                                <button onclick="window.toggleTheme()" class="relative text-textPrimary hover:text-primary transition-colors"><i class="theme-icon ph-bold ph-moon text-2xl"></i></button>
+                                <button onclick="if(window.bukaKotakPesan) window.bukaKotakPesan();" class="relative text-textPrimary hover:text-primary transition-colors"><i class="ph-bold ph-envelope-simple text-2xl"></i></button>
+                                <button class="relative text-textPrimary hover:text-primary transition-colors"><i class="ph-bold ph-bell text-2xl"></i><span class="absolute top-0 right-0 w-2.5 h-2.5 bg-primary border-2 border-background rounded-full"></span></button>
+                                <div class="flex items-center gap-3 ml-2 bg-surface p-1.5 pr-4 rounded-full shadow-sm hover:shadow-md transition-all cursor-pointer">
+                                    <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold shrink-0 overflow-hidden border border-border"><i class="ph-bold ph-user text-xl"></i></div>
+                                    <div class="hidden sm:block"><p class="text-xs font-bold text-textPrimary leading-none">${window.appState.settings.nama_guru?.split(' ')[0] || 'Guru'}</p><p class="text-[10px] text-textSecondary font-medium mt-1 leading-none">Wali Kelas</p></div>
+                                </div>
+                            </div>
+                        </header>
+                        <main class="flex-1 overflow-y-auto bg-background p-4 custom-scrollbar relative">
+                            <div class="max-w-6xl mx-auto space-y-6 pb-20">
+                                ${window.renderCurrentView()}
+                            </div>
+                        </main>
+                    </div>
+                </div>`;
+            
+            if (savedScrollTop > 0) { const newContainer = document.querySelector('main.flex-1.overflow-y-auto'); if (newContainer) newContainer.scrollTop = savedScrollTop; }
+            window.renderOverlays();
+            
+            if (v === 'dashboard') window.initChart();
+            if (window.appState.lastFocusedId) { const el = document.getElementById(window.appState.lastFocusedId); if (el) { el.focus(); el.setSelectionRange(window.appState.lastCaretPos, window.appState.lastCaretPos); } }
+        };
+
+        window.renderCurrentView = () => {
+            const v = window.appState.currentView; const curSem = window.appState.settings.semester; const diampu = window.appState.settings.kelas_diampu || [];
+
+            // --- RESTORED: REPORT VIEW ---
+            if (v === 'reports') {
+                const targetMonth = window.appState.reportMonth;
+                const viewType = window.appState.reportViewType;
+                let previewHTML = '';
+                
+                // Formal Header for Preview
+                const formalHeader = `
+                    <div class="text-center mb-6 border-b pb-4">
+                        <h3 class="font-black text-xl uppercase text-textPrimary">${window.appState.settings.nama_sekolah || 'NAMA SEKOLAH'}</h3>
+                        <h4 class="font-bold text-sm uppercase text-textSecondary">LAPORAN KEHADIRAN SISWA</h4>
+                        <p class="text-[10px] text-textSecondary font-medium mt-2">
+                            Bulan: <span class="font-bold text-textPrimary">${targetMonth}</span> | 
+                            Kelas: <span class="font-bold text-textPrimary">${window.appState.selectedKelas}</span> | 
+                            Semester: <span class="font-bold text-textPrimary">${curSem}</span> | 
+                            Tahun Ajaran: <span class="font-bold text-textPrimary">${window.appState.settings.tahun_ajaran || '-'}</span>
+                        </p>
+                    </div>
+                `;
+
+                if (viewType === 'rekap') {
+                    const studentData = window.appState.students
+                        .filter(s => String(s.kelas) === String(window.appState.selectedKelas))
+                        .sort((a,b)=>a.nama_siswa.localeCompare(b.nama_siswa))
+                        .map((s, i) => {
+                            const att = window.appState.attendance.filter(a => a.studentId === s.id && a.semester === curSem && a.date.startsWith(targetMonth));
+                            return `<tr class="border-b hover:bg-surface">
+                                <td class="p-3 text-center">${i + 1}</td>
+                                <td class="p-3 font-bold text-textPrimary">${s.nama_siswa}</td>
+                                <td class="p-3 text-center font-bold text-primary">${att.filter(x => x.status === 'Hadir').length}</td>
+                                <td class="p-3 text-center font-bold text-info">${att.filter(x => x.status === 'Izin').length}</td>
+                                <td class="p-3 text-center font-bold text-warning">${att.filter(x => x.status === 'Sakit').length}</td>
+                                <td class="p-3 text-center font-bold text-error">${att.filter(x => x.status === 'Alpa').length}</td>
+                            </tr>`;
+                        }).join('');
+                    
+                    previewHTML = `
+                        ${formalHeader}
+                        <div class="overflow-hidden rounded-xl border border-border">
+                            <table class="w-full text-[10px]">
+                                <thead class="bg-surface border border-border text-textSecondary uppercase font-black">
+                                    <tr>
+                                        <th class="p-3 text-center w-10">No</th>
+                                        <th class="p-3 text-left">Nama Siswa</th>
+                                        <th class="p-3 text-center w-10">H</th>
+                                        <th class="p-3 text-center w-10">I</th>
+                                        <th class="p-3 text-center w-10">S</th>
+                                        <th class="p-3 text-center w-10">A</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 bg-surface">
+                                    ${studentData || '<tr><td colspan="6" class="p-4 text-center text-textSecondary">Data tidak ditemukan</td></tr>'}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                } else {
+                    const year = parseInt(targetMonth.split('-')[0]); 
+                    const month = parseInt(targetMonth.split('-')[1]); 
+                    const daysInMonth = new Date(year, month, 0).getDate();
+                    
+                    let headerRow = '';
+                    for(let i=1; i<=daysInMonth; i++) {
+                        const dStr = `${targetMonth}-${String(i).padStart(2, '0')}`;
+                        const isHol = window.isHoliday(dStr);
+                        headerRow += `<th class="p-2 text-center min-w-[30px] border-l border-border ${isHol ? 'bg-error/10 text-error' : ''}">${i}</th>`;
+                    }
+
+                    const studentData = window.appState.students
+                        .filter(s => String(s.kelas) === String(window.appState.selectedKelas))
+                        .sort((a,b)=>a.nama_siswa.localeCompare(b.nama_siswa))
+                        .map((s, i) => {
+                            const attMonth = window.appState.attendance.filter(a => a.studentId === s.id && a.date.startsWith(targetMonth));
+                            let daysCells = '';
+                            for(let d=1; d<=daysInMonth; d++) {
+                                const dayStr = `${targetMonth}-${String(d).padStart(2, '0')}`;
+                                const attDay = attMonth.find(a => a.date === dayStr);
+                                const isHol = window.isHoliday(dayStr);
+                                let content = '';
+                                let bgClass = isHol ? 'bg-error/10' : '';
+                                
+                                if(attDay?.status === 'Hadir') { content = '<span class="text-primary font-bold">H</span>'; }
+                                else if(attDay?.status === 'Izin') { content = '<span class="text-info font-bold">I</span>'; bgClass = 'bg-info/10'; }
+                                else if(attDay?.status === 'Sakit') { content = '<span class="text-warning font-bold">S</span>'; bgClass = 'bg-warning/10'; }
+                                else if(attDay?.status === 'Alpa') { content = '<span class="text-error font-bold">A</span>'; bgClass = 'bg-error/10'; }
+                                
+                                daysCells += `<td class="p-2 text-center border-l border-border ${bgClass}">${content}</td>`;
+                            }
+                            return `<tr class="border-b hover:bg-surface"><td class="p-3 text-center sticky left-0 bg-surface z-10 border-r border-border">${i+1}</td><td class="p-3 font-bold text-textPrimary sticky left-10 bg-surface z-10 border-r border-border whitespace-nowrap">${s.nama_siswa}</td>${daysCells}</tr>`;
+                        }).join('');
+
+                    previewHTML = `
+                        ${formalHeader}
+                        <div class="overflow-x-auto rounded-xl border border-border pb-2">
+                            <table class="w-full text-[10px] border-collapse">
+                                <thead class="bg-surface border border-border text-textSecondary uppercase font-black sticky top-0 z-20">
+                                    <tr>
+                                        <th class="p-3 text-center w-10 sticky left-0 bg-surface border border-border z-30 border-r border-border">No</th>
+                                        <th class="p-3 text-left min-w-[150px] sticky left-10 bg-surface border border-border z-30 border-r border-border">Nama Siswa</th>
+                                        ${headerRow}
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 bg-surface">
+                                    ${studentData || '<tr><td colspan="35" class="p-4 text-center text-textSecondary">Data tidak ditemukan</td></tr>'}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                }
+
+                return `<div class="max-w-5xl mx-auto animate-fadeIn text-left">
+                    <div class="bg-surface rounded-[2.5rem] md:rounded-[3rem] p-8 border shadow-sm space-y-8 mb-8">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-primary/20 text-primary rounded-3xl flex items-center justify-center text-2xl mx-auto mb-4"><i class="ph-bold ph-printer"></i></div>
+                            <h4 class="font-black text-xl uppercase text-textPrimary">Cetak Laporan</h4>
+                            <p class="text-xs text-textSecondary font-medium">Pilih periode dan format laporan yang diinginkan.</p>
+                        </div>
+                        <div class="space-y-4">
+                            <div><label class="text-[9px] font-black text-textSecondary ml-2 uppercase block text-left">Bulan Laporan</label><input type="month" value="${window.appState.reportMonth}" onchange="window.appState.reportMonth = this.value; window.renderApp();" class="w-full bg-surface rounded-xl p-4 font-black outline-none border-none text-xs text-left"></div>
+                            <div><label class="text-[9px] font-black text-textSecondary ml-2 uppercase block text-left">Jenis Tampilan</label><div class="flex bg-surface p-1 rounded-xl"><button onclick="window.appState.reportViewType='rekap';window.renderApp();" class="flex-1 py-3 rounded-lg text-[10px] font-black uppercase transition-all ${window.appState.reportViewType==='rekap'?'bg-surface shadow-sm text-primary':'text-textSecondary hover:text-textSecondary'}">Rekapitulasi</button><button onclick="window.appState.reportViewType='rinci';window.renderApp();" class="flex-1 py-3 rounded-lg text-[10px] font-black uppercase transition-all ${window.appState.reportViewType==='rinci'?'bg-surface shadow-sm text-primary':'text-textSecondary hover:text-textSecondary'}">Rinci Harian</button></div></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <button onclick="window.exportFormal('reports', 'pdf')" class="bg-primary text-white py-4 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:bg-primary transition-all flex items-center justify-center gap-2"><i class="ph-bold ph-file-pdf"></i> Laporan PDF</button>
+                            <button onclick="window.exportFormal('reports', 'csv')" class="bg-success/10 text-success py-4 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-sm hover:bg-success/20 transition-all flex items-center justify-center gap-2"><i class="ph-bold ph-file-csv"></i> Ekspor CSV</button>
+                        </div>
+                    </div>
+                    
+                    <!-- PREVIEW SECTION -->
+                    <div class="glass-card p-6 md:p-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center"><i class="ph-bold ph-table"></i></div>
+                            <h4 class="font-black text-lg uppercase text-textPrimary">Pratinjau Data</h4>
+                        </div>
+                        ${previewHTML}
+                    </div>
+                </div>`;
+            }
+
+            // --- RESTORED & ENHANCED: HOLIDAYS VIEW ---
+            if (v === 'holidays') {
+                return `<div class="max-w-4xl mx-auto animate-fadeIn space-y-8 pb-10 text-left">
+                    <!-- NEW: Section Izin/Sakit Berjangka -->
+                    <div class="bg-surface rounded-[2.5rem] md:rounded-[3rem] p-8 border shadow-sm">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-10 h-10 bg-primary/20 text-primary rounded-xl flex items-center justify-center"><i class="ph-bold ph-first-aid"></i></div>
+                            <h4 class="font-black text-xl uppercase text-textPrimary">Izin/Sakit Jangka Panjang</h4>
+                        </div>
+                        <p class="text-xs text-textSecondary mb-6 font-medium">Fitur ini akan otomatis mengisi status kehadiran siswa untuk rentang tanggal tertentu, sehingga tidak perlu di-scan setiap pagi.</p>
+                        <form onsubmit="window.handleSaveLongTerm(event)" class="space-y-4">
+                            <select name="studentId" required class="w-full bg-surface rounded-xl p-4 font-black border-none outline-none text-xs text-left">
+                                <option value="">Pilih Siswa...</option>
+                                ${window.appState.students.filter(s => String(s.kelas) === String(window.appState.selectedKelas)).sort((a,b)=>a.nama_siswa.localeCompare(b.nama_siswa)).map(s => `<option value="${s.id}">${s.nama_siswa} (Kelas ${s.kelas})</option>`).join('')}
+                            </select>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="text-[9px] font-black text-textSecondary ml-2 uppercase block text-left">Mulai Tanggal</label><input type="date" name="startDate" required class="w-full bg-surface rounded-xl p-4 font-black outline-none border-none text-xs text-left"></div>
+                                <div><label class="text-[9px] font-black text-textSecondary ml-2 uppercase block text-left">Sampai Tanggal</label><input type="date" name="endDate" required class="w-full bg-surface rounded-xl p-4 font-black outline-none border-none text-xs text-left"></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="status" value="Sakit" required class="peer sr-only">
+                                    <div class="bg-surface border-2 border-transparent peer-checked:border-amber-500 peer-checked:bg-warning/10 rounded-xl p-4 text-center transition-all"><i class="ph-bold ph-thermometer text-lg mb-1 text-textSecondary peer-checked:text-warning"></i><p class="text-[9px] font-black uppercase text-textSecondary peer-checked:text-warning">Sakit</p></div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="status" value="Izin" required class="peer sr-only">
+                                    <div class="bg-surface border-2 border-transparent peer-checked:border-sky-500 peer-checked:bg-info/10 rounded-xl p-4 text-center transition-all"><i class="ph-bold ph-envelope-open text-lg mb-1 text-textSecondary peer-checked:text-info"></i><p class="text-[9px] font-black uppercase text-textSecondary peer-checked:text-info">Izin</p></div>
+                                </label>
+                            </div>
+                            <textarea name="note" placeholder="Keterangan (Opsional)..." class="w-full bg-surface rounded-xl p-4 font-black outline-none min-h-[80px] border-none text-xs text-left"></textarea>
+                            <button type="submit" class="w-full bg-primary text-white py-4 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:bg-primary transition-all">Simpan Data</button>
+                        </form>
+                    </div>
+
+                    <!-- NEW: Display & Manage Long Term Permissions -->
+                    <div class="bg-surface rounded-[2.5rem] md:rounded-[3rem] p-8 border shadow-sm mt-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center"><i class="ph-bold ph-list-checks"></i></div>
+                            <h4 class="font-black text-xl uppercase text-textPrimary">Daftar Izin Aktif</h4>
+                        </div>
+                        <div class="space-y-3">
+                            ${(() => {
+                                const today = new Date().toISOString().split('T')[0];
+                                // Filter attendance records that are 'Sakit' or 'Izin' and date >= today
+                                const activePermissions = window.appState.attendance
+                                    .filter(a => (a.status === 'Sakit' || a.status === 'Izin') && a.date >= today)
+                                    .sort((a,b) => a.date.localeCompare(b.date));
+
+                                if (activePermissions.length === 0) return '<p class="text-center py-4 text-textSecondary/50 font-black text-[10px] uppercase">Tidak ada siswa izin/sakit aktif</p>';
+
+                                return activePermissions.map(p => `
+                                    <div class="flex justify-between items-center p-4 bg-surface rounded-xl border border-border">
+                                        <div class="flex flex-col">
+                                            <span class="font-black text-xs text-textPrimary">${p.studentName} (${p.studentClass})</span>
+                                            <span class="text-[10px] text-textSecondary font-bold uppercase tracking-widest mt-1">
+                                                <span class="${p.status === 'Sakit' ? 'text-warning' : 'text-info'}">${p.status}</span> • ${window.getDayName(p.date)}, ${p.date}
+                                            </span>
+                                            ${p.note ? `<span class="text-[9px] text-textSecondary italic mt-1">"${p.note}"</span>` : ''}
+                                        </div>
+                                        <button onclick="window.deleteAttendanceDay('${p.id}')" class="text-rose-300 hover:text-error p-2 transition-colors" title="Hapus Izin Tanggal Ini">
+                                            <i class="ph-bold ph-trash"></i>
+                                        </button>
+                                    </div>
+                                `).join('');
+                            })()}
+                        </div>
+                    </div>
+
+                    <!-- Existing: Hari Libur -->
+                    <div class="bg-surface rounded-[2.5rem] md:rounded-[3rem] p-8 border shadow-sm">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-10 h-10 bg-rose-100 text-error rounded-xl flex items-center justify-center"><i class="ph-bold ph-calendar-x"></i></div>
+                            <h4 class="font-black text-xl uppercase text-textPrimary">Kalender Libur</h4>
+                        </div>
+                        <form onsubmit="window.handleSaveHoliday(event)" class="mb-8 space-y-4">
+                            <div class="flex gap-4">
+                                <input type="date" name="tanggal" required class="w-1/3 bg-surface rounded-xl p-4 font-black border-none outline-none text-xs text-left">
+                                <input type="text" name="keterangan" placeholder="Keterangan Libur..." required class="flex-grow bg-surface rounded-xl p-4 font-black border-none outline-none text-xs text-left">
+                            </div>
+                            <button type="submit" class="w-full bg-error/10 text-error py-3 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-rose-100 transition-all border border-error/20">Tambah Hari Libur</button>
+                        </form>
+                        <div class="space-y-2">
+                            ${window.appState.holidays.sort((a,b)=>b.tanggal.localeCompare(a.tanggal)).map(h => `<div class="flex justify-between items-center p-4 bg-surface rounded-xl border border-border"><div class="flex flex-col"><span class="font-black text-xs text-textPrimary">${h.keterangan}</span><span class="text-[10px] text-textSecondary font-bold uppercase tracking-widest">${window.getDayName(h.tanggal)}, ${h.tanggal}</span></div><button onclick="window.deleteDocData('holidays', '${h.id}')" class="text-rose-300 hover:text-error"><i class="ph-bold ph-trash"></i></button></div>`).join('') || '<p class="text-center py-4 text-textSecondary/50 font-black text-[10px] uppercase">Belum ada data libur</p>'}
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            if (v === 'dashboard') {
+                const today = new Date().toISOString().split('T')[0];
+                const journalToday = window.appState.journals.filter(j => j.tanggal === today).length;
+                const hadirToday = window.appState.attendance.filter(a => a.date === today && a.status === 'Hadir').length;
+                const todayDate = new Date();
+                const todayDayName = todayDate.toLocaleDateString('id-ID', { weekday: 'long' });
+                const todayDateStr = todayDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+                const studentCount = window.appState.students.length;
+                const currentMonth = new Date();
+                const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
+                const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
+                let calendarHTML = '';
+                for (let i = 0; i < firstDay; i++) calendarHTML += `<div></div>`;
+                for (let i = 1; i <= daysInMonth; i++) {
+                    const isToday = i === todayDate.getDate();
+                    const dStrLoc = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth()+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+                    const isHol = window.isHoliday(dStrLoc);
+                    const textColor = isHol ? 'text-error font-black' : 'text-textSecondary';
+                    calendarHTML += `<div class="text-center text-[10px] font-bold py-1 ${isToday ? 'bg-primary text-white rounded-lg shadow-md' : textColor}">${i}</div>`;
+                }
+                const todayHolDesc = window.getHolidayDescription(today);
+                const counts = {}; window.appState.students.forEach(s => { counts[s.kelas] = (counts[s.kelas] || 0) + 1; });
+                const detailHTML = Object.keys(counts).sort((a,b)=>a-b).map(k => `<div class="flex justify-between text-xs text-white/90 border-b border-white/10 py-1 last:border-0"><span>Kelas ${k}</span><span class="font-bold">${counts[k]}</span></div>`).join('');
+
+                // --- NEW: TOP 5 STUDENTS LOGIC ---
+                const semester = window.appState.settings.semester;
+                // Change 'Hadir' to 'Alpa'
+                const allAttendance = window.appState.attendance.filter(a => a.semester === semester && a.status === 'Alpa');
+                const studentAttendanceCounts = window.appState.students.map(s => {
+                    const count = allAttendance.filter(a => a.studentId === s.id).length;
+                    return { name: s.nama_siswa, class: s.kelas, count };
+                });
+                // Sort desc (highest alpa first)
+                const top5 = studentAttendanceCounts.sort((a, b) => b.count - a.count).slice(0, 5);
+                // ---------------------------------
+
+                // --- NEW: ACTIVE PERMISSIONS SUMMARY FOR DASHBOARD ---
+                const activePermissionsSummary = window.appState.attendance
+                    .filter(a => (a.status === 'Sakit' || a.status === 'Izin') && a.date === today)
+                    .map(p => ({ 
+                        name: p.studentName, 
+                        class: p.studentClass, 
+                        status: p.status,
+                        note: p.note
+                    }));
+                // -----------------------------------------------------
+
+                return `
+                <div class="space-y-6 animate-fadeIn text-left">
+                    <!-- HERO SECTION / BANNER (Seperti Admin) -->
+                    <div class="bg-accent rounded-3xl p-6 sm:p-10 relative overflow-hidden flex flex-col sm:flex-row items-center justify-between shadow-lg shadow-accent/20">
+                        <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+                        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                        
+                        <div class="relative z-10 text-white max-w-sm mb-6 sm:mb-0">
+                            <span class="bg-white/20 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest backdrop-blur-md mb-4 inline-block shadow-sm">SEMESTER ${curSem}</span>
+                            <h2 class="text-2xl sm:text-3xl font-bold mb-2 tracking-tight">Aplikasi Jurnal Guru PRO</h2>
+                            <p class="text-[11px] text-white/80 mb-6 font-medium">Kelola jurnal mengajar, presensi kelas, dan rekapitulasi data secara real-time dari satu tempat terpusat.</p>
+                            
+                            <div class="flex flex-wrap gap-3">
+                                <button onclick="window.setView('scanner')" class="bg-surface text-primary px-6 py-3.5 rounded-xl text-[10px] font-bold uppercase shadow-lg hover:scale-105 transition-transform flex items-center justify-center gap-2"><i class="ph-bold ph-qr-code text-lg"></i> Scan Presensi</button>
+                                <button onclick="window.setView('input')" class="bg-white/10 border border-white/20 text-white px-6 py-3.5 rounded-xl text-[10px] font-bold uppercase shadow-sm backdrop-blur-md hover:bg-white/20 transition-colors flex items-center justify-center gap-2"><i class="ph-bold ph-pencil-simple text-lg"></i> Tulis Jurnal</button>
+                            </div>
+                        </div>
+                        
+                        <div class="relative z-10 w-48 sm:w-72 shrink-0 flex items-center justify-center mt-6 sm:mt-0 translate-y-4 sm:translate-y-0">
+                            <img src="./assets/hero_illustration.png" alt="Teacher Illustration" class="w-full h-auto object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-700">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                        <div class="lg:col-span-8 space-y-5">
+                            <!-- STATS ROW -->
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                <div class="bg-surface border border-border/40 p-4 rounded-2xl shadow-sm text-center hover:shadow-md transition-shadow">
+                                    <h3 class="text-[10px] font-bold text-textSecondary uppercase tracking-widest mb-1">Jurnal Terisi</h3>
+                                    <p class="text-2xl font-black text-primary leading-none">${journalToday}</p>
+                                </div>
+                                <div class="bg-surface border border-border/40 p-4 rounded-2xl shadow-sm text-center hover:shadow-md transition-shadow">
+                                    <h3 class="text-[10px] font-bold text-textSecondary uppercase tracking-widest mb-1">Siswa Hadir</h3>
+                                    <p class="text-2xl font-black text-success leading-none">${hadirToday}</p>
+                                </div>
+                                <div class="bg-surface border border-border/40 p-4 rounded-2xl shadow-sm text-center hover:shadow-md transition-shadow">
+                                    <h3 class="text-[10px] font-bold text-textSecondary uppercase tracking-widest mb-1">Total Siswa</h3>
+                                    <p class="text-2xl font-black text-indigo-500 leading-none">${studentCount}</p>
+                                </div>
+                                <div class="bg-surface border border-border/40 p-4 rounded-2xl shadow-sm text-center hover:shadow-md transition-shadow">
+                                    <h3 class="text-[10px] font-bold text-textSecondary uppercase tracking-widest mb-1">Status Web</h3>
+                                    <p class="text-lg font-black text-accent leading-none mt-1">ONLINE</p>
+                                </div>
+                            </div>
+                            
+                            <!-- ATTENDANCE CHART -->
+                            <div class="bg-surface p-6 md:p-8 rounded-[2.5rem] border border-border shadow-xl shadow-slate-200/50">
+                                <div class="flex justify-between items-center mb-8">
+                                    <div>
+                                        <h4 class="text-[10px] font-bold text-textSecondary uppercase tracking-widest">Aktivitas Kehadiran</h4>
+                                        <p class="text-base font-black text-textPrimary uppercase tracking-tighter">Statistik 7 Hari Terakhir</p>
+                                    </div>
+                                    <i class="ph-bold ph-chart-line-up text-primary/50 text-xl"></i>
+                                </div>
+                                <div class="h-56 relative w-full"><canvas id="attendanceChart"></canvas></div>
+                            </div>
+                            
+                            <!-- SISWA IZIN/SAKIT HARI INI CARD -->
+                            <div class="bg-surface p-6 md:p-8 rounded-[2.5rem] border border-border shadow-xl shadow-slate-200/50">
+                                <div class="flex items-center gap-3 mb-6">
+                                    <div class="w-10 h-10 bg-sky-100 text-info rounded-xl flex items-center justify-center"><i class="ph-bold ph-first-aid-kit text-xl"></i></div>
+                                    <div>
+                                        <h4 class="font-black text-xl uppercase text-textPrimary">Izin & Sakit Hari Ini</h4>
+                                        <p class="text-xs text-textSecondary font-medium">Daftar siswa yang tidak hadir dengan keterangan</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    ${activePermissionsSummary.length > 0 ? activePermissionsSummary.map(p => `
+                                        <div class="flex items-center justify-between p-3 rounded-xl border border-border hover:bg-slate-50 transition-colors shadow-sm">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 rounded-full ${p.status === 'Sakit' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'} flex items-center justify-center text-xs font-bold">
+                                                    ${p.name.charAt(0)}
+                                                </div>
+                                                <div>
+                                                    <p class="text-xs font-bold text-textPrimary">${p.name}</p>
+                                                    <p class="text-[10px] text-textSecondary font-medium">${p.class}</p>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                <span class="text-[10px] font-bold px-2 py-1 rounded-md ${p.status === 'Sakit' ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-blue-600'} uppercase tracking-wider">${p.status}</span>
+                                                <p class="text-[10px] text-textSecondary mt-1 italic max-w-[100px] truncate" title="${p.note || '-'}">${p.note || '-'}</p>
+                                            </div>
+                                        </div>
+                                    `).join('') : '<div class="text-center py-6 bg-slate-50/50 rounded-2xl border border-dashed border-border"><i class="ph-bold ph-check-circle text-3xl text-success/50 mb-2"></i><p class="text-xs font-bold text-textSecondary">Alhamdulillah, tidak ada siswa yang izin atau sakit hari ini.</p></div>'}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT COLUMN (col-span-4) -->
+                        <div class="lg:col-span-4 space-y-5">
+                            
+                            <!-- CALENDAR WIDGET (RESTORED) -->
+                            <div class="bg-surface p-6 rounded-[2.5rem] border border-border shadow-xl shadow-slate-200/50 flex flex-col relative overflow-hidden">
+                                <div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
+                                <div class="mb-4"><h3 class="text-xl font-black text-textPrimary tracking-tight">${todayDayName}</h3><p class="text-[10px] font-bold text-textSecondary uppercase tracking-widest">${todayDateStr}</p></div>
+                                <div class="grid grid-cols-7 gap-1 mb-4">${['M','S','S','R','K','J','S'].map(d => `<div class="text-center text-[8px] font-black text-textSecondary/50 uppercase">${d}</div>`).join('')}${calendarHTML}</div>
+                                ${todayHolDesc ? `<div class="mt-1 mb-3 text-center bg-error/10 p-2 rounded-xl border border-error/20"><p class="text-[9px] font-black text-error uppercase tracking-widest animate-pulse">${todayHolDesc}</p></div>` : '<div class="w-full h-px bg-surface border border-border my-2"></div>'}
+                            </div>
+
+                            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-[2.5rem] shadow-xl shadow-indigo-500/20 transition-all overflow-hidden group">
+                                <button onclick="window.appState.populationExpanded = !window.appState.populationExpanded; window.renderApp();" class="w-full p-6 flex items-center justify-between text-left outline-none cursor-pointer">
+                                    <div class="flex items-center gap-4"><div class="w-12 h-12 bg-white/20 text-white rounded-2xl flex items-center justify-center text-xl backdrop-blur-sm shadow-inner border border-white/20"><i class="ph-bold ph-users"></i></div><div><span class="block text-white/80 text-[10px] font-bold uppercase tracking-widest">Populasi Total</span><span class="block text-white text-2xl font-black">${studentCount} Siswa</span></div></div><i class="ph-bold ph-caret-${window.appState.populationExpanded ? 'up' : 'down'} text-white/50 text-xl transition-transform duration-300"></i>
+                                </button>
+                                ${window.appState.populationExpanded ? `<div class="bg-black/15 p-6 pt-2 space-y-2 animate-fadeIn">${detailHTML || '<p class="text-[10px] text-white/60 italic">Belum ada data siswa</p>'}</div>` : ''}
+                            </div>
+                            
+                            <!-- TOP 5 ALPA -->
+                            <div class="bg-surface p-6 rounded-[2.5rem] border border-border shadow-xl shadow-slate-200/50">
+                                <div class="flex items-center gap-3 mb-5">
+                                    <div class="w-10 h-10 bg-rose-100 text-error rounded-xl flex items-center justify-center"><i class="ph-bold ph-warning text-xl"></i></div>
+                                    <h4 class="font-black text-sm uppercase text-textPrimary leading-tight">Perlu Perhatian<br><span class="text-[10px] text-textSecondary tracking-widest">(Alpa Terbanyak)</span></h4>
+                                </div>
+                                <div class="space-y-3">
+                                    ${top5.map((s, idx) => `
+                                        <div class="flex items-center justify-between p-3 bg-surface rounded-xl border border-border shadow-sm hover:shadow-md transition-shadow">
+                                            <div class="flex items-center gap-3 min-w-0">
+                                                <div class="w-6 h-6 rounded bg-slate-100 text-slate-500 flex items-center justify-center text-[10px] font-bold shrink-0">${idx+1}</div>
+                                                <span class="text-xs font-bold text-textPrimary truncate">${s.name}</span>
+                                            </div>
+                                            <span class="bg-error text-white px-2.5 py-1 rounded-lg text-[10px] font-black shadow-sm shadow-error/30">${s.count}</span>
+                                        </div>
+                                    `).join('') || '<div class="text-center py-4 bg-slate-50 rounded-xl"><p class="text-xs font-bold text-textSecondary">Belum ada data alpa</p></div>'}
+                                </div>
+                            </div>
+
+                            <!-- AKSI CEPAT -->
+                            <div class="bg-surface p-6 rounded-[2.5rem] border border-border shadow-xl shadow-slate-200/50">
+                                <h4 class="text-[10px] font-bold text-textSecondary uppercase tracking-widest mb-4">Aksi Cepat</h4>
+                                <div class="grid grid-cols-1 gap-3">${[{ icon: 'ph-file-text', label: 'Cetak Laporan', view: 'reports', color: 'blue' },{ icon: 'ph-book-open', label: 'Data Mapel', view: 'mapel', color: 'indigo' },{ icon: 'ph-user-plus', label: 'Tambah Siswa', view: 'students', color: 'emerald' }].map(btn => `<button onclick="window.setView('${btn.view}')" class="bg-surface border border-border p-3 rounded-2xl flex items-center gap-4 hover:border-${btn.color}-300 hover:shadow-md hover:shadow-${btn.color}-500/10 transition-all group text-left"><div class="w-10 h-10 bg-${btn.color}-50 text-${btn.color}-500 rounded-xl flex items-center justify-center text-lg group-hover:scale-110 group-hover:bg-${btn.color}-500 group-hover:text-white transition-all"><i class="ph-bold ${btn.icon}"></i></div><span class="font-bold text-[11px] uppercase tracking-wide text-textPrimary group-hover:text-${btn.color}-600 transition-colors">${btn.label}</span><i class="ph-bold ph-caret-right ml-auto text-textSecondary/50 group-hover:translate-x-1 group-hover:text-${btn.color}-500 transition-all text-xs"></i></button>`).join('')}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+            
+            if (v === 'input') return `<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 animate-fadeIn text-left"><form onsubmit="window.handleSaveJournal(event)" class="glass-card p-6 md:p-8 space-y-6 text-left"><div class="grid grid-cols-2 gap-4 text-left"><div class="text-left"><label class="text-[9px] font-black ${window.isHoliday(window.appState.selectedDate) ? 'text-error' : 'text-textSecondary'} uppercase mb-1 block text-left">Tanggal (${window.getDayName(window.appState.selectedDate)})</label><input type="date" name="tanggal" required value="${window.appState.selectedDate}" onchange="window.appState.selectedDate = this.value; window.renderApp();" class="w-full bg-surface rounded-xl p-4 font-black border-none outline-none text-xs text-left"></div><div class="text-left"><label class="text-[9px] font-black text-textSecondary uppercase mb-1 block text-left">Kelas</label><select name="kelas_mengajar" onchange="window.appState.selectedKelas = this.value; window.renderApp();" class="w-full bg-surface rounded-xl p-4 font-black border-none outline-none text-xs text-left">${(diampu.length > 0 ? diampu : [1,2,3,4,5,6]).map(k => `<option value="${k}" ${k==window.appState.selectedKelas?'selected':''}>Kelas ${k}</option>`).join('')}</select></div></div><div class="grid grid-cols-2 gap-4 text-left"><div class="text-left"><label class="text-[9px] font-black text-textSecondary uppercase mb-1 block text-left">Jam Ke-</label><select name="jam_ke" required class="w-full bg-surface rounded-xl p-4 font-black border-none outline-none text-xs text-left">${[1,2,3,4,5,6,7,8].map(j => `<option value="${j}">Jam Ke-${j}</option>`).join('')}</select></div><div class="flex items-end pb-3 text-left"><label class="flex items-center gap-2 cursor-pointer text-left"><input type="checkbox" name="is_kerja_khusus" class="w-4 h-4"><span class="text-[9px] font-black uppercase text-left">Hari Kerja Khusus</span></label></div></div><select name="mata_pelajaran" onchange="window.appState.selectedMapel = this.value; window.renderApp();" required class="w-full bg-surface rounded-xl p-4 font-black border-none outline-none text-xs text-left"><option value="">Pilih Mapel...</option>${window.appState.mapels.filter(m => String(m.kelas) === String(window.appState.selectedKelas)).map(m => `<option value="${m.nama}" ${window.appState.selectedMapel===m.nama?'selected':''}>${m.nama}</option>`).join('')}</select><select onchange="document.getElementsByName('tujuan_pembelajaran')[0].value = this.value" class="w-full bg-surface rounded-xl p-4 font-black border-none outline-none text-xs text-left"><option value="">Pilih TP Database...</option>${(window.appState.mapels.filter(m => String(m.kelas) === String(window.appState.selectedKelas)).find(m => m.nama === window.appState.selectedMapel)?.tp || []).map(t => `<option value="${t}">${t}</option>`).join('')}</select><textarea name="tujuan_pembelajaran" placeholder="TP Manual..." required class="w-full bg-surface rounded-xl p-4 font-black outline-none min-h-[100px] border-none text-xs text-left"></textarea><textarea name="catatan" placeholder="Catatan..." class="w-full bg-surface rounded-xl p-4 font-black outline-none min-h-[60px] border-none text-xs text-left"></textarea><button type="submit" class="w-full bg-primary text-white py-5 rounded-2xl font-black uppercase text-[11px] tracking-widest shadow-xl text-center"><i class="ph-bold ph-floppy-disk mr-2"></i> Simpan Jurnal</button></form><div class="glass-card p-6 md:p-8 flex flex-col h-full min-h-[400px] text-left"><div class="flex items-center justify-between mb-4 shrink-0 text-left"><h4 class="font-black text-xl uppercase leading-none text-textPrimary text-left">Presensi</h4><div class="flex gap-2 text-center text-center"><button onclick="window.markAllPresent('${window.appState.selectedKelas}')" class="bg-primary/10 text-primary px-3 py-2 rounded-xl text-[9px] font-black uppercase tracking-tight shadow-sm text-center text-center text-center"><i class="ph-bold ph-checks mr-1"></i> Hadir Semua</button><button onclick="window.setView('scanner')" class="bg-surface border border-border text-textPrimary w-9 h-9 rounded-xl flex items-center justify-center shadow-sm text-center text-center text-center text-center"><i class="ph-bold ph-qr-code text-center text-center"></i></button></div></div><div class="mb-4 relative text-left"><input id="att-search-input" type="text" placeholder="Cari nama siswa..." value="${window.appState.attendanceSearch}" oninput="window.handleSearchInput(this, 'attendanceSearch')" class="w-full bg-surface rounded-xl p-4 pr-10 font-black border-none outline-none text-xs text-left"><i class="ph-bold ph-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-textSecondary/50 text-sm text-center"></i></div><div class="space-y-2 overflow-y-auto custom-scroll pr-1 flex-grow text-left">${window.appState.students.filter(s => String(s.kelas) === String(window.appState.selectedKelas)).sort((a,b)=>a.nama_siswa.localeCompare(b.nama_siswa)).filter(s => s.nama_siswa.toLowerCase().includes(window.appState.attendanceSearch.toLowerCase())).map(s => { const log = window.appState.attendance.find(a => a.studentId === s.id && a.date === window.appState.selectedDate); return `<div class="flex items-center justify-between p-4 bg-surface rounded-2xl border text-left text-left"><span class="text-[10px] font-black uppercase text-textPrimary truncate w-1/3 text-left">${s.nama_siswa}</span><div class="flex gap-1 text-center text-center"><button onclick="window.markAttendance('${s.id}', 'Hadir')" class="w-8 h-8 md:w-9 md:h-8 rounded-lg font-black text-[8px] flex items-center justify-center text-center ${log?.status === 'Hadir' ? 'bg-primary text-white shadow-md' : 'bg-surface text-textSecondary/50 border'}">H</button><button onclick="window.markAttendance('${s.id}', 'Izin')" class="w-8 h-8 md:w-9 md:h-8 rounded-lg font-black text-[8px] flex items-center justify-center text-center ${log?.status === 'Izin' ? 'bg-info text-white shadow-md' : 'bg-surface text-textSecondary/50 border'}">I</button><button onclick="window.markAttendance('${s.id}', 'Sakit')" class="w-8 h-8 md:w-9 md:h-8 rounded-lg font-black text-[8px] flex items-center justify-center text-center ${log?.status === 'Sakit' ? 'bg-warning text-white shadow-md' : 'bg-surface text-textSecondary/50 border'}">S</button><button onclick="window.markAttendance('${s.id}', 'Alpa')" class="w-8 h-8 md:w-9 md:h-8 rounded-lg font-black text-[8px] flex items-center justify-center text-center ${log?.status === 'Alpa' ? 'bg-error text-white shadow-md' : 'bg-surface text-textSecondary/50 border'}">A</button></div></div>`}).join('') || '<p class="text-center py-20 text-textSecondary/50 font-black text-[10px] uppercase text-center">Data Tidak Ditemukan</p>'}</div></div></div>`;
+
+            if (v === 'students') return `<div class="animate-fadeIn text-left">
+                <div class="glass-card p-8 flex flex-col h-full min-h-[400px]">
+                    <div class="flex justify-between items-center mb-6 shrink-0 border-b border-border/50 pb-4">
+                        <div>
+                            <h4 class="font-black text-xl uppercase leading-none text-textPrimary tracking-tight">Database Siswa</h4>
+                            <p class="text-[10px] text-textSecondary font-bold mt-1 uppercase tracking-widest">Tersinkronisasi otomatis dari Ekosistem Sekolah</p>
+                        </div>
+                        <button onclick="window.downloadBulkQR()" class="bg-primary/10 text-primary px-5 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all hover:bg-primary/20"><i class="ph-bold ph-file-zip mr-2"></i> ZIP QR</button>
+                    </div>
+                    <div class="space-y-2 overflow-y-auto custom-scrollbar pr-1 flex-grow">
+                        ${window.appState.students.sort((a,b)=>a.kelas.localeCompare(b.kelas) || a.nama_siswa.localeCompare(b.nama_siswa)).map(s => 
+                        `<div class="flex items-center justify-between p-4 bg-background border border-border rounded-2xl hover:border-primary/20 transition-all group">
+                            <div class="flex items-center gap-4">
+                                <div class="w-8 h-8 bg-surface border border-border rounded-lg flex items-center justify-center font-black text-[10px] text-textPrimary shadow-sm group-hover:bg-primary group-hover:text-white transition-colors">${s.kelas}</div>
+                                <div class="flex flex-col">
+                                    <span class="font-black text-xs uppercase text-textPrimary">${s.nama_siswa}</span>
+                                    <span class="font-bold text-[9px] text-textSecondary uppercase tracking-widest">NISN: ${s.nisn || '-'} | L/P: ${s.jk || '-'}</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-1">
+                                <button onclick='window.viewQR(${JSON.stringify(s)})' class="text-textSecondary hover:text-primary p-2 hover:bg-surface rounded-lg transition-all" title="Lihat QR Code"><i class="ph-bold ph-qr-code text-lg"></i></button>
+                            </div>
+                        </div>`).join('') || '<p class="text-center py-20 text-textSecondary font-bold text-[10px] uppercase">Siswa Kosong. Pastikan Admin telah memasukkan data siswa untuk kelas Anda.</p>'}
+                    </div>
+                </div>
+            </div>`;
+            
+            if (v === 'mapel') return `<div class="max-w-2xl mx-auto animate-fadeIn text-left text-left"><div class="bg-surface rounded-[2.5rem] md:rounded-[3rem] p-8 border shadow-sm mb-8 text-left text-left text-left"><h4 class="font-black text-xl uppercase mb-6 leading-none text-textPrimary text-left">Kelola Mapel Baru</h4><form onsubmit="window.handleSaveMapel(event)" class="space-y-4 text-left"><select name="kelas" required class="w-full bg-surface rounded-xl p-4 font-black border-none outline-none text-xs text-left">${(diampu.length > 0 ? diampu : [1,2,3,4,5,6]).map(v => `<option value="${v}">Kelas ${v}</option>`).join('')}</select><input type="text" name="nama_mapel" placeholder="Nama Mapel..." required class="w-full bg-surface rounded-xl p-4 font-black border-none outline-none text-xs text-left"><textarea name="tujuan_pembelajaran" placeholder="TP (Gunakan Enter untuk list baru)..." required class="w-full bg-surface rounded-xl p-4 font-black outline-none min-h-[120px] border-none text-xs shadow-inner text-left text-left"></textarea><button type="submit" class="w-full bg-primary text-white py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl text-center"><i class="ph-bold ph-floppy-disk mr-2"></i> Simpan Mapel & TP</button></form></div><div class="space-y-4 pb-10 text-left text-left"><h4 class="font-black text-lg uppercase mb-4 text-textSecondary text-left">Daftar Mata Pelajaran & TP Terdaftar</h4>${window.appState.mapels.sort((a,b)=>a.kelas-b.kelas).map(m => `<div class="bg-surface p-6 rounded-3xl border text-left text-left"><div class="flex justify-between items-start mb-4 text-left text-left"><div class="flex items-center gap-2 text-left"><span class="bg-primary/10 text-primary px-2 py-1 rounded-lg text-[9px] font-black text-center text-center">KLS ${m.kelas}</span><h5 class="font-black uppercase text-textPrimary text-left">${m.nama}</h5></div><button onclick="window.deleteDocData('mapels', '${m.id}')" class="text-rose-400 p-2 hover:bg-rose-100 rounded-lg transition-all text-center text-center"><i class="ph-bold ph-trash text-center"></i></button></div><ul class="space-y-2 mb-6 text-left">${(m.tp || []).map((t, idx) => `<li class="flex items-center justify-between gap-4 bg-surface p-3 rounded-xl border-l-4 border-primary/30 text-left text-left"><span class="text-[10px] text-textSecondary font-bold leading-tight text-left">${t}</span><button onclick="window.deleteTP('${m.id}', ${idx})" class="text-rose-300 hover:text-error transition-colors shrink-0 text-center text-center"><i class="ph-bold ph-x text-center"></i></button></li>`).join('')}</ul><div class="flex gap-2 text-left"><input type="text" id="new-tp-${m.id}" placeholder="Tambah TP baru..." class="flex-grow bg-surface border-none outline-none rounded-xl px-4 py-3 text-[10px] font-bold text-left"><button onclick="window.addTPToExisting('${m.id}')" class="bg-primary text-white px-4 rounded-xl text-xs flex items-center justify-center text-center text-center"><i class="ph-bold ph-plus text-center"></i></button></div></div>`).join('')}</div></div>`;
+            
+            if (v === 'history') {
+                const groupedJournals = window.appState.journals.filter(j => j.semester === curSem && j.tanggal.startsWith(window.appState.historyMonth)).reduce((groups, journal) => { const date = journal.tanggal; if (!groups[date]) { groups[date] = []; } groups[date].push(journal); return groups; }, {}); const sortedDates = Object.keys(groupedJournals).sort((a, b) => b.localeCompare(a));
+                return `<div class="space-y-6 animate-fadeIn text-left"><div class="glass-card p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6 text-left"><h4 class="font-black text-xl uppercase leading-none text-textPrimary text-left">Data Riwayat Smt ${curSem}</h4><div class="flex flex-wrap items-center gap-4 text-left"><input type="month" value="${window.appState.historyMonth}" onchange="window.appState.historyMonth = this.value; window.renderApp();" class="bg-surface rounded-xl px-4 py-3 font-black outline-none border-none text-xs text-left"><div class="flex gap-2 text-center text-center"><button onclick="window.exportFormal('journals', 'csv')" class="bg-success/10 text-success px-6 py-3 rounded-xl font-black text-[10px] uppercase text-center transition-all hover:shadow-md"><i class="ph-bold ph-file-csv mr-2"></i> Ekspor CSV</button><button onclick="window.exportFormal('journals', 'pdf')" class="bg-error/10 text-error px-6 py-3 rounded-xl font-black text-[10px] uppercase text-center transition-all hover:shadow-md"><i class="ph-bold ph-file-pdf mr-2"></i> Cetak PDF</button></div></div></div><div class="space-y-6">${sortedDates.map(date => { const entries = groupedJournals[date].sort((a, b) => a.jam_ke - b.jam_ke); const firstEntry = entries[0]; const isHolidayDate = window.isHoliday(date); const shouldBeRed = isHolidayDate && !entries.some(e => e.is_kerja_khusus); return `<div class="glass-card p-6 md:p-8 group hover:shadow-xl transition-all relative overflow-hidden"><div class="absolute top-0 left-0 w-2 h-full ${shouldBeRed ? 'bg-error' : 'bg-primary'}"></div><div class="flex flex-col gap-6"><div class="flex justify-between items-center border-b pb-4 border-border"><div class="flex items-center gap-3"><span class="${shouldBeRed ? 'bg-error/10 text-error' : 'bg-primary/10 text-primary'} px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest">${window.getDayName(date)}, ${date}</span>${entries.some(e => e.is_kerja_khusus) ? '<span class="bg-success/10 text-success px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest">Kerja Khusus</span>' : ''}</div></div><div class="grid grid-cols-4 gap-2 md:gap-4"><div class="bg-primary/10 p-3 rounded-xl border border-primary/20 text-center"><p class="text-sm font-black text-primary">${firstEntry.hadir}</p><p class="text-[8px] font-black text-textSecondary uppercase">Hadir</p></div><div class="bg-info/10 p-3 rounded-xl border border-info/20 text-center"><p class="text-sm font-black text-info">${firstEntry.izin||0}</p><p class="text-[8px] font-black text-textSecondary uppercase">Izin</p></div><div class="bg-warning/10 p-3 rounded-xl border border-warning/20 text-center"><p class="text-sm font-black text-warning">${firstEntry.sakit||0}</p><p class="text-[8px] font-black text-textSecondary uppercase">Sakit</p></div><div class="bg-error/10 p-3 rounded-xl border border-error/20 text-center"><p class="text-sm font-black text-error">${firstEntry.alpa}</p><p class="text-[8px] font-black text-textSecondary uppercase">Alpa</p></div></div><div class="space-y-4">${entries.map(j => `<div class="bg-surface p-5 rounded-2xl border border-border relative"><div class="flex justify-between items-start mb-2"><div class="flex items-center gap-2"><span class="bg-surface text-textSecondary border px-2 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest">Jam ${j.jam_ke}</span><span class="bg-indigo-50 text-indigo-600 px-2 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest">Kelas ${j.kelas_mengajar}</span></div><button onclick="window.deleteDocData('journals', '${j.id}')" class="text-rose-300 hover:text-error transition-colors p-1"><i class="ph-bold ph-trash"></i></button></div><h5 class="text-sm font-black uppercase tracking-tight text-textPrimary leading-tight mb-2">${j.mata_pelajaran}</h5><p class="text-[10px] text-textSecondary font-medium leading-relaxed mb-1"><span class="font-bold text-textSecondary uppercase text-[9px] mr-1">TP:</span> ${j.tujuan_pembelajaran || '-'}</p>${j.catatan ? `<p class="text-[10px] text-textSecondary italic leading-relaxed"><span class="font-bold text-textSecondary uppercase text-[9px] not-italic mr-1">Catatan:</span> "${j.catatan}"</p>` : ''}</div>`).join('')}</div></div></div>`; }).join('')} ${sortedDates.length === 0 ? '<p class="text-center py-20 text-textSecondary/50 font-black text-[10px] uppercase text-center">Data Jurnal Tidak Ditemukan</p>' : ''}</div></div>`;
+            }
+
+            if (v === 'settings') return `<div class="max-w-xl mx-auto animate-fadeIn space-y-8 pb-10 text-left"><form onsubmit="window.handleSaveSettings(event)" class="bg-surface rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-10 border shadow-sm space-y-6 text-left"><h4 class="font-black text-xl uppercase mb-4 leading-none text-textPrimary text-left">Profil Guru</h4><div class="space-y-4 text-left"><div class="grid grid-cols-2 gap-4 text-left"><div><label class="text-[9px] font-black text-textSecondary ml-2 uppercase text-left">Sekolah</label><input type="text" name="nama_sekolah" value="${window.appState.settings.nama_sekolah || ''}" placeholder="Sekolah" class="w-full bg-surface rounded-xl p-4 font-black outline-none text-xs text-left"></div><div><label class="text-[9px] font-black text-textSecondary ml-2 uppercase text-left">Lokasi/Kota</label><input type="text" name="lokasi" value="${window.appState.settings.lokasi || ''}" placeholder="Jakarta" class="w-full bg-surface rounded-xl p-4 font-black outline-none text-xs text-left"></div></div><div class="grid grid-cols-2 gap-4 text-left"><div><label class="text-[9px] font-black text-textSecondary ml-2 uppercase text-left">Wali Kelas</label><input type="text" name="nama_guru" value="${window.appState.settings.nama_guru || ''}" placeholder="Wali Kelas" class="w-full bg-surface rounded-xl p-4 font-black outline-none text-xs text-left"></div><div><label class="text-[9px] font-black text-textSecondary ml-2 uppercase text-left">NIP</label><input type="text" name="nip_guru" value="${window.appState.settings.nip_guru || ''}" placeholder="NIP" class="w-full bg-surface rounded-xl p-4 font-black outline-none text-xs text-left"></div></div><div class="grid grid-cols-2 gap-4 text-left"><div><label class="text-[9px] font-black text-textSecondary ml-2 uppercase text-left text-left">Tahun Pelajaran</label><input type="text" name="tahun_ajaran" value="${window.appState.settings.tahun_ajaran || ''}" placeholder="2024/2025" class="w-full bg-surface rounded-xl p-4 font-black outline-none text-xs text-left"></div><div><label class="text-[9px] font-black text-textSecondary ml-2 uppercase text-left text-left">Kepala Sekolah</label><input type="text" name="nama_kepsek" value="${window.appState.settings.nama_kepsek || ''}" placeholder="Kepsek" class="w-full bg-surface rounded-xl p-4 font-black outline-none text-xs text-left"></div></div><div class="text-left"><label class="text-[9px] font-black text-textSecondary ml-2 uppercase text-left text-left">NIP Kepsek</label><input type="text" name="nip_kepsek" value="${window.appState.settings.nip_kepsek || ''}" placeholder="NIP Kepsek" class="w-full bg-surface rounded-xl p-4 font-black outline-none text-xs text-left"></div><div class="space-y-2 border-t pt-4 text-left"><label class="text-[9px] font-black text-textSecondary ml-2 uppercase block text-left">Kelas yang Diampu</label><div class="flex flex-wrap gap-3 text-left">${[1,2,3,4,5,6].map(k => `<label class="flex items-center gap-2 bg-surface px-3 py-2 rounded-xl cursor-pointer border hover:border-primary/30 transition-all text-left"><input type="checkbox" name="kelas_diampu" value="${k}" ${diampu.includes(String(k)) ? 'checked' : ''} class="w-4 h-4"><span class="text-[10px] font-black text-left text-left">KLS ${k}</span></label>`).join('')}</div></div></div><div class="space-y-4 pt-4 border-t text-left"><label class="text-[9px] font-black text-textSecondary ml-2 uppercase block text-left">Pengaturan Suara</label><div class="grid grid-cols-3 gap-3"><label class="cursor-pointer"><input type="radio" name="voiceMode" value="mute" ${window.appState.settings.voiceMode === 'mute' ? 'checked' : ''} class="peer sr-only"><div class="bg-surface border-2 border-transparent peer-checked:border-blue-500 peer-checked:bg-primary/10 rounded-xl p-4 text-center transition-all"><i class="ph-bold ph-speaker-slash text-lg mb-1 text-textSecondary peer-checked:text-primary"></i><p class="text-[9px] font-black uppercase text-textSecondary peer-checked:text-primary">Mati</p></div></label><label class="cursor-pointer"><input type="radio" name="voiceMode" value="beep" ${window.appState.settings.voiceMode === 'beep' ? 'checked' : ''} class="peer sr-only"><div class="bg-surface border-2 border-transparent peer-checked:border-blue-500 peer-checked:bg-primary/10 rounded-xl p-4 text-center transition-all"><i class="ph-bold ph-speaker-low text-lg mb-1 text-textSecondary peer-checked:text-primary"></i><p class="text-[9px] font-black uppercase text-textSecondary peer-checked:text-primary">Nada</p></div></label><label class="cursor-pointer"><input type="radio" name="voiceMode" value="tts" ${window.appState.settings.voiceMode === 'tts' ? 'checked' : ''} class="peer sr-only"><div class="bg-surface border-2 border-transparent peer-checked:border-blue-500 peer-checked:bg-primary/10 rounded-xl p-4 text-center transition-all"><i class="ph-bold ph-speaker-high text-lg mb-1 text-textSecondary peer-checked:text-primary"></i><p class="text-[9px] font-black uppercase text-textSecondary peer-checked:text-primary">Suara</p></div></label></div></div><button type="submit" class="w-full bg-primary text-white py-5 rounded-2xl font-black uppercase text-[11px] tracking-widest shadow-xl text-center"><i class="ph-bold ph-floppy-disk mr-2"></i> Simpan Profil</button></form><div class="bg-warning/10 p-8 md:p-10 rounded-[2.5rem] md:rounded-[3rem] border border-warning/20 space-y-6 text-left"><h4 class="font-black text-xl uppercase text-amber-700 leading-none text-left">Pemeliharaan Data</h4><div class="space-y-4 text-left"><label class="text-[9px] font-black text-textSecondary ml-2 uppercase block text-left">Reset Presensi per Bulan</label><div class="flex gap-3 text-left"><input type="month" id="reset-month-picker" class="flex-grow bg-surface rounded-xl p-4 font-black border-none outline-none text-xs text-left"><button onclick="window.handleResetAttendance()" class="bg-amber-600 text-white px-6 py-4 rounded-xl font-black uppercase text-[10px] tracking-widest text-center transition-all hover:bg-amber-700"><i class="ph-bold ph-arrow-counter-clockwise mr-2"></i> Reset Bulan</button></div></div></div><div class="bg-error/10 p-8 md:p-10 rounded-[2.5rem] md:rounded-[3rem] border border-error/20 space-y-6 text-left"><h4 class="font-black text-xl uppercase text-error leading-none text-left">Area Berbahaya</h4><div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left"><button onclick="window.handlePromotion()" class="bg-surface text-error border border-rose-200 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-rose-600 hover:text-white transition-all text-center"><i class="ph-bold ph-steps mr-2"></i> Naik Kelas</button><button onclick="window.handleClearData()" class="bg-rose-600 text-white py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl text-center transition-all hover:bg-rose-700"><i class="ph-bold ph-warning mr-2"></i> Bersihkan Database</button></div></div></div>`;
+
+            if (v === 'scanner') {
+                const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent); const useMirror = window.appState.cameraFacingMode === 'user' || !isMobile;
+                return `<div class="max-w-md mx-auto animate-fadeIn relative min-h-full flex flex-col items-center justify-center p-6 py-12"><div class="bg-surface rounded-[2.5rem] p-6 md:p-10 border shadow-sm text-center flex flex-col items-center w-full relative overflow-hidden animate-fadeIn"><div class="w-full flex justify-end mb-4"><button onclick="window.switchCamera()" class="bg-surface border border-border text-textSecondary w-10 h-10 rounded-full flex items-center justify-center shadow-sm hover:bg-slate-200 transition-all z-20" title="Ganti Kamera"><i class="ph-bold ph-camera-rotate"></i></button></div><div class="relative w-full aspect-square mb-8 rounded-[2rem] overflow-hidden border-8 border-border shadow-2xl shrink-0 bg-slate-900"><div id="reader" class="w-full h-full bg-slate-900 ${useMirror ? 'mirror-mode' : ''}"></div><div class="absolute inset-0 pointer-events-none z-10 flex items-center justify-center"><div class="w-48 h-48 md:w-56 md:h-56 relative opacity-50"><div class="absolute top-0 left-0 w-8 h-8 border-l-4 border-t-4 border-white rounded-tl-xl"></div><div class="absolute top-0 right-0 w-8 h-8 border-r-4 border-t-4 border-white rounded-tr-xl"></div><div class="absolute bottom-0 left-0 w-8 h-8 border-l-4 border-b-4 border-white rounded-bl-xl"></div><div class="absolute bottom-0 right-0 w-8 h-8 border-r-4 border-b-4 border-white rounded-br-xl"></div></div></div>${window.appState.scanSuccessPopup.show ? `<div class="absolute inset-0 bg-success/90 backdrop-blur-sm flex flex-col items-center justify-center z-50 animate-fadeIn rounded-[1.5rem]"><div class="bg-surface p-4 rounded-full mb-4 shadow-xl animate-bounce"><i class="ph-bold ph-check text-4xl text-success"></i></div><h2 class="text-2xl font-black text-white uppercase tracking-tighter mb-1 text-center px-4">${window.appState.scanSuccessPopup.studentName}</h2><p class="text-white/90 font-bold uppercase tracking-widest text-xs">BERHASIL HADIR</p></div>` : ''}</div><p class="text-[9px] font-black uppercase text-textSecondary mb-6 tracking-widest leading-none text-center">Arahkan kamera ke QR Siswa</p><div class="flex flex-col gap-3 w-full">${!window.appState.scannerActive ? `<button onclick="window.startScanner()" class="w-full bg-primary text-white py-5 rounded-2xl font-black uppercase text-[11px] tracking-widest shadow-xl text-center hover:bg-primary transition-all flex items-center justify-center gap-2"><i class="ph-bold ph-camera"></i> Mulai Scan</button>` : `<button onclick="window.restartScanner()" class="w-full bg-error/10 text-error py-5 rounded-2xl font-black uppercase text-[11px] tracking-widest hover:bg-rose-100 transition-all flex items-center justify-center gap-2"><i class="ph-bold ph-arrow-counter-clockwise"></i> Restart Kamera</button>`}<button onclick="window.initFinishAttendance()" class="w-full bg-surface border border-border text-textSecondary py-5 rounded-2xl font-black uppercase text-[11px] tracking-widest hover:bg-slate-200 transition-all flex items-center justify-center gap-2"><i class="ph-bold ph-check-to-slot"></i> Selesaikan Presensi</button></div></div></div>`;
+            }
+            
+            if (v === 'info') return `<div class="max-w-3xl mx-auto animate-fadeIn h-full overflow-y-auto custom-scroll pr-1 pb-16 text-left"><div class="bg-surface rounded-[2.5rem] md:rounded-[3.5rem] p-8 md:p-10 border shadow-sm space-y-12 text-left"><div class="text-center text-center text-center"><div class="w-20 h-20 bg-primary text-white rounded-[2.5rem] flex items-center justify-center text-3xl mx-auto mb-6 shadow-xl animate-bounce text-center"><i class="ph-bold ph-book-open-text text-center"></i></div><h4 class="font-bold text-2xl md:text-3xl tracking-tight mb-2 text-textPrimary leading-none text-center">SIJURU <span class="text-primary text-4xl text-center">App</span></h4><p class="text-[11px] text-textSecondary font-bold uppercase tracking-[0.3em] text-center text-center">Otomasi & Digitalisasi Administrasi Kelas</p></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 text-left text-left"><div class="bg-surface p-8 md:p-10 rounded-[2.5rem] md:rounded-[3rem] border border-border relative overflow-hidden group text-left text-left"><div class="absolute top-0 right-0 w-24 h-24 bg-primary/20 rounded-bl-[5rem] -mr-10 -mt-10 transition-all group-hover:scale-110"></div><h5 class="font-bold text-primary text-xs mb-4 tracking-widest flex items-center gap-2 text-left text-left text-left text-left"><i class="ph-bold ph-magic-wand text-left text-left"></i> Efisiensi Tanpa Batas</h5><p class="text-sm text-textSecondary font-medium leading-relaxed text-left text-left">Dirancang untuk memangkas waktu administratif yang melelahkan. Jurnal Guru PRO memberikan ruang lebih bagi Anda untuk membangun koneksi bermakna dengan setiap murid di kelas.</p></div><div class="bg-gradient-to-br from-blue-600 to-indigo-700 p-8 md:p-10 rounded-[2.5rem] md:rounded-[3rem] text-white shadow-xl text-left text-left text-left"><h5 class="font-bold text-white/80 text-xs mb-4 tracking-widest text-left text-left">Infrastruktur Sistem</h5><div class="flex items-center gap-4 mb-4 text-left text-left"><span class="text-3xl md:text-4xl font-bold">1.0</span><div class="bg-surface/20 px-3 py-1 rounded-full text-[8px] font-bold uppercase tracking-tighter text-center">Stable Release</div></div><p class="text-white/80 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 text-left text-left text-left"><i class="ph-bold ph-shield-check text-left"></i> Google Cloud Secure Storage</p></div></div><div class="space-y-8 text-center text-center"><h5 class="font-bold text-textPrimary text-center text-xs tracking-[0.4em] text-center text-center">Core Technology Modules</h5><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 text-center text-center">${[{icon: 'ph-database', t: 'Data Core', d: 'Manajemen basis data siswa dan kurikulum dengan presisi tinggi.'},{icon: 'ph-qr-code', t: 'Rapid Scan', d: 'Teknologi presensi QR instan dengan alur otomatis tanpa henti.'},{icon: 'ph-cpu', t: 'Auto Sync', d: 'Integrasi otomatis data presensi ke dalam administrasi harian.'},{icon: 'ph-file-pdf', t: 'Smart Export', d: 'Hasilkan laporan administratif formal dalam hitungan detik.'}].map(item => `<div class="text-center p-6 md:p-8 bg-surface border border-border rounded-[2.5rem] hover:shadow-xl hover:border-primary/20 transition-all duration-300 text-center"><div class="text-primary text-2xl mb-4 text-center text-center"><i class="ph-bold ${item.icon}"></i></div><h6 class="font-bold text-[11px] uppercase mb-2 text-textPrimary text-center">${item.t}</h6><p class="text-[9px] text-textSecondary font-bold leading-relaxed text-center">${item.d}</p></div>`).join('')}</div></div><div class="pt-12 border-t border-border flex flex-col items-center text-center text-center text-center text-center text-center"><p class="text-[10px] font-bold uppercase text-textSecondary mb-8 tracking-[0.3em] text-center text-center text-center">Developer Partnership</p><div class="flex justify-center gap-4 md:gap-5 mb-12 text-center text-center"><a href="https://instagram.com/mohdrizkkyy" target="_blank" class="w-14 h-14 md:w-16 md:h-16 bg-error/10 text-error rounded-[1.5rem] flex items-center justify-center text-2xl md:text-3xl hover:bg-error hover:text-white transition-all shadow-md text-center text-center"><i class="ph-bold ph-instagram-logo text-center"></i></a><a href="https://tiktok.com/@mohdrizkkyy" target="_blank" class="w-14 h-14 md:w-16 md:h-16 bg-surface border border-border text-textPrimary rounded-[1.5rem] flex items-center justify-center text-2xl md:text-3xl hover:bg-slate-800 hover:text-white transition-all shadow-md text-center text-center"><i class="ph-bold ph-tiktok-logo text-center"></i></a><a href="https://youtube.com/@mohdrizkkyy" target="_blank" class="w-14 h-14 md:w-16 md:h-16 bg-rose-100 text-error rounded-[1.5rem] flex items-center justify-center text-2xl md:text-3xl hover:bg-rose-600 hover:text-white transition-all shadow-md text-center text-center"><i class="ph-bold ph-youtube-logo text-center"></i></a></div><div class="text-center bg-surface py-6 px-10 md:px-12 rounded-[2rem] border text-center text-center"><h5 class="text-sm md:text-base font-bold text-textPrimary font-bold text-center">Mohamad Rizki, S.Pd., Gr.</h5><p class="text-[9px] font-bold text-primary uppercase mt-2 tracking-widest text-center">Innovative Educator & Fullstack System Architect</p></div></div></div></div>`;
+            return ``;
+        };
+
+        const startApp = async () => { try { await signInAnonymously(auth); onAuthStateChanged(auth, (u) => { window.appState.user = u; window.appState.loading = false; window.renderApp(); }); } catch (e) { window.appState.loading = false; window.renderApp(); } };
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startApp); else startApp();
+    </script>
+    <style>
+        :root { font-size: 13px; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; -webkit-font-smoothing: antialiased; touch-action: manipulation; direction: ltr; margin: 0; padding: 0; }
+        .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .animate-fadeIn { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slideDown { animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        /* New Popup Animation */
+        .animate-popIn { animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        button { text-align: center !important; justify-content: center !important; }
+        input, textarea, select { text-align: left !important; }
+        #qr-canvas-render canvas, #qr-canvas-render img { margin: 0 auto; display: block; border-radius: 1.25rem; border: 8px solid #f8fafc; max-width: 100%; height: auto; }
+        aside { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        /* Scanner Specific Styles - PERBAIKAN KAMERA TERBALIK & TAMPILAN */
+        #reader { width: 100%; height: 100%; position: relative; overflow: hidden; background: #000; }
+        
+        #reader video { 
+            object-fit: cover !important; 
+            width: 100% !important; 
+            height: 100% !important; 
+            border-radius: 0 !important; 
+            transform: none !important; 
+        }
+        
+        #reader.mirror-mode video { 
+            transform: scaleX(-1) !important; 
+        }
+
+        input[type="date"], input[type="month"] { appearance: none; -webkit-appearance: none; }
+        html, body { height: 100%; width: 100%; overflow: hidden; }
+        #root { height: 100%; display: flex; flex-direction: column; }
+        th.sticky, td.sticky { background-clip: padding-box; z-index: 20; }
+    </style>
+</head>
+<body class="bg-background text-textPrimary font-poppins antialiased overflow-hidden h-screen h-[100dvh]" style="-webkit-tap-highlight-color: transparent;">
+    <div id="root" class="h-full relative z-0"></div>
+    <!-- FIXED OVERLAY CONTAINER (Z-Index High, outside root) -->
+    <div id="overlay-mount" class="fixed inset-0 z-[99999] pointer-events-none empty:hidden"></div>
+    <div id="notif-anchor" class="fixed top-8 left-1/2 -translate-x-1/2 z-[99999] pointer-events-none flex flex-col items-center gap-2 w-full max-w-xs px-6"></div>
+    <!-- Dummy element to force Tailwind CDN to compile dynamically injected classes -->
+    <div class="nav-btn active hidden w-full text-left flex justify-start items-center gap-3 py-2.5 px-4 rounded-xl text-xs font-bold transition-all relative bg-primary/10 text-primary text-textSecondary hover:bg-slate-50 hover:text-textPrimary"></div>
+</body>
+</html>
+
+
+
+
+
+
+
