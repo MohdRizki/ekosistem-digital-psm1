@@ -28,10 +28,12 @@
         <!-- Cityscape Background (Paling Belakang & di-Blur) -->
         <img src="./assets/kota.png" alt="Kota" class="absolute bottom-0 left-0 w-full h-[55vh] object-cover object-bottom z-0 opacity-60 blur-[1.5px] pointer-events-none" onerror="this.style.display='none'">
 
-        <!-- 1. BACKGROUND WAVE MASK -->
-        <!-- Menggunakan mask-size: auto 100% dan mask-position: right center agar proporsi lengkungan tidak melar -->
-        <div class="absolute inset-0 z-[1] pointer-events-none">
-            <div class="w-full h-full bg-gradient-to-br from-rose-500 to-orange-500 scale-[1.02] origin-right" 
+        <!-- 1. BACKGROUND WAVE MASK & PREMIUM BLOBS -->
+        <div class="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
+            <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-rose-400/50 rounded-full blur-[80px] mix-blend-multiply animate-blob"></div>
+            <div class="absolute bottom-[-10%] right-[20%] w-[30rem] h-[30rem] bg-orange-400/40 rounded-full blur-[100px] mix-blend-multiply animate-blob" style="animation-delay: 2s;"></div>
+            <div class="absolute top-[20%] right-[-10%] w-80 h-80 bg-pink-400/40 rounded-full blur-[80px] mix-blend-multiply animate-blob" style="animation-delay: 4s;"></div>
+            <div class="w-full h-full bg-gradient-to-br from-rose-600 via-rose-500 to-orange-500 scale-[1.02] origin-right opacity-95 shadow-[inset_20px_0_100px_rgba(0,0,0,0.1)]" 
                  style="-webkit-mask-image: url('./assets/wave.png'); -webkit-mask-size: auto 100%; -webkit-mask-position: right center; -webkit-mask-repeat: no-repeat; mask-image: url('./assets/wave.png'); mask-size: auto 100%; mask-position: right center; mask-repeat: no-repeat;">
             </div>
         </div>
@@ -39,12 +41,15 @@
         <!-- 2. LEFT COLUMN (LOGIN FORM) -->
         <div class="w-full lg:w-1/2 h-full flex flex-col justify-center items-center lg:items-start lg:pl-[12%] p-6 relative z-30">
             
-            <!-- Login Card -->
-            <div class="w-full max-w-[340px] bg-white/95 backdrop-blur-sm rounded-[2rem] p-8 text-center relative shadow-2xl shadow-slate-200/50 border border-slate-100/50 animate-slideDown">
-                <!-- School Logo -->
-                <div class="w-16 h-16 mx-auto mb-4 bg-white rounded-2xl flex items-center justify-center border border-slate-100 shadow-sm relative z-10">
-                    <img src="https://i.imgur.com/Y8Kue6a.png" class="w-10 h-10 object-contain" alt="Logo">
-                </div>
+            <!-- Login Card (Premium Glassmorphism) -->
+            <div class="w-full max-w-[360px] bg-white/80 backdrop-blur-xl rounded-[2.5rem] p-10 text-center relative shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-white/60 animate-slideDown overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-b from-white/60 to-transparent pointer-events-none"></div>
+                
+                <div class="relative z-10">
+                    <!-- School Logo -->
+                    <div class="w-16 h-16 mx-auto mb-4 bg-white rounded-2xl flex items-center justify-center border border-slate-100 shadow-md shadow-slate-200/50 relative z-10 transition-transform hover:scale-105">
+                        <img src="https://i.imgur.com/Y8Kue6a.png" class="w-10 h-10 object-contain" alt="Logo">
+                    </div>
                 
                 <h2 class="text-[22px] font-black text-slate-800 tracking-tight mb-1">Portal Admin</h2>
                 <p class="text-slate-500 font-bold text-[10px] mb-8">SDN Pasirmae 1 — Pusat Kendali</p>
@@ -56,7 +61,7 @@
                         <label class="block text-slate-500 font-bold text-[9px] uppercase tracking-wider pl-4">Username Admin</label>
                         <div class="relative group">
                             <i class="ph-bold ph-user absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-rose-500 transition-colors text-lg"></i>
-                            <input type="text" id="login-username" required placeholder="Cth: admin" class="w-full bg-[#f8f9fb] border border-transparent text-slate-800 rounded-full px-4 py-3.5 pl-14 text-sm font-semibold focus:outline-none focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all">
+                            <input type="text" id="login-username" required placeholder="Cth: admin" class="w-full bg-white/70 border border-slate-200/50 text-slate-800 rounded-full px-4 py-3.5 pl-14 text-sm font-semibold focus:outline-none focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all shadow-inner backdrop-blur-md">
                         </div>
                     </div>
                     
@@ -64,17 +69,18 @@
                         <label class="block text-slate-500 font-bold text-[9px] uppercase tracking-wider pl-4">PIN Keamanan</label>
                         <div class="relative group">
                             <i class="ph-bold ph-lock-key absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-rose-500 transition-colors text-lg"></i>
-                            <input type="password" id="login-pin" required maxlength="6" pattern="\d{6}" placeholder="6 Digit PIN" class="w-full bg-[#f8f9fb] border border-transparent text-slate-800 rounded-full px-4 py-3.5 pl-14 pr-12 text-sm tracking-[0.3em] font-mono font-bold focus:outline-none focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all">
+                            <input type="password" id="login-pin" required maxlength="6" pattern="\d{6}" placeholder="6 Digit PIN" class="w-full bg-white/70 border border-slate-200/50 text-slate-800 rounded-full px-4 py-3.5 pl-14 pr-12 text-sm tracking-[0.3em] font-mono font-bold focus:outline-none focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all shadow-inner backdrop-blur-md">
                             <button type="button" onclick="const p=document.getElementById('login-pin'); const i=document.getElementById('eye-icon-admin'); if(p.type==='password'){p.type='text';i.className='ph-bold ph-eye text-lg';}else{p.type='password';i.className='ph-bold ph-eye-closed text-lg';}" class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors outline-none">
                                 <i id="eye-icon-admin" class="ph-bold ph-eye-closed text-lg"></i>
                             </button>
                         </div>
                     </div>
                     
-                    <button type="submit" id="btn-login-submit" class="mt-4 w-full bg-rose-500 hover:bg-rose-600 text-white rounded-full py-4 text-[11px] font-bold uppercase tracking-widest shadow-lg shadow-rose-500/30 transition-all flex justify-center items-center gap-2">
+                    <button type="submit" id="btn-login-submit" class="mt-4 w-full bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white rounded-full py-4 text-[11px] font-bold uppercase tracking-widest shadow-lg shadow-rose-500/30 hover:shadow-rose-500/50 transition-all flex justify-center items-center gap-2 hover:-translate-y-0.5">
                         <i class="ph-bold ph-sign-in text-base"></i> Masuk Dasbor
                     </button>
                 </form>
+                </div>
                 
                 <div class="mt-8 pt-6 border-t border-slate-100 text-[10px] text-slate-500 font-bold flex items-center justify-center gap-1.5">
                     Akses terbatas hanya untuk administrator.
@@ -582,7 +588,7 @@
                         <div class="flex flex-col gap-5 pt-1">
                             
                             <!-- WEB 1: WEB UTAMA -->
-                            <a href="/" target="_blank" class="flex items-center gap-4 group cursor-pointer hover:bg-slate-50/50 p-1 -m-1 rounded-xl transition-colors">
+                            <a href="index.html" target="_blank" class="flex items-center gap-4 group cursor-pointer hover:bg-slate-50/50 p-1 -m-1 rounded-xl transition-colors">
                                 <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors">
                                     <i class="ph-fill ph-globe text-textSecondary group-hover:text-primary text-2xl transition-colors"></i>
                                 </div>
@@ -594,7 +600,7 @@
                             </a>
                             
                             <!-- WEB 2: PORTAL SISWA -->
-                            <a href="/portal-siswa" target="_blank" class="flex items-center gap-4 group cursor-pointer hover:bg-slate-50/50 p-1 -m-1 rounded-xl transition-colors">
+                            <a href="portal-siswa.html" target="_blank" class="flex items-center gap-4 group cursor-pointer hover:bg-slate-50/50 p-1 -m-1 rounded-xl transition-colors">
                                 <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center shrink-0 group-hover:bg-blue-500/10 transition-colors">
                                     <i class="ph-fill ph-student text-textSecondary group-hover:text-blue-500 text-2xl transition-colors"></i>
                                 </div>
@@ -606,7 +612,7 @@
                             </a>
                             
                             <!-- WEB 3: JURNAL -->
-                            <a href="/jurnal" target="_blank" class="flex items-center gap-4 group cursor-pointer hover:bg-slate-50/50 p-1 -m-1 rounded-xl transition-colors">
+                            <a href="jurnal.html" target="_blank" class="flex items-center gap-4 group cursor-pointer hover:bg-slate-50/50 p-1 -m-1 rounded-xl transition-colors">
                                 <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center shrink-0 group-hover:bg-emerald-500/10 transition-colors">
                                     <i class="ph-fill ph-book-open text-textSecondary group-hover:text-emerald-500 text-2xl transition-colors"></i>
                                 </div>
@@ -618,7 +624,7 @@
                             </a>
                             
                             <!-- WEB 4: PENILAIAN -->
-                            <a href="/penilaian" target="_blank" class="flex items-center gap-4 group cursor-pointer hover:bg-slate-50/50 p-1 -m-1 rounded-xl transition-colors">
+                            <a href="aplikasi-olah-nilai (2).html" target="_blank" class="flex items-center gap-4 group cursor-pointer hover:bg-slate-50/50 p-1 -m-1 rounded-xl transition-colors">
                                 <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center shrink-0 group-hover:bg-secondary/10 transition-colors">
                                     <i class="ph-fill ph-exam text-textSecondary group-hover:text-secondary text-2xl transition-colors"></i>
                                 </div>
@@ -913,15 +919,15 @@
                                 <h3 class="text-lg font-bold text-textPrimary mb-6">Daftar Tenaga Pendidik</h3>
                                 <div class="overflow-x-auto custom-scrollbar">
                                     <table class="w-full text-left border-collapse min-w-[500px]">
-                                        <thead class="">
-                                            <tr class="border-b border-border text-xs uppercase text-textSecondary font-bold tracking-wider">
-                                                <th class="py-2 px-3">Profil</th>
-                                                <th class="py-2 px-3">NIP &amp; Jabatan</th>
-                                                <th class="py-2 px-3">SSO (User &amp; PIN)</th>
-                                                <th class="py-2 px-3 text-center">Aksi</th>
+                                        <thead class="bg-slate-50/50">
+                                            <tr class="border-b border-slate-200 text-[10px] uppercase text-slate-500 font-bold tracking-widest">
+                                                <th class="py-4 px-4 rounded-tl-xl">Profil</th>
+                                                <th class="py-4 px-4">NIP &amp; Jabatan</th>
+                                                <th class="py-4 px-4">SSO (User &amp; PIN)</th>
+                                                <th class="py-4 px-4 text-center rounded-tr-xl">Aksi</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="tabel-guru-body" class=""></tbody>
+                                        <tbody id="tabel-guru-body" class="divide-y divide-slate-100 bg-white"></tbody>
                                     </table>
                                 </div>
                             </div>
@@ -980,16 +986,16 @@
                         </div>
                         <div class="overflow-x-auto h-[450px] overflow-y-auto custom-scrollbar border border-border rounded-2xl">
                             <table class="w-full text-left border-collapse relative min-w-[500px]">
-                                <thead class="sticky top-0 bg-surface/95 backdrop-blur z-10 border-b border-border shadow-sm">
-                                    <tr class="text-xs uppercase text-textSecondary font-bold tracking-wider">
-                                        <th class="py-3 px-4 w-[40%]">Nama Siswa</th>
-                                        <th class="py-3 px-4 w-[20%]">NIS / NISN</th>
-                                        <th class="py-3 px-4 w-[10%] text-center">JK</th>
-                                        <th class="py-3 px-4 w-[15%]">Kelas</th>
-                                        <th class="py-3 px-4 w-[15%]">PIN Akses</th>
+                                <thead class="sticky top-0 bg-white/95 backdrop-blur-md z-10 border-b border-slate-200 shadow-sm">
+                                    <tr class="text-[10px] uppercase text-slate-500 font-bold tracking-widest bg-slate-50/50">
+                                        <th class="py-4 px-4 w-[40%] rounded-tl-xl">Nama Siswa</th>
+                                        <th class="py-4 px-4 w-[20%]">NIS / NISN</th>
+                                        <th class="py-4 px-4 w-[10%] text-center">JK</th>
+                                        <th class="py-4 px-4 w-[15%]">Kelas</th>
+                                        <th class="py-4 px-4 w-[15%] rounded-tr-xl">PIN Akses</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tabel-siswa-body" class="divide-y divide-border/30"></tbody>
+                                <tbody id="tabel-siswa-body" class="divide-y divide-slate-100 bg-white"></tbody>
                             </table>
                         </div>
                     </div><div id="admin" class="tab-content glass-card hidden max-w-md mx-auto">
@@ -1261,28 +1267,7 @@
             e.target.reset();
         }
 
-        // --- Fitur Header: Search, Notifikasi, Profil ---
-        window.handleGlobalSearch = (query) => {
-            const lowerQuery = query.toLowerCase().trim();
-            // Cari tab yang sedang aktif
-            let activeTab = document.querySelector('.tab-content.active') || document.querySelector('.tab-content:not(.hidden)');
-            
-            if (!activeTab) {
-                // Jika tidak ada yang punya class active, cari dari ID yang umum (misal hub-web-sekolah)
-                activeTab = document.getElementById('hub-web-sekolah');
-            }
-            if (!activeTab) return;
-            
-            const searchableItems = activeTab.querySelectorAll('.grid > button, .grid > div');
-            searchableItems.forEach(item => {
-                const text = item.innerText.toLowerCase();
-                if (lowerQuery === '' || text.includes(lowerQuery)) {
-                    item.style.display = ''; // Kembalikan ke display default (flex/block)
-                } else {
-                    item.style.display = 'none'; // Sembunyikan
-                }
-            });
-        };
+        // --- Fitur Header: Notifikasi, Profil ---
 
         window.toggleNotifications = () => {
             const dd = document.getElementById('notifications-dropdown');
@@ -1319,10 +1304,6 @@
             if (nameEl) nameEl.innerText = username;
             if (handleEl) handleEl.innerText = '@' + username.toLowerCase().replace(/\s+/g, '_');
             
-            // Trigger update data
-            const event = new Event('input');
-            const searchInput = document.querySelector('input[placeholder="Search for query"]');
-            if (searchInput && searchInput.value) searchInput.dispatchEvent(event);
         });
     </script>
 
@@ -1743,31 +1724,31 @@
                 snap.forEach(d => { 
                     window.adminDataStore.guru[d.id] = { id: d.id, ...d.data() }; 
                     const foto = d.data().foto || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.data().nama || 'Guru')}&bg=b91c1c&color=fff`; 
-                    list.innerHTML += `<tr class="border-b border-border/20 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                        <td class="py-3 px-4">
+                    list.innerHTML += `<tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors group">
+                        <td class="py-4 px-4">
                             <div class="flex items-center gap-3">
-                                <img src="${foto}" loading="lazy" class="w-10 h-10 rounded-full object-cover shadow-sm shrink-0 border border-border/50">
-                                <div class="min-w-0"><p class="font-bold text-xs text-textPrimary truncate max-w-[150px]">${d.data().nama}</p></div>
+                                <img src="${foto}" loading="lazy" class="w-10 h-10 rounded-full object-cover shadow-sm shrink-0 border border-slate-200">
+                                <div class="min-w-0"><p class="font-bold text-xs text-slate-800 truncate max-w-[150px]">${d.data().nama}</p></div>
                             </div>
                         </td>
-                        <td class="py-3 px-4 text-xs font-semibold text-textSecondary">${d.data().nip||'-'}<br><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 mt-1.5 inline-block">${d.data().kelas}</span></td>
-                        <td class="py-3 px-4 text-xs font-mono text-muted">
+                        <td class="py-4 px-4 text-xs font-semibold text-slate-500">${d.data().nip||'-'}<br><span class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200 shadow-sm mt-2 inline-block group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500 transition-colors">${d.data().kelas}</span></td>
+                        <td class="py-4 px-4 text-xs font-mono text-slate-600">
                             <div class="flex flex-col gap-1.5">
-                                <div class="flex items-center justify-between bg-background/50 border border-border p-1 rounded-lg gap-1.5">
-                                    <span class="text-textPrimary font-semibold text-[10px] truncate max-w-[80px]" title="Username">${d.data().username}</span>
-                                    <button type="button" onclick="window.salinTeks('${d.data().username}')" class="text-textSecondary hover:text-red-600 p-0.5 rounded transition-colors shrink-0" title="Salin Username"><i class="ph-bold ph-copy text-xs"></i></button>
+                                <div class="flex items-center justify-between bg-slate-50 border border-slate-100 p-1.5 rounded-lg gap-2 shadow-inner">
+                                    <span class="text-slate-700 font-semibold text-[10px] truncate max-w-[80px]" title="Username">${d.data().username}</span>
+                                    <button type="button" onclick="window.salinTeks('${d.data().username}')" class="text-slate-400 hover:text-primary p-1 bg-white shadow-sm border border-slate-200 rounded transition-all hover:-translate-y-0.5" title="Salin Username"><i class="ph-bold ph-copy text-[10px]"></i></button>
                                 </div>
-                                <div class="flex items-center justify-between bg-background/50 border border-border p-1 rounded-lg gap-1.5">
-                                    <span class="text-red-600 dark:text-red-400 font-bold text-[10px] truncate max-w-[80px]" title="PIN">${d.data().pin}</span>
-                                    <button type="button" onclick="window.salinTeks('${d.data().pin}')" class="text-textSecondary hover:text-red-600 p-0.5 rounded transition-colors shrink-0" title="Salin PIN"><i class="ph-bold ph-copy text-xs"></i></button>
+                                <div class="flex items-center justify-between bg-slate-50 border border-slate-100 p-1.5 rounded-lg gap-2 shadow-inner">
+                                    <span class="text-rose-600 font-bold text-[10px] truncate max-w-[80px]" title="PIN">${d.data().pin}</span>
+                                    <button type="button" onclick="window.salinTeks('${d.data().pin}')" class="text-slate-400 hover:text-primary p-1 bg-white shadow-sm border border-slate-200 rounded transition-all hover:-translate-y-0.5" title="Salin PIN"><i class="ph-bold ph-copy text-[10px]"></i></button>
                                 </div>
                             </div>
                         </td>
-                        <td class="py-3 px-4 text-center whitespace-nowrap flex justify-center items-center gap-0.5">
-                            <button type="button" onclick="window.downloadFullBackup('${d.id}', '${d.data().nama}')" title="Unduh Backup CSV" class="text-textSecondary hover:text-red-600 p-1.5 hover:bg-red-500/10 rounded transition-colors"><i class="ph-bold ph-download-simple text-sm"></i></button>
-                            <button type="button" onclick="window.wipeTeacherData('${d.id}', '${d.data().nama}')" title="Bersihkan Data Jurnal" class="text-textSecondary hover:text-red-600 p-1.5 hover:bg-red-500/10 rounded transition-colors"><i class="ph-bold ph-broom text-sm"></i></button>
-                            <button type="button" onclick="window.siapkanEditGuru('${d.id}')" title="Edit Akun" class="text-textSecondary hover:text-red-600 p-1.5 hover:bg-red-500/10 rounded transition-colors"><i class="ph-bold ph-pencil text-sm"></i></button>
-                            <button type="button" onclick="window.hapusData('guru','${d.id}')" title="Hapus Akun" class="text-textSecondary hover:text-red-600 p-1.5 hover:bg-red-500/10 rounded transition-colors"><i class="ph-bold ph-trash text-sm"></i></button>
+                        <td class="py-4 px-4 text-center whitespace-nowrap flex justify-center items-center gap-1.5 h-full pt-6">
+                            <button type="button" onclick="window.downloadFullBackup('${d.id}', '${d.data().nama}')" title="Unduh Backup CSV" class="text-slate-400 hover:text-blue-600 p-2 hover:bg-blue-50 rounded-lg transition-colors"><i class="ph-bold ph-download-simple text-sm"></i></button>
+                            <button type="button" onclick="window.wipeTeacherData('${d.id}', '${d.data().nama}')" title="Bersihkan Data Jurnal" class="text-slate-400 hover:text-orange-600 p-2 hover:bg-orange-50 rounded-lg transition-colors"><i class="ph-bold ph-broom text-sm"></i></button>
+                            <button type="button" onclick="window.siapkanEditGuru('${d.id}')" title="Edit Akun" class="text-slate-400 hover:text-emerald-600 p-2 hover:bg-emerald-50 rounded-lg transition-colors"><i class="ph-bold ph-pencil text-sm"></i></button>
+                            <button type="button" onclick="window.hapusData('guru','${d.id}')" title="Hapus Akun" class="text-slate-400 hover:text-rose-600 p-2 hover:bg-rose-50 rounded-lg transition-colors"><i class="ph-bold ph-trash text-sm"></i></button>
                         </td>
                     </tr>`; 
                 }); 
@@ -1786,19 +1767,40 @@
             };
 
             // 6. Siswa (Excel Dapodik Parser & Naik Kelas & Reset & Sort)
-            window.dataSiswaLokal = []; window.filterSiswa = 'Semua'; window.searchSiswa = '';
+            window.dataSiswaLokal = []; window.filterSiswa = 'Semua';
             
             window.renderTabelSiswa = () => {
                 let filtered = window.dataSiswaLokal
                     .filter(s => window.filterSiswa==='Semua' || s.kelas === window.filterSiswa)
-                    .filter(s => s.nama.toLowerCase().includes(window.searchSiswa.toLowerCase()))
                     .sort((a, b) => {
                         let cmpKelas = (a.kelas || '').localeCompare(b.kelas || '');
                         if (cmpKelas !== 0) return cmpKelas;
                         return (a.nama || '').localeCompare(b.nama || '');
                     });
 
-                document.getElementById('tabel-siswa-body').innerHTML = filtered.map(d => `<tr class="text-xs cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors border-b border-border/20" onclick="window.bukaEditSiswa('${d.id}')"><td class="py-3 px-4 font-semibold text-textPrimary">${d.nama}</td><td class="py-3 px-4 text-textSecondary font-medium">${d.nisn||d.nis||'-'}</td><td class="py-3 px-4 text-center font-bold text-textSecondary">${d.jk||'-'}</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-500/10 text-red-600 dark:text-red-400">${d.kelas||'-'}</span></td><td class="py-3 px-4 font-mono font-bold text-textSecondary"><div class="flex items-center gap-1.5"><span>${d.pin||'-'}</span><button type="button" onclick="event.stopPropagation(); window.salinTeks('${d.pin}')" class="text-textSecondary hover:text-red-600 p-0.5 rounded transition-colors"><i class="ph-bold ph-copy text-xs"></i></button></div></td></tr>`).join('');
+                document.getElementById('tabel-siswa-body').innerHTML = filtered.map(d => {
+                    const initials = (d.nama || 'S').substring(0, 2).toUpperCase();
+                    const colors = ['bg-rose-500', 'bg-blue-500', 'bg-emerald-500', 'bg-purple-500', 'bg-orange-500', 'bg-cyan-500'];
+                    const colorClass = colors[(d.nama || 'A').charCodeAt(0) % colors.length];
+                    
+                    return `<tr class="text-xs cursor-pointer hover:bg-slate-50 transition-colors border-b border-slate-100 group" onclick="window.bukaEditSiswa('${d.id}')">
+                        <td class="py-4 px-4 font-semibold text-slate-800">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full ${colorClass} text-white flex items-center justify-center font-bold text-[10px] shadow-sm shrink-0">${initials}</div>
+                                <span>${d.nama}</span>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4 text-slate-500 font-medium">${d.nisn||d.nis||'-'}</td>
+                        <td class="py-4 px-4 text-center font-bold text-slate-500">${d.jk||'-'}</td>
+                        <td class="py-4 px-4"><span class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200 shadow-sm group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-colors">${d.kelas||'-'}</span></td>
+                        <td class="py-4 px-4 font-mono font-bold text-slate-600">
+                            <div class="flex items-center gap-1.5">
+                                <span class="bg-slate-50 px-2 py-1 rounded border border-slate-100 tracking-wider shadow-inner">${d.pin||'-'}</span>
+                                <button type="button" onclick="event.stopPropagation(); window.salinTeks('${d.pin}')" class="text-slate-400 hover:text-primary p-1.5 bg-white shadow-sm border border-slate-200 rounded-md transition-all hover:-translate-y-0.5"><i class="ph-bold ph-copy text-xs"></i></button>
+                            </div>
+                        </td>
+                    </tr>`;
+                }).join('');
             };
             
             window.generatePinFromName = (nama) => {
