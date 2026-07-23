@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="app-primary" content="#FC6B58">
+    <meta name="app-primary" content="#3B82F6">
     <title>Portal Siswa - SD Negeri Pasirmae 1</title>
     <link rel="icon" type="image/png" href="favicon.png">
     
@@ -33,79 +33,78 @@
     <!-- ========================================== -->
     <!-- BAGIAN 1: LAYAR LOGIN SISWA                -->
     <!-- ========================================== -->
-    <div id="login-screen" class="w-full h-screen bg-white relative overflow-hidden flex font-poppins">
+    <div id="login-screen" class="w-full h-screen bg-slate-50 relative overflow-hidden flex font-poppins">
         
-        <!-- Cityscape Background (Paling Belakang & di-Blur) -->
-        <img src="./assets/kota.png" alt="Kota" class="absolute bottom-0 left-0 w-full h-[55vh] object-cover object-bottom z-0 opacity-60 blur-[1.5px] pointer-events-none" onerror="this.style.display='none'">
-
         <!-- 1. BACKGROUND WAVE MASK -->
-        <!-- Menggunakan mask-size: auto 100% dan mask-position: right center agar proporsi lengkungan tidak melar -->
         <div class="absolute inset-0 z-[1] pointer-events-none">
             <div class="w-full h-full bg-gradient-to-br from-blue-600 to-indigo-700 scale-[1.02] origin-right" 
                  style="-webkit-mask-image: url('./assets/wave.png'); -webkit-mask-size: auto 100%; -webkit-mask-position: right center; -webkit-mask-repeat: no-repeat; mask-image: url('./assets/wave.png'); mask-size: auto 100%; mask-position: right center; mask-repeat: no-repeat;">
             </div>
         </div>
         
-        <!-- 2. LEFT COLUMN (LOGIN FORM) -->
-        <div class="w-full lg:w-1/2 h-full flex flex-col justify-center items-center lg:items-start lg:pl-[12%] p-6 relative z-30">
+        <!-- 2. LEFT COLUMN (LOGIN FORM) — centered in white zone -->
+        <div class="w-full lg:w-[45%] h-full flex flex-col justify-center items-center relative z-30 px-6">
             
             <!-- Login Card -->
-            <div class="w-full max-w-[340px] bg-white/95 backdrop-blur-sm rounded-[2rem] p-8 text-center relative shadow-2xl shadow-slate-200/50 border border-slate-100/50 animate-slideDown">
+            <div class="w-full max-w-[380px] bg-white rounded-[2rem] p-8 lg:p-10 text-center relative shadow-[0_8px_40px_rgba(0,0,0,0.08)] border border-slate-100 animate-slideDown">
                 <!-- School Logo -->
-                <div class="w-16 h-16 mx-auto mb-4 bg-white rounded-2xl flex items-center justify-center border border-slate-100 shadow-sm relative z-10">
-                    <img src="https://i.imgur.com/Y8Kue6a.png" class="w-10 h-10 object-contain" alt="Logo">
+                <div class="w-[72px] h-[72px] mx-auto mb-5 bg-gradient-to-br from-slate-50 to-white rounded-2xl flex items-center justify-center border border-slate-100 shadow-sm">
+                    <img src="https://i.imgur.com/Y8Kue6a.png" class="w-11 h-11 object-contain" alt="Logo">
                 </div>
                 
                 <h2 class="text-[22px] font-black text-slate-800 tracking-tight mb-1">Portal Siswa</h2>
-                <p class="text-slate-500 font-bold text-[10px] mb-8">SDN Pasirmae 1 — Area Belajar</p>
+                <p class="text-slate-400 font-semibold text-[10px] mb-7 uppercase tracking-[0.15em]">SDN Pasirmae 1 &mdash; Area Belajar</p>
                 
                 <div id="login-error-msg" class="hidden text-red-600 bg-red-50 border border-red-100 p-2.5 rounded-xl text-[10px] font-bold mb-4 animate-fadeIn"></div>
                 
-                <form onsubmit="handleLoginSiswa(event)" class="flex flex-col gap-5 text-left">
+                <form onsubmit="handleLoginSiswa(event)" class="flex flex-col gap-4 text-left">
                     <div class="flex flex-col gap-1.5">
-                        <label class="block text-slate-500 font-bold text-[9px] uppercase tracking-wider pl-4">NISN / NIS</label>
+                        <label class="block text-slate-500 font-bold text-[10px] uppercase tracking-wider pl-4">NISN / NIS</label>
                         <div class="relative group">
                             <i class="ph-bold ph-identification-card absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors text-lg"></i>
-                            <input type="text" id="login-nisn" required placeholder="Cth: 1234567890" class="w-full bg-[#f8f9fb] border border-transparent text-slate-800 rounded-full px-4 py-3.5 pl-14 text-sm font-semibold focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 transition-all">
+                            <input type="text" id="login-nisn" required placeholder="Cth: 1234567890" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-full px-4 py-3.5 pl-14 text-sm font-semibold focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all">
                         </div>
                     </div>
                     
                     <div class="flex flex-col gap-1.5">
-                        <label class="block text-slate-500 font-bold text-[9px] uppercase tracking-wider pl-4">PIN Akses</label>
+                        <label class="block text-slate-500 font-bold text-[10px] uppercase tracking-wider pl-4">PIN Akses</label>
                         <div class="relative group">
                             <i class="ph-bold ph-lock-key absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors text-lg"></i>
-                            <input type="password" id="login-pin" required maxlength="6" pattern="\d{6}" placeholder="6 Digit PIN" class="w-full bg-[#f8f9fb] border border-transparent text-slate-800 rounded-full px-4 py-3.5 pl-14 pr-12 text-sm tracking-[0.3em] font-mono font-bold focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 transition-all">
+                            <input type="password" id="login-pin" required maxlength="6" pattern="\d{6}" placeholder="6 Digit PIN" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-full px-4 py-3.5 pl-14 pr-12 text-sm tracking-[0.3em] font-mono font-bold focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all">
                             <button type="button" onclick="const p=document.getElementById('login-pin'); const i=document.getElementById('eye-icon'); if(p.type==='password'){p.type='text';i.className='ph-bold ph-eye text-lg';}else{p.type='password';i.className='ph-bold ph-eye-closed text-lg';}" class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors outline-none">
                                 <i id="eye-icon" class="ph-bold ph-eye-closed text-lg"></i>
                             </button>
                         </div>
                     </div>
                     
-                    <button type="submit" id="btn-login" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white rounded-full py-4 text-[11px] font-bold uppercase tracking-widest shadow-lg shadow-blue-600/30 transition-all flex justify-center items-center gap-2">
+                    <button type="submit" id="btn-login" class="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white rounded-full py-4 text-xs font-bold uppercase tracking-widest shadow-lg shadow-blue-600/25 transition-all hover:shadow-blue-600/40 active:scale-[0.98] flex justify-center items-center gap-2">
                         <i class="ph-bold ph-sign-in text-base"></i> Mulai Belajar
                     </button>
                 </form>
                 
-                <div class="mt-8 pt-6 border-t border-slate-100 text-[10px] text-slate-500 font-bold flex items-center justify-center gap-1.5">
-                    Akses terbatas untuk siswa yang terdaftar.
+                <div class="mt-6 pt-5 border-t border-slate-100 text-[10px] text-slate-400 font-semibold flex items-center justify-center gap-1.5">
+                    <i class="ph-bold ph-student text-sm text-slate-300"></i> Akses terbatas untuk siswa terdaftar.
                 </div>
             </div>
         </div>
 
-        <div class="hidden lg:flex w-1/2 h-full flex-col justify-start items-end absolute right-0 top-0 z-20 p-8 pt-[6%] pointer-events-none">
-            <div class="text-right flex flex-col items-end text-white max-w-[500px] pointer-events-auto">
-                <h1 class="text-4xl lg:text-[3.5rem] font-black mb-4 leading-[1.15] drop-shadow-md tracking-tight text-right w-full">Selamat Datang<br/>Siswa!</h1>
-                <p class="text-xs lg:text-sm font-medium opacity-90 leading-relaxed drop-shadow-sm text-right w-full max-w-[420px]">Masuk ke Portal Siswa SDN Pasirmae 1 untuk melihat nilai, materi pelajaran, dan informasi akademik lainnya secara mudah dan cepat.</p>
+        <!-- 3. RIGHT COLUMN (TEXT) — positioned at top, clear of illustrations -->
+        <div class="hidden lg:flex w-[55%] h-full flex-col justify-start items-end absolute right-0 top-0 z-20 p-10 pt-[8%] pr-[6%] pointer-events-none">
+            <div class="text-right flex flex-col items-end text-white max-w-[440px] pointer-events-auto">
+                <div class="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-white/15 border border-white/25 text-white text-[10px] font-bold uppercase tracking-[0.2em] mb-5 backdrop-blur-sm shadow-sm">
+                    <i class="ph-bold ph-student text-sm"></i> Portal Belajar
+                </div>
+                <h1 class="text-4xl xl:text-5xl font-black mb-4 leading-[1.1] drop-shadow-lg tracking-tight">Selamat Datang<br/>Siswa!</h1>
+                <p class="text-sm font-medium opacity-90 leading-relaxed drop-shadow-sm max-w-[380px]">Masuk ke Portal Siswa SDN Pasirmae 1 untuk melihat nilai, materi pelajaran, dan informasi akademik lainnya secara mudah dan cepat.</p>
             </div>
         </div>
 
-        <img src="./assets/lari.png" alt="Siswa Berlari" class="absolute bottom-[8%] right-[15%] w-[30vw] max-w-[450px] z-30 pointer-events-none hidden lg:block animate-slideUp" onerror="this.style.display='none'">
-        
-        <!-- Diperbesar sedikit sesuai instruksi -->
-        <img src="./assets/lompat.png" alt="Siswa Melompat" class="absolute bottom-[2%] left-6 w-[16vw] max-w-[220px] z-30 pointer-events-none hidden lg:block" onerror="this.style.display='none'">
+        <!-- 4. ILLUSTRATIONS — Prominent and Dynamic -->
+        <img src="./assets/lari.png" alt="Siswa Berlari" class="absolute bottom-[-2%] right-[-2%] w-[35vw] max-w-[480px] z-[5] pointer-events-none hidden lg:block opacity-95 animate-slideUp" onerror="this.style.display='none'">
+        <img src="./assets/lompat.png" alt="Siswa Melompat" class="absolute bottom-[5%] left-[8%] w-[20vw] max-w-[260px] z-[60] pointer-events-none hidden lg:block drop-shadow-2xl" onerror="this.style.display='none'">
 
         <!-- 5. CREDIT TEXT -->
-        <div class="absolute bottom-6 right-8 z-40 text-right pointer-events-auto">
+        <div class="absolute bottom-4 right-6 z-40 text-right pointer-events-auto">
             <p class="text-[8px] font-bold text-white/60 uppercase tracking-[0.2em] mb-0.5">Developed By</p>
             <p class="text-[9px] font-bold text-white/90">reezapps &middot; Mohamad Rizki, S.Pd., Gr.</p>
         </div>
@@ -1025,7 +1024,7 @@
                 });
 
                 if (foundUser) {
-                    const expireTime = new Date().getTime() + (6 * 60 * 60 * 1000); // 6 Jam dari sekarang
+                    const expireTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 Jam dari sekarang
                     const sessionObj = { data: foundUser, expiresAt: expireTime };
                     localStorage.setItem('siswaSessionInfo', JSON.stringify(sessionObj));
                     
@@ -1044,29 +1043,29 @@
             btn.innerHTML = `<i class="ph-bold ph-sign-in text-base"></i> Masuk Dashboard`;
             btn.disabled = false;
         };
-
-        function tampilkanDashboard(data) {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('app-screen').classList.remove('hidden');
-            
-            document.getElementById('profil-nama').innerText = data.nama || data.nama_siswa;
-            document.getElementById('profil-kelas').innerText = data.kelas || 'Belum ada kelas';
-            document.getElementById('profil-nisn').innerText = `NISN: ${data.nisn || data.nis || '-'}`;
-            
-            aturSapaan(data.nama || data.nama_siswa || '');
-            muatDataSiswa(data);
-        }
-
-        // Cek sesi 6 jam saat halaman dimuat
-        const savedSessionStr = localStorage.getItem('siswaSessionInfo');
-        if (savedSessionStr) {
-            const sessionObj = JSON.parse(savedSessionStr);
-            if (new Date().getTime() < sessionObj.expiresAt) {
-                tampilkanDashboard(sessionObj.data);
-            } else {
-                localStorage.removeItem('siswaSessionInfo');
-            }
-        }
+ 
+         function tampilkanDashboard(data) {
+             document.getElementById('login-screen').classList.add('hidden');
+             document.getElementById('app-screen').classList.remove('hidden');
+             
+             document.getElementById('profil-nama').innerText = data.nama || data.nama_siswa;
+             document.getElementById('profil-kelas').innerText = data.kelas || 'Belum ada kelas';
+             document.getElementById('profil-nisn').innerText = `NISN: ${data.nisn || data.nis || '-'}`;
+             
+             aturSapaan(data.nama || data.nama_siswa || '');
+             muatDataSiswa(data);
+         }
+ 
+         // Cek sesi 24 jam saat halaman dimuat
+         const savedSessionStr = localStorage.getItem('siswaSessionInfo');
+         if (savedSessionStr) {
+             const sessionObj = JSON.parse(savedSessionStr);
+             if (new Date().getTime() < sessionObj.expiresAt) {
+                 tampilkanDashboard(sessionObj.data);
+             } else {
+                 localStorage.removeItem('siswaSessionInfo');
+             }
+         }
     </script>
 </body>
 </html>

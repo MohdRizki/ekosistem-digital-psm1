@@ -213,9 +213,9 @@ window.toggleTheme = function() {
     });
 };
 
-// Auto-apply saved theme on load
+// Auto-apply saved theme on load (default to dark)
 (function() {
-    const savedTheme = localStorage.getItem('theme');
+    const savedTheme = localStorage.getItem('theme') || 'dark';
     if (savedTheme === 'dark') {
         document.documentElement.classList.add('dark');
         // Defer icon update to after DOM is ready

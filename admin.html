@@ -1,6 +1,7 @@
 <!DOCTYPE html><html lang="id" class=""><head class="">
     <meta charset="UTF-8" class="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" class="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="app-primary" content="#EF4444">
     <title class="">Digitalisasi ADM - SD Negeri Pasirmae 1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="assets/theme.js"></script>
@@ -23,83 +24,78 @@
     <!-- ========================================== -->
     <!-- BAGIAN 1: LAYAR LOGIN ADMINISTRATOR        -->
     <!-- ========================================== -->
-    <div id="login-screen" class="w-full h-screen bg-white relative overflow-hidden flex font-poppins">
+    <div id="login-screen" class="w-full h-screen bg-slate-50 relative overflow-hidden flex font-poppins">
         
-        <!-- Cityscape Background (Paling Belakang & di-Blur) -->
-        <img src="./assets/kota.png" alt="Kota" class="absolute bottom-0 left-0 w-full h-[55vh] object-cover object-bottom z-0 opacity-60 blur-[1.5px] pointer-events-none" onerror="this.style.display='none'">
-
         <!-- 1. BACKGROUND WAVE MASK -->
-        <!-- Menggunakan mask-size: auto 100% dan mask-position: right center agar proporsi lengkungan tidak melar -->
         <div class="absolute inset-0 z-[1] pointer-events-none">
-            <div class="w-full h-full bg-gradient-to-br from-rose-500 to-orange-500 scale-[1.02] origin-right" 
+            <div class="w-full h-full bg-gradient-to-br from-orange-500 to-red-600 scale-[1.02] origin-right" 
                  style="-webkit-mask-image: url('./assets/wave.png'); -webkit-mask-size: auto 100%; -webkit-mask-position: right center; -webkit-mask-repeat: no-repeat; mask-image: url('./assets/wave.png'); mask-size: auto 100%; mask-position: right center; mask-repeat: no-repeat;">
             </div>
         </div>
         
-        <!-- 2. LEFT COLUMN (LOGIN FORM) -->
-        <div class="w-full lg:w-1/2 h-full flex flex-col justify-center items-center lg:items-start lg:pl-[12%] p-6 relative z-30">
+        <!-- 2. LEFT COLUMN (LOGIN FORM) — centered in white zone -->
+        <div class="w-full lg:w-[45%] h-full flex flex-col justify-center items-center relative z-30 px-6">
             
             <!-- Login Card -->
-            <div class="w-full max-w-[340px] bg-white/95 backdrop-blur-sm rounded-[2rem] p-8 text-center relative shadow-2xl shadow-slate-200/50 border border-slate-100/50 animate-slideDown">
+            <div class="w-full max-w-[380px] bg-white rounded-[2rem] p-8 lg:p-10 text-center relative shadow-[0_8px_40px_rgba(0,0,0,0.08)] border border-slate-100 animate-slideDown">
                 <!-- School Logo -->
-                <div class="w-16 h-16 mx-auto mb-4 bg-white rounded-2xl flex items-center justify-center border border-slate-100 shadow-sm relative z-10">
-                    <img src="https://i.imgur.com/Y8Kue6a.png" class="w-10 h-10 object-contain" alt="Logo">
+                <div class="w-[72px] h-[72px] mx-auto mb-5 bg-gradient-to-br from-slate-50 to-white rounded-2xl flex items-center justify-center border border-slate-100 shadow-sm">
+                    <img src="https://i.imgur.com/Y8Kue6a.png" class="w-11 h-11 object-contain" alt="Logo">
                 </div>
                 
                 <h2 class="text-[22px] font-black text-slate-800 tracking-tight mb-1">Portal Admin</h2>
-                <p class="text-slate-500 font-bold text-[10px] mb-8">SDN Pasirmae 1 — Pusat Kendali</p>
+                <p class="text-slate-400 font-semibold text-[10px] mb-7 uppercase tracking-[0.15em]">SDN Pasirmae 1 &mdash; Pusat Kendali</p>
                 
                 <div id="login-error-msg" class="hidden text-red-600 bg-red-50 border border-red-100 p-2.5 rounded-xl text-[10px] font-bold mb-4 animate-fadeIn"></div>
                 
-                <form onsubmit="handleLogin(event)" class="flex flex-col gap-5 text-left">
+                <form onsubmit="handleLogin(event)" class="flex flex-col gap-4 text-left">
                     <div class="flex flex-col gap-1.5">
-                        <label class="block text-slate-500 font-bold text-[9px] uppercase tracking-wider pl-4">Username Admin</label>
+                        <label class="block text-slate-500 font-bold text-[10px] uppercase tracking-wider pl-4">Username</label>
                         <div class="relative group">
-                            <i class="ph-bold ph-user absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-rose-500 transition-colors text-lg"></i>
-                            <input type="text" id="login-username" required placeholder="Cth: admin" class="w-full bg-[#f8f9fb] border border-transparent text-slate-800 rounded-full px-4 py-3.5 pl-14 text-sm font-semibold focus:outline-none focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all">
+                            <i class="ph-bold ph-user absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-red-600 transition-colors text-lg"></i>
+                            <input type="text" id="login-username" required placeholder="admin" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-full px-4 py-3.5 pl-14 text-sm font-semibold focus:outline-none focus:border-red-500 focus:ring-4 focus:ring-red-500/10 focus:bg-white transition-all">
                         </div>
                     </div>
                     
                     <div class="flex flex-col gap-1.5">
-                        <label class="block text-slate-500 font-bold text-[9px] uppercase tracking-wider pl-4">PIN Keamanan</label>
+                        <label class="block text-slate-500 font-bold text-[10px] uppercase tracking-wider pl-4">PIN Keamanan</label>
                         <div class="relative group">
-                            <i class="ph-bold ph-lock-key absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-rose-500 transition-colors text-lg"></i>
-                            <input type="password" id="login-pin" required maxlength="6" pattern="\d{6}" placeholder="6 Digit PIN" class="w-full bg-[#f8f9fb] border border-transparent text-slate-800 rounded-full px-4 py-3.5 pl-14 pr-12 text-sm tracking-[0.3em] font-mono font-bold focus:outline-none focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all">
+                            <i class="ph-bold ph-lock-key absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-red-600 transition-colors text-lg"></i>
+                            <input type="password" id="login-pin" required maxlength="6" pattern="\d{6}" placeholder="6 Digit PIN" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-full px-4 py-3.5 pl-14 pr-12 text-sm tracking-[0.3em] font-mono font-bold focus:outline-none focus:border-red-500 focus:ring-4 focus:ring-red-500/10 focus:bg-white transition-all">
                             <button type="button" onclick="const p=document.getElementById('login-pin'); const i=document.getElementById('eye-icon-admin'); if(p.type==='password'){p.type='text';i.className='ph-bold ph-eye text-lg';}else{p.type='password';i.className='ph-bold ph-eye-closed text-lg';}" class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors outline-none">
                                 <i id="eye-icon-admin" class="ph-bold ph-eye-closed text-lg"></i>
                             </button>
                         </div>
                     </div>
                     
-                    <button type="submit" id="btn-login-submit" class="mt-4 w-full bg-rose-500 hover:bg-rose-600 text-white rounded-full py-4 text-[11px] font-bold uppercase tracking-widest shadow-lg shadow-rose-500/30 transition-all flex justify-center items-center gap-2">
+                    <button type="submit" id="btn-login-submit" class="mt-3 w-full bg-red-600 hover:bg-red-700 text-white rounded-full py-4 text-xs font-bold uppercase tracking-widest shadow-lg shadow-red-600/25 transition-all hover:shadow-red-600/40 active:scale-[0.98] flex justify-center items-center gap-2">
                         <i class="ph-bold ph-sign-in text-base"></i> Masuk Dasbor
                     </button>
                 </form>
                 
-                <div class="mt-8 pt-6 border-t border-slate-100 text-[10px] text-slate-500 font-bold flex items-center justify-center gap-1.5">
-                    Akses terbatas hanya untuk administrator.
+                <div class="mt-6 pt-5 border-t border-slate-100 text-[10px] text-slate-400 font-semibold flex items-center justify-center gap-1.5">
+                    <i class="ph-bold ph-shield-check text-sm text-slate-300"></i> Akses khusus administrator.
                 </div>
             </div>
         </div>
 
-        <div class="hidden lg:flex w-1/2 h-full flex-col justify-start items-end absolute right-0 top-0 z-20 p-8 pt-[6%] pointer-events-none">
-            <div class="text-right flex flex-col items-end text-white max-w-[500px] pointer-events-auto">
-                <h1 class="text-4xl lg:text-[3.5rem] font-black mb-4 leading-[1.15] drop-shadow-md tracking-tight text-right w-full">Selamat Datang<br/>Kembali!</h1>
-                <p class="text-xs lg:text-sm font-medium opacity-90 leading-relaxed drop-shadow-sm text-right w-full max-w-[420px]">Selamat datang di Ekosistem Digital SDN Pasirmae 1. Menghubungkan pembelajaran, layanan akademik, dan informasi sekolah dalam satu ekosistem terintegrasi.</p>
+        <!-- 3. RIGHT COLUMN (TEXT) — positioned at top, clear of illustrations -->
+        <div class="hidden lg:flex w-[55%] h-full flex-col justify-start items-end absolute right-0 top-0 z-20 p-10 pt-[8%] pr-[6%] pointer-events-none">
+            <div class="text-right flex flex-col items-end text-white max-w-[440px] pointer-events-auto">
+                <div class="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-white/15 border border-white/25 text-white text-[10px] font-bold uppercase tracking-[0.2em] mb-5 backdrop-blur-sm shadow-sm">
+                    <i class="ph-bold ph-shield-checkered text-sm"></i> Sistem Informasi
+                </div>
+                <h1 class="text-4xl xl:text-5xl font-black mb-4 leading-[1.1] drop-shadow-lg tracking-tight">Selamat Datang<br/>Kembali!</h1>
+                <p class="text-sm font-medium opacity-90 leading-relaxed drop-shadow-sm max-w-[380px]">Ekosistem Digital SDN Pasirmae 1. Menghubungkan pembelajaran, layanan akademik, dan informasi sekolah dalam satu pintu terintegrasi.</p>
             </div>
         </div>
 
-        <!-- 4. ILLUSTRATIONS -->
-        <!-- Students Running -->
-        <!-- Digeser kembali ke kanan (right-[15%]) -->
-        <img src="./assets/lari.png" alt="Siswa Berlari" class="absolute bottom-[8%] right-[15%] w-[32vw] max-w-[480px] z-30 pointer-events-none hidden lg:block animate-slideUp" onerror="this.style.display='none'">
-        
-        <!-- Girl Jumping -->
-        <!-- Diperbesar sedikit sesuai instruksi -->
-        <img src="./assets/lompat.png" alt="Siswa Melompat" class="absolute bottom-[2%] left-6 w-[16vw] max-w-[220px] z-30 pointer-events-none hidden lg:block" onerror="this.style.display='none'">
+        <!-- 4. ILLUSTRATIONS — Prominent and Dynamic -->
+        <img src="./assets/lari.png" alt="Siswa Berlari" class="absolute bottom-[-2%] right-[-2%] w-[35vw] max-w-[480px] z-[5] pointer-events-none hidden lg:block opacity-95 animate-slideUp" onerror="this.style.display='none'">
+        <img src="./assets/lompat.png" alt="Siswa Melompat" class="absolute bottom-[5%] left-[8%] w-[20vw] max-w-[260px] z-[60] pointer-events-none hidden lg:block drop-shadow-2xl" onerror="this.style.display='none'">
 
         <!-- 5. CREDIT TEXT -->
-        <div class="absolute bottom-6 right-8 z-40 text-right pointer-events-auto">
+        <div class="absolute bottom-4 right-6 z-40 text-right pointer-events-auto">
             <p class="text-[8px] font-bold text-white/60 uppercase tracking-[0.2em] mb-0.5">Developed By</p>
             <p class="text-[9px] font-bold text-white/90">reezapps &middot; Mohamad Rizki, S.Pd., Gr.</p>
         </div>
@@ -168,22 +164,15 @@
                 </div>
             </div>
         </nav>
-        <div class="p-6 shrink-0 mt-auto">
-            <div class="bg-primary rounded-3xl p-5 relative overflow-hidden text-center shadow-lg shadow-primary/30 group">
-                <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-xl pointer-events-none transition-transform group-hover:scale-110"></div>
-                <div class="absolute -bottom-10 -left-10 w-24 h-24 bg-secondary/30 rounded-full blur-xl pointer-events-none transition-transform group-hover:scale-110"></div>
-                
-                <div class="relative z-10 flex flex-col items-center">
-                    <img src="./assets/lompat.png" class="w-28 h-auto mb-4 drop-shadow-[0_10px_10px_rgba(0,0,0,0.15)] pointer-events-none" alt="Ilustrasi" onerror="this.style.display='none'">
-                    
-                    <a href="https://sdnegeripasirmae1.github.io/" target="_blank" class="w-full bg-white text-primary font-bold text-xs py-3 rounded-2xl transition-transform hover:scale-105 shadow-sm mb-3 block">
-                        Buka Situs Utama
-                    </a>
-                    <button onclick="handleLogout()" class="w-full text-white/80 hover:text-white font-bold text-[10px] uppercase tracking-wider transition-colors py-1">
-                        Keluar Sesi
-                    </button>
-                </div>
-            </div>
+        <div class="p-4 border-t border-border/10 shrink-0 mt-auto flex flex-col gap-1.5">
+            <a href="https://sdnegeripasirmae1.github.io/" target="_blank" class="flex items-center gap-3 py-2.5 px-4 rounded-xl text-xs font-bold text-textSecondary hover:text-textPrimary hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all">
+                <i class="ph-bold ph-globe text-lg shrink-0"></i>
+                <span>Buka Situs Utama</span>
+            </a>
+            <button onclick="handleLogout()" class="w-full flex items-center gap-3 py-2.5 px-4 rounded-xl text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all">
+                <i class="ph-bold ph-sign-out text-lg shrink-0"></i>
+                <span>Keluar Sesi</span>
+            </button>
         </div>
     </aside>
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="absolute inset-0 bg-slate-900/20 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
@@ -237,13 +226,13 @@
 
             <!-- Profil -->
             <div class="relative">
-                <div onclick="window.toggleProfileMenu()" class="flex items-center gap-3 ml-2 cursor-pointer bg-surface p-1.5 pr-4 rounded-full shadow-sm hover:shadow-md transition-all">
-                    <div class="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center text-secondary font-bold shrink-0 overflow-hidden border border-border">
-                        <img src="https://i.pravatar.cc/150?u=admin_madhu" alt="Admin" class="w-full h-full object-cover">
+                <div id="profile-menu-button" onclick="window.toggleProfileMenu()" class="flex items-center gap-3 ml-2 cursor-pointer bg-surface p-1.5 pr-4 rounded-full shadow-sm hover:shadow-md transition-all">
+                    <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold shrink-0 border border-border">
+                        <i class="ph-bold ph-user text-lg"></i>
                     </div>
                     <div class="hidden sm:block">
                         <p id="header-profile-name" class="text-xs font-bold text-textPrimary leading-none">Administrator</p>
-                        <p id="header-profile-handle" class="text-[10px] text-textSecondary font-medium mt-1 leading-none">@admin_sekolah</p>
+                        <p id="header-profile-handle" class="text-[10px] text-textSecondary font-medium mt-1 leading-none">@administrator</p>
                     </div>
                 </div>
                 <div id="profile-dropdown" class="absolute right-0 mt-4 w-48 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 hidden z-50 animate-fadeIn overflow-hidden">
@@ -1201,7 +1190,22 @@
                 targetTab.classList.remove('hidden');
             }
             
-            const activeBtn = btn || document.querySelector(`button[onclick*="'${tabId}'"]`);
+            // Map sub-tabs to their parent sidebar tab for proper highlighting
+            let parentTabId = tabId;
+            const webSubTabs = [
+                'sub-profil', 'sub-info', 'sub-artikel', 'sub-pengumuman', 
+                'sub-agenda', 'sub-galeri', 'sub-ekskul', 'sub-prestasi', 
+                'sub-unduhan', 'sub-saran', 'sub-statistik', 'sub-ppdb'
+            ];
+            const dbSubTabs = ['siswa', 'guru'];
+            
+            if (webSubTabs.includes(tabId)) {
+                parentTabId = 'hub-web-sekolah';
+            } else if (dbSubTabs.includes(tabId)) {
+                parentTabId = 'hub-database';
+            }
+            
+            const activeBtn = btn || document.querySelector(`button[onclick*="'${parentTabId}'"]`);
             
             // Only update sidebar UI if this is a nav-btn or a hub-return
             if(activeBtn && activeBtn.classList.contains('nav-btn')) {
@@ -1210,11 +1214,12 @@
                 });
                 activeBtn.classList.add('active');
                 if (window.innerWidth < 768) toggleSidebar();
-            } else if (!btn) {
-                // If returning to a hub without a button reference, highlight the corresponding sidebar nav
+            } else {
+                // Highlight the corresponding sidebar nav matching parentTabId
                 document.querySelectorAll('.nav-btn').forEach(b => {
                     b.classList.remove('active');
-                    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(tabId)) {
+                    const onclickAttr = b.getAttribute('onclick') || '';
+                    if (onclickAttr.includes(`'${parentTabId}'`)) {
                         b.classList.add('active');
                     }
                 });
@@ -1249,16 +1254,27 @@
             const vu = localStorage.getItem('adminUsername') || 'admin';
             const vp = localStorage.getItem('adminPin') || '123456';
             if (u !== vu || p !== vp) return showToast('Akses Ditolak', true);
+            
+            // Set 1-day session
+            const expireTime = Date.now() + (24 * 60 * 60 * 1000);
+            localStorage.setItem('adminSessionInfo', JSON.stringify({ username: u, expiresAt: expireTime }));
+
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('app-screen').classList.remove('hidden', 'opacity-0');
+            // Refresh profile display after login
+            window.updateProfileDisplay();
         }
-        function handleLogout() { location.reload(); }
+        function handleLogout() { 
+            localStorage.removeItem('adminSessionInfo');
+            location.reload(); 
+        }
         function updateAdminCredentials(e) {
             e.preventDefault();
             localStorage.setItem('adminUsername', document.getElementById('admin-new-user').value);
             localStorage.setItem('adminPin', document.getElementById('admin-new-pin').value);
             showToast('Kredensial diperbarui!');
             e.target.reset();
+            window.updateProfileDisplay();
         }
 
         // --- Fitur Header: Search, Notifikasi, Profil ---
@@ -1304,20 +1320,42 @@
                 const dd = document.getElementById('notifications-dropdown');
                 if (dd) dd.classList.add('hidden');
             }
-            if (!e.target.closest('#profile-dropdown') && !e.target.closest('.flex.items-center.gap-3.ml-2.cursor-pointer')) {
+            if (!e.target.closest('#profile-dropdown') && !e.target.closest('#profile-menu-button')) {
                 const pd = document.getElementById('profile-dropdown');
                 if (pd) pd.classList.add('hidden');
             }
         });
 
         // Set Profil Dinamis
-        document.addEventListener('DOMContentLoaded', () => {
-            const username = localStorage.getItem('adminUsername') || 'Administrator';
+        window.updateProfileDisplay = () => {
+            const username = localStorage.getItem('adminUsername') || 'admin';
             const nameEl = document.getElementById('header-profile-name');
             const handleEl = document.getElementById('header-profile-handle');
             
-            if (nameEl) nameEl.innerText = username;
-            if (handleEl) handleEl.innerText = '@' + username.toLowerCase().replace(/\s+/g, '_');
+            let displayName = username === 'admin' ? 'Administrator' : username;
+            let displayHandle = username === 'admin' ? 'administrator' : username.toLowerCase().replace(/\s+/g, '_');
+            
+            if (nameEl) nameEl.innerText = displayName;
+            if (handleEl) handleEl.innerText = '@' + displayHandle;
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedSessionStr = localStorage.getItem('adminSessionInfo');
+            if (savedSessionStr) {
+                try {
+                    const sessionObj = JSON.parse(savedSessionStr);
+                    if (Date.now() < sessionObj.expiresAt) {
+                        document.getElementById('login-screen').classList.add('hidden');
+                        document.getElementById('app-screen').classList.remove('hidden', 'opacity-0');
+                    } else {
+                        localStorage.removeItem('adminSessionInfo');
+                    }
+                } catch (e) {
+                    localStorage.removeItem('adminSessionInfo');
+                }
+            }
+
+            window.updateProfileDisplay();
             
             // Trigger update data
             const event = new Event('input');
