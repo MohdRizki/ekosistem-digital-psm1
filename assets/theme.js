@@ -40,6 +40,10 @@
                     primary: appPrimary,
                     secondary: '#F6BB00',
                     accent: '#57BAAB',
+                    success: '#10b981',
+                    error: '#ef4444',
+                    warning: '#f59e0b',
+                    info: '#0ea5e9',
                 },
                 fontFamily: {
                     inter: ['Poppins', 'sans-serif'],
@@ -74,24 +78,142 @@
             .db-btn-primary {
                 @apply bg-primary text-white font-bold text-[11px] uppercase tracking-wider rounded-2xl px-4 py-3 hover:opacity-90 transition-transform hover:-translate-y-0.5 active:scale-95 flex items-center justify-center gap-2 shadow-sm;
             }
+            .db-btn-secondary {
+                @apply bg-slate-100 dark:bg-slate-800 text-textSecondary hover:text-textPrimary dark:text-slate-300 dark:hover:text-white border border-border/60 font-bold text-[11px] uppercase tracking-wider rounded-2xl px-4 py-3 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95 flex items-center justify-center gap-2 shadow-sm;
+            }
+            .db-btn-danger {
+                @apply bg-rose-600 text-white font-bold text-[11px] uppercase tracking-wider rounded-2xl px-4 py-3 hover:bg-rose-700 transition-all active:scale-95 flex items-center justify-center gap-2 shadow-sm;
+            }
             .glass-card {
                 @apply bg-surface rounded-[2rem] p-5 md:p-6 shadow-[0_2px_24px_rgba(0,0,0,0.02)];
             }
+            /* Ultra-Premium Sidebar & Navigation System */
+            .app-sidebar {
+                @apply flex flex-col h-full bg-surface border-r border-border/80 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] shrink-0 overflow-hidden relative z-[60];
+                width: 260px;
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.96) 100%);
+                box-shadow: 2px 0 24px -2px rgba(0,0,0,0.03);
+            }
+            .app-sidebar.collapsed {
+                width: 76px;
+            }
+
+            /* Navigation Buttons - Strictly Left Aligned in Expanded Mode */
             .nav-btn {
-                @apply w-full text-left flex items-center gap-3 py-2.5 px-4 rounded-xl text-xs font-bold text-textSecondary transition-all relative;
+                @apply w-full text-left flex items-center justify-start gap-3.5 py-2.5 px-3.5 rounded-xl text-xs font-semibold text-textSecondary transition-all duration-200 relative overflow-hidden select-none cursor-pointer;
+            }
+            .nav-btn i {
+                @apply w-6 h-6 flex items-center justify-center shrink-0 text-base transition-transform duration-200 ease-out;
+            }
+            .nav-btn .nav-label {
+                @apply transition-all duration-200 whitespace-nowrap overflow-hidden tracking-tight font-medium;
             }
             .nav-btn:hover {
-                @apply text-textPrimary bg-slate-50;
+                @apply text-textPrimary font-semibold shadow-sm;
+                background: linear-gradient(90deg, rgba(252, 107, 88, 0.08) 0%, rgba(252, 107, 88, 0.01) 100%);
+                transform: translateX(3px);
+            }
+            .nav-btn:hover i {
+                @apply text-primary;
+                transform: scale(1.15) rotate(4deg);
+            }
+            .nav-btn:active {
+                transform: translateX(1px) scale(0.98);
             }
             .nav-btn.active {
-                @apply bg-primary/10 text-primary;
+                @apply font-bold text-primary;
+                background: linear-gradient(90deg, rgba(252, 107, 88, 0.15) 0%, rgba(252, 107, 88, 0.02) 100%);
+                box-shadow: 0 4px 14px -2px rgba(252, 107, 88, 0.12);
             }
             .nav-btn.active i {
                 @apply text-primary;
+                transform: scale(1.2);
+                filter: drop-shadow(0 2px 6px rgba(252, 107, 88, 0.4));
+            }
+            .nav-btn.active .nav-label {
+                @apply font-bold text-primary;
             }
             .nav-btn.active::before {
                 content: '';
-                @apply absolute left-1 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-primary rounded-full;
+                @apply absolute left-0 top-1/2 -translate-y-1/2 w-[3.5px] h-6 bg-primary rounded-r-full;
+                box-shadow: 0 0 10px var(--primary-color, #FC6B58);
+            }
+
+            /* Group Headers */
+            .sidebar-group-header {
+                @apply text-[10px] font-extrabold text-textSecondary/50 mb-2 mt-4 px-3.5 uppercase tracking-[0.16em] flex items-center justify-between transition-all duration-200;
+            }
+
+            /* Footer Items - Strictly Left Aligned in Expanded Mode */
+            .sidebar-footer-item {
+                @apply w-full text-left flex items-center justify-start gap-3.5 py-2.5 px-3.5 rounded-xl text-xs font-semibold text-textSecondary hover:text-textPrimary hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-all duration-200 relative overflow-hidden cursor-pointer;
+            }
+            .sidebar-footer-item i {
+                @apply w-6 h-6 flex items-center justify-center shrink-0 text-base transition-transform duration-200;
+            }
+            .sidebar-footer-item:hover i {
+                transform: scale(1.15);
+            }
+            .sidebar-footer-item .nav-label {
+                @apply transition-all duration-200 whitespace-nowrap overflow-hidden font-medium;
+            }
+
+            /* Collapse Button Styling (Chevron Only, Left Aligned in Expanded Mode) */
+            .sidebar-collapse-btn {
+                @apply w-full text-left flex items-center justify-start gap-3.5 py-2 px-3.5 rounded-xl text-textSecondary/70 hover:text-primary bg-slate-100/70 dark:bg-slate-800/50 hover:bg-primary/10 dark:hover:bg-primary/15 border border-border/50 transition-all duration-200 shadow-sm cursor-pointer shrink-0;
+            }
+            .sidebar-collapse-btn i {
+                @apply w-6 h-6 flex items-center justify-center shrink-0 text-base transition-transform duration-300;
+            }
+            .sidebar-collapse-btn:hover i {
+                transform: scale(1.15);
+            }
+
+            /* Collapsed State Behaviors */
+            .app-sidebar.collapsed .nav-label,
+            .app-sidebar.collapsed .sidebar-label,
+            .app-sidebar.collapsed .sidebar-title-text,
+            .app-sidebar.collapsed .sidebar-logo-text {
+                @apply opacity-0 w-0 overflow-hidden m-0 p-0;
+                max-width: 0;
+            }
+            .app-sidebar.collapsed .sidebar-group-header {
+                @apply justify-center px-0 mt-2 mb-1;
+            }
+            .app-sidebar.collapsed .sidebar-group-dot {
+                @apply hidden;
+            }
+            .app-sidebar.collapsed .nav-btn,
+            .app-sidebar.collapsed .sidebar-footer-item {
+                @apply justify-center px-0;
+            }
+            .app-sidebar.collapsed .nav-btn i,
+            .app-sidebar.collapsed .sidebar-footer-item i {
+                @apply mx-auto;
+            }
+            .app-sidebar.collapsed .nav-btn.active::before {
+                @apply left-0;
+            }
+            .app-sidebar.collapsed .sidebar-collapse-btn {
+                @apply justify-center px-0 w-9 h-9 mx-auto rounded-xl !ml-auto !mr-auto;
+            }
+            .app-sidebar.collapsed .sidebar-collapse-btn i {
+                transform: rotate(180deg);
+            }
+            .app-sidebar.collapsed .sidebar-collapse-btn .nav-label {
+                @apply hidden;
+            }
+
+            /* Tooltip for Collapsed Sidebar Items */
+            .nav-tooltip {
+                @apply absolute left-full ml-3 px-3 py-1.5 bg-slate-900 text-white text-[11px] font-bold rounded-xl opacity-0 pointer-events-none whitespace-nowrap z-[100] shadow-xl border border-slate-700/50 flex items-center gap-1.5;
+                transition: opacity 0.2s cubic-bezier(0.4,0,0.2,1), transform 0.2s cubic-bezier(0.4,0,0.2,1);
+                transform: translateX(-6px);
+            }
+            .app-sidebar.collapsed .nav-btn:hover .nav-tooltip,
+            .app-sidebar.collapsed .sidebar-footer-item:hover .nav-tooltip {
+                @apply opacity-100 pointer-events-auto;
+                transform: translateX(0);
             }
         }
 
@@ -175,11 +297,28 @@
             border-color: #334155 !important;
             color: #F1F5F9 !important;
         }
-        .dark .nav-btn:hover {
-            background-color: rgba(51, 65, 85, 0.5) !important;
+        .dark .app-sidebar {
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%) !important;
+            border-color: rgba(51, 65, 85, 0.6) !important;
+        }
+        .dark .nav-btn:hover,
+        .dark .sidebar-footer-item:hover {
+            background: linear-gradient(90deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 100%) !important;
+            color: #FFFFFF !important;
         }
         .dark .nav-btn.active {
+            background: linear-gradient(90deg, rgba(252, 107, 88, 0.2) 0%, rgba(252, 107, 88, 0.03) 100%) !important;
+            color: var(--primary-color, #FC6B58) !important;
+            box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.4) !important;
+        }
+        .dark .nav-tooltip {
+            background-color: #0F172A !important;
+            border: 1px solid #334155 !important;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.8) !important;
+        }
+        .dark .sidebar-collapse-btn:hover {
             background-color: rgba(252, 107, 88, 0.15) !important;
+            color: var(--primary-color, #FC6B58) !important;
         }
         .dark .bg-grid-pattern {
             background-image: radial-gradient(circle, #334155 1px, transparent 1px) !important;
@@ -226,6 +365,28 @@ window.toggleTheme = function() {
             });
         });
     }
+})();
+
+/**
+ * Sidebar Collapse/Expand Toggle
+ * Used by: admin.html, olah-nilai.html, jurnal.html, dashboard-siswa.html
+ */
+window.toggleSidebarCollapse = function(sidebarId) {
+    const sidebar = document.getElementById(sidebarId) || document.querySelector('.app-sidebar');
+    if (!sidebar) return;
+    sidebar.classList.toggle('collapsed');
+    const isCollapsed = sidebar.classList.contains('collapsed');
+    localStorage.setItem('sidebarCollapsed', isCollapsed ? '1' : '0');
+};
+
+// Auto-restore sidebar collapse state on load
+(function() {
+    document.addEventListener('DOMContentLoaded', () => {
+        const saved = localStorage.getItem('sidebarCollapsed');
+        if (saved === '1') {
+            document.querySelectorAll('.app-sidebar').forEach(s => s.classList.add('collapsed'));
+        }
+    });
 })();
 
 /**

@@ -61,7 +61,7 @@
                         <label class="block text-slate-500 font-bold text-[10px] uppercase tracking-wider pl-4">PIN Keamanan</label>
                         <div class="relative group">
                             <i class="ph-bold ph-lock-key absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-red-600 transition-colors text-lg"></i>
-                            <input type="password" id="login-pin" required maxlength="6" pattern="\d{6}" placeholder="6 Digit PIN" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-full px-4 py-3.5 pl-14 pr-12 text-sm tracking-[0.3em] font-mono font-bold focus:outline-none focus:border-red-500 focus:ring-4 focus:ring-red-500/10 focus:bg-white transition-all">
+                            <input type="password" id="login-pin" required maxlength="6" placeholder="6 Karakter PIN" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-full px-4 py-3.5 pl-14 pr-12 text-sm tracking-[0.3em] font-mono font-bold focus:outline-none focus:border-red-500 focus:ring-4 focus:ring-red-500/10 focus:bg-white transition-all">
                             <button type="button" onclick="const p=document.getElementById('login-pin'); const i=document.getElementById('eye-icon-admin'); if(p.type==='password'){p.type='text';i.className='ph-bold ph-eye text-lg';}else{p.type='password';i.className='ph-bold ph-eye-closed text-lg';}" class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors outline-none">
                                 <i id="eye-icon-admin" class="ph-bold ph-eye-closed text-lg"></i>
                             </button>
@@ -91,8 +91,8 @@
         </div>
 
         <!-- 4. ILLUSTRATIONS — Prominent and Dynamic -->
-        <img src="./assets/lari.png" alt="Siswa Berlari" class="absolute bottom-[-1%] right-[1%] w-[17vw] max-w-[240px] z-[5] pointer-events-none hidden lg:block opacity-95 animate-slideUp" onerror="this.style.display='none'">
-        <img src="./assets/lompat.png" alt="Siswa Melompat" class="absolute bottom-[2%] left-[2%] w-[10vw] max-w-[130px] z-[60] pointer-events-none hidden lg:block drop-shadow-2xl" onerror="this.style.display='none'">
+        <img src="./assets/lari.png" alt="Siswa Berlari" class="absolute bottom-[-2%] right-[1%] w-[26vw] max-w-[364px] z-[5] pointer-events-none hidden lg:block opacity-95 animate-slideUp drop-shadow-2xl" onerror="this.style.display='none'">
+        <img src="./assets/lompat.png" alt="Siswa Melompat" class="absolute bottom-[-5%] left-[1%] w-[16vw] max-w-[234px] z-[60] pointer-events-none hidden lg:block drop-shadow-2xl" onerror="this.style.display='none'">
 
         <!-- 5. CREDIT TEXT -->
         <div class="absolute bottom-4 right-6 z-40 text-right pointer-events-auto">
@@ -112,66 +112,58 @@
         <div class="absolute bottom-10 left-10 w-96 h-96 bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-[120px] animate-blob animation-delay-2000 pointer-events-none"></div>
         <div class="absolute inset-0 bg-grid-pattern pointer-events-none opacity-40"></div>
 
-        <aside id="admin-sidebar" class="absolute md:relative z-50 w-64 h-full bg-surface flex flex-col transition-transform duration-300 transform -translate-x-full md:translate-x-0 shadow-[4px_0_24px_rgba(0,0,0,0.02)] shrink-0 z-[60]">
-        <button onclick="toggleSidebar()" class="md:hidden absolute top-5 right-4 p-2 text-textSecondary hover:text-textPrimary rounded-lg"><i class="ph-bold ph-x text-xl"></i></button>
-        <div class="h-24 flex items-center gap-3 shrink-0 px-8 mt-2">
+        <aside id="admin-sidebar" class="app-sidebar absolute md:relative z-[60] shadow-[4px_0_24px_rgba(0,0,0,0.02)] -translate-x-full md:translate-x-0 transform transition-transform duration-300">
+        <button onclick="toggleSidebar()" class="md:hidden absolute top-5 right-4 p-2 text-textSecondary hover:text-textPrimary rounded-lg z-10"><i class="ph-bold ph-x text-xl"></i></button>
+        
+        <!-- Logo -->
+        <div class="h-20 flex items-center gap-3 shrink-0 px-5 mt-2">
             <div class="flex relative items-center justify-center shrink-0 w-8 h-8">
                 <div class="w-5 h-5 rounded-full bg-primary absolute left-0 opacity-90 mix-blend-multiply"></div>
                 <div class="w-5 h-5 rounded-full bg-accent absolute right-0 opacity-90 mix-blend-multiply"></div>
             </div>
-            <div class="min-w-0">
-                <h2 class="font-bold text-textPrimary text-xl leading-tight line-clamp-1 tracking-tight">SDN Pasirmae</h2>
+            <div class="min-w-0 sidebar-logo-text">
+                <h2 class="font-bold text-textPrimary text-lg leading-tight line-clamp-1 tracking-tight">SDN Pasirmae</h2>
             </div>
         </div>
+
+        <!-- Collapse toggle -->
+        <div class="px-3 mb-2 hidden md:flex justify-start">
+            <button onclick="window.toggleSidebarCollapse('admin-sidebar')" class="sidebar-collapse-btn" title="Sembunyikan / Tampilkan Sidebar">
+                <i class="ph-bold ph-caret-left text-base shrink-0"></i>
+            </button>
+        </div>
+
         <div id="sidebar-profile-widget" class="hidden"></div>
-        <nav class="flex-1 overflow-y-auto custom-scrollbar px-4 py-6 flex flex-col gap-6">
-            <!-- GROUP 1: GLOBAL -->
-            <div>
-                <div class="text-[10px] font-bold text-textSecondary/60 mb-2 px-2 uppercase tracking-widest">Sistem Global</div>
-                <div class="flex flex-col gap-1">
-                    <button onclick="switchTab('dasbor', this)" data-app="global" class="nav-btn active">
-                        <i class="ph-bold ph-squares-four text-lg shrink-0"></i>
-                        <span>Dasbor Utama</span>
-                    </button>
-                </div>
-            </div>
 
-            <!-- GROUP 2: WEB UTAMA -->
-            <div>
-                <div class="text-[10px] font-bold text-textSecondary/60 mb-2 px-2 uppercase tracking-widest flex justify-between items-center">
-                    <span>Aplikasi</span>
-                    <div class="w-1.5 h-1.5 rounded-full bg-red-400"></div>
-                </div>
-                <div class="flex flex-col gap-1">
-                    <button onclick="switchTab('hub-web-sekolah', this)" data-app="web-utama" class="nav-btn">
-                        <i class="ph-bold ph-browser text-lg shrink-0"></i>
-                        <span>Manajemen Web</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- GROUP 3: DATABASE TERPUSAT -->
-            <div>
-                <div class="text-[10px] font-bold text-textSecondary/60 mb-2 px-2 uppercase tracking-widest flex justify-between items-center">
-                    <span>Database</span>
-                    <div class="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
-                </div>
-                <div class="flex flex-col gap-1">
-                    <button onclick="switchTab('hub-database', this)" data-app="portal-siswa" class="nav-btn">
-                        <i class="ph-bold ph-database text-lg shrink-0"></i>
-                        <span>Sistem Basis Data</span>
-                    </button>
-                </div>
-            </div>
+        <nav class="flex-1 overflow-y-auto custom-scrollbar px-3 py-4 flex flex-col gap-1">
+            <button onclick="switchTab('dasbor', this)" data-app="global" class="nav-btn active">
+                <i class="ph-bold ph-squares-four text-lg shrink-0"></i>
+                <span class="nav-label">Dasbor Utama</span>
+                <span class="nav-tooltip">Dasbor Utama</span>
+            </button>
+            <button onclick="switchTab('hub-web-sekolah', this)" data-app="web-utama" class="nav-btn">
+                <i class="ph-bold ph-browser text-lg shrink-0"></i>
+                <span class="nav-label">Manajemen Web</span>
+                <span class="nav-tooltip">Manajemen Web</span>
+            </button>
+            <button onclick="switchTab('hub-database', this)" data-app="portal-siswa" class="nav-btn">
+                <i class="ph-bold ph-database text-lg shrink-0"></i>
+                <span class="nav-label">Sistem Basis Data</span>
+                <span class="nav-tooltip">Sistem Basis Data</span>
+            </button>
         </nav>
-        <div class="p-4 border-t border-border/10 shrink-0 mt-auto flex flex-col gap-1.5">
-            <a href="https://sdnegeripasirmae1.github.io/" target="_blank" class="flex items-center gap-3 py-2.5 px-4 rounded-xl text-xs font-bold text-textSecondary hover:text-textPrimary hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all">
+
+        <!-- Footer -->
+        <div class="p-3 border-t border-border/10 shrink-0 mt-auto flex flex-col gap-0.5">
+            <a href="https://sdnegeripasirmae1.github.io/" target="_blank" class="sidebar-footer-item">
                 <i class="ph-bold ph-globe text-lg shrink-0"></i>
-                <span>Buka Situs Utama</span>
+                <span class="nav-label">Buka Situs Utama</span>
+                <span class="nav-tooltip">Buka Situs Utama</span>
             </a>
-            <button onclick="handleLogout()" class="w-full flex items-center gap-3 py-2.5 px-4 rounded-xl text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all">
+            <button onclick="handleLogout()" class="sidebar-footer-item text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10">
                 <i class="ph-bold ph-sign-out text-lg shrink-0"></i>
-                <span>Keluar Sesi</span>
+                <span class="nav-label">Keluar Sesi</span>
+                <span class="nav-tooltip">Keluar Sesi</span>
             </button>
         </div>
     </aside>
@@ -426,7 +418,7 @@
                                 <h3 class="font-bold text-sm text-textPrimary">Aktivitas Terkini</h3>
                                 <button class="text-[10px] font-bold text-textSecondary hover:text-primary transition-colors flex items-center gap-1">Semua <i class="ph-bold ph-caret-down"></i></button>
                             </div>
-                            <div class="space-y-3">
+                            <div id="recent-activities-list" class="space-y-3">
                                 <!-- List Item 1 -->
                                 <div class="bg-surface rounded-2xl p-3 flex items-center gap-3 shadow-sm border border-border/40 hover:shadow-md transition-shadow cursor-pointer group">
                                     <div class="w-10 h-10 rounded-xl bg-[#F6BB00]/10 text-[#F6BB00] flex items-center justify-center font-black text-lg">P</div>
@@ -571,7 +563,7 @@
                         <div class="flex flex-col gap-5 pt-1">
                             
                             <!-- WEB 1: WEB UTAMA -->
-                            <a href="/" target="_blank" class="flex items-center gap-4 group cursor-pointer hover:bg-slate-50/50 p-1 -m-1 rounded-xl transition-colors">
+                            <a href="index.html" target="_blank" class="flex items-center gap-4 group cursor-pointer hover:bg-slate-50/50 p-1 -m-1 rounded-xl transition-colors">
                                 <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors">
                                     <i class="ph-fill ph-globe text-textSecondary group-hover:text-primary text-2xl transition-colors"></i>
                                 </div>
@@ -583,7 +575,7 @@
                             </a>
                             
                             <!-- WEB 2: PORTAL SISWA -->
-                            <a href="/portal-siswa" target="_blank" class="flex items-center gap-4 group cursor-pointer hover:bg-slate-50/50 p-1 -m-1 rounded-xl transition-colors">
+                            <a href="dashboard-siswa.html" target="_blank" class="flex items-center gap-4 group cursor-pointer hover:bg-slate-50/50 p-1 -m-1 rounded-xl transition-colors">
                                 <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center shrink-0 group-hover:bg-blue-500/10 transition-colors">
                                     <i class="ph-fill ph-student text-textSecondary group-hover:text-blue-500 text-2xl transition-colors"></i>
                                 </div>
@@ -595,7 +587,7 @@
                             </a>
                             
                             <!-- WEB 3: JURNAL -->
-                            <a href="/jurnal" target="_blank" class="flex items-center gap-4 group cursor-pointer hover:bg-slate-50/50 p-1 -m-1 rounded-xl transition-colors">
+                            <a href="jurnal.html" target="_blank" class="flex items-center gap-4 group cursor-pointer hover:bg-slate-50/50 p-1 -m-1 rounded-xl transition-colors">
                                 <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center shrink-0 group-hover:bg-emerald-500/10 transition-colors">
                                     <i class="ph-fill ph-book-open text-textSecondary group-hover:text-emerald-500 text-2xl transition-colors"></i>
                                 </div>
@@ -607,7 +599,7 @@
                             </a>
                             
                             <!-- WEB 4: PENILAIAN -->
-                            <a href="/penilaian" target="_blank" class="flex items-center gap-4 group cursor-pointer hover:bg-slate-50/50 p-1 -m-1 rounded-xl transition-colors">
+                            <a href="olah-nilai.html" target="_blank" class="flex items-center gap-4 group cursor-pointer hover:bg-slate-50/50 p-1 -m-1 rounded-xl transition-colors">
                                 <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center shrink-0 group-hover:bg-secondary/10 transition-colors">
                                     <i class="ph-fill ph-exam text-textSecondary group-hover:text-secondary text-2xl transition-colors"></i>
                                 </div>
@@ -1369,7 +1361,7 @@
     <!-- ========================================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, collection, doc, addDoc, getDocs, onSnapshot, setDoc, updateDoc, deleteDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, doc, addDoc, getDocs, onSnapshot, setDoc, updateDoc, deleteDoc, serverTimestamp, query, orderBy, collectionGroup } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         
         let cfg = typeof __firebase_config !== 'undefined' && __firebase_config ? JSON.parse(__firebase_config) : {
@@ -1604,6 +1596,8 @@
             });
             onSnapshot(getColRef('pengumuman'), (snap) => { 
                 const list = document.getElementById('list-pengumuman'); list.innerHTML = ''; document.getElementById('stat-pengumuman').innerText = snap.size; 
+                window.realtimePengumumanList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                window.updateRealtimeActivities();
                 snap.forEach(d => { 
                     window.adminDataStore.pengumuman[d.id] = { id: d.id, ...d.data() };
                     const imgTag = d.data().gambar ? `<i class="ph-bold ph-image text-red-600-200/60 ml-1"></i>` : ''; 
@@ -1705,31 +1699,111 @@
                 document.getElementById('modal-cropper').classList.add('hidden');
                 cropperInstance.destroy();
             };
-            window.calculateGlobalStats = async () => {
-                document.getElementById('stat-jurnal').innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i>';
-                document.getElementById('stat-presensi').innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i>';
-                document.getElementById('stat-penilaian').innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i>';
-                let journals = 0, attendance = 0, penilaian = 0;
-                let classes = new Set();
-                for (const guruId of Object.keys(window.adminDataStore.guru)) {
-                    const guru = window.adminDataStore.guru[guruId];
-                    if (guru.kelas && guru.kelas !== '-') classes.add(guru.kelas);
-                    try {
-                        const jSnap = await getDocs(collection(db, 'artifacts', appId, 'users', guruId, 'journals'));
-                        const aSnap = await getDocs(collection(db, 'artifacts', appId, 'users', guruId, 'attendance'));
-                        journals += jSnap.size; attendance += aSnap.size;
-                    } catch(e) {}
+            window.realtimeActivities = [];
+            window.realtimeJournalsList = [];
+            window.realtimePengumumanList = [];
+            window.realtimePenilaianList = [];
+            window.arsipUnsubscribes = {};
+
+            window.updateRealtimeActivities = () => {
+                const container = document.getElementById('recent-activities-list');
+                if (!container) return;
+
+                let allItems = [...(window.realtimeActivities || [])];
+
+                if (window.realtimeJournalsList && window.realtimeJournalsList.length > 0) {
+                    window.realtimeJournalsList.forEach(j => {
+                        allItems.push({
+                            type: 'Jurnal Mengajar',
+                            title: `${j.mata_pelajaran || 'Mata Pelajaran'} (Kelas ${j.kelas_mengajar || ''})`,
+                            subtitle: `Oleh ${j.nama_guru || 'Guru Sekolah'} • ${j.tanggal || ''}`,
+                            time: new Date(j.createdAt || Date.now()).getTime(),
+                            icon: 'J',
+                            color: '#57BAAB',
+                            url: 'jurnal.html'
+                        });
+                    });
                 }
-                for (const cls of classes) {
-                    try {
-                        const archSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', `archives_${cls}`));
-                        penilaian += archSnap.size;
-                    } catch(e) {}
+                if (window.realtimePengumumanList && window.realtimePengumumanList.length > 0) {
+                    window.realtimePengumumanList.forEach(p => {
+                        allItems.push({
+                            type: 'Pengumuman',
+                            title: p.judul || 'Pengumuman Baru',
+                            subtitle: `Tanggal: ${p.tanggal || 'Hari ini'}`,
+                            time: new Date(p.createdAt || Date.now()).getTime(),
+                            icon: 'P',
+                            color: '#ec4899',
+                            url: 'index.html'
+                        });
+                    });
                 }
-                document.getElementById('stat-jurnal').innerText = journals;
-                document.getElementById('stat-presensi').innerText = attendance;
-                document.getElementById('stat-penilaian').innerText = penilaian;
+                if (window.realtimePenilaianList && window.realtimePenilaianList.length > 0) {
+                    window.realtimePenilaianList.forEach(a => {
+                        allItems.push({
+                            type: 'Penilaian Harian',
+                            title: a.nama_arsip || 'Arsip Penilaian',
+                            subtitle: `Oleh ${a.nama_guru || 'Guru'} • ${a.tanggal?.split('T')[0] || ''}`,
+                            time: new Date(a.tanggal || Date.now()).getTime(),
+                            icon: 'N',
+                            color: '#F6BB00',
+                            url: 'olah-nilai.html'
+                        });
+                    });
+                }
+
+                if (allItems.length === 0) return;
+
+                allItems.sort((a, b) => (b.time || 0) - (a.time || 0));
+                const seen = new Set();
+                const unique = [];
+                for (const item of allItems) {
+                    const key = `${item.type}|${item.title}`;
+                    if (!seen.has(key)) {
+                        seen.add(key);
+                        unique.push(item);
+                    }
+                }
+
+                const topItems = unique.slice(0, 4);
+                if (topItems.length === 0) return;
+
+                container.innerHTML = topItems.map((item, idx) => {
+                    const isHighlight = idx === 0;
+                    const color = item.color || '#FC6B58';
+                    const icon = item.icon || item.type.charAt(0);
+                    return `
+                    <div onclick="window.open('${item.url || '/'}', '_blank')" class="bg-surface rounded-2xl p-3 flex items-center gap-3 shadow-sm border border-border/40 hover:shadow-md transition-shadow cursor-pointer group ${isHighlight ? 'shadow-[0_4px_20px_rgba(252,107,88,0.15)] border-[#FC6B58]/20 relative overflow-hidden' : ''}">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-lg ${isHighlight ? 'bg-[#FC6B58] text-white shadow-inner' : ''}" style="${!isHighlight ? `background-color: ${color}15; color: ${color};` : ''}">${icon}</div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-xs font-bold text-textPrimary group-hover:text-primary transition-colors truncate">${item.title}</h4>
+                            <p class="text-[10px] text-textSecondary truncate">${item.subtitle || item.type}</p>
+                        </div>
+                        <div class="px-3 py-1.5 rounded-xl text-[10px] font-bold transition-colors shrink-0 ${isHighlight ? 'bg-[#FC6B58] text-white shadow-sm shadow-[#FC6B58]/30' : 'bg-primary/10 text-primary hover:bg-primary hover:text-white'}">
+                            ${isHighlight ? 'Buka' : 'Lihat'}
+                        </div>
+                        <div class="w-1 h-4 bg-border rounded-full ml-1 opacity-50"></div>
+                    </div>`;
+                }).join('');
             };
+
+            try {
+                onSnapshot(collectionGroup(db, 'journals'), (snap) => {
+                    const el = document.getElementById('stat-jurnal');
+                    if (el) el.innerText = snap.size;
+                    window.realtimeJournalsList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    window.updateRealtimeActivities();
+                });
+                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'activities'), (snap) => {
+                    window.realtimeActivities = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    window.updateRealtimeActivities();
+                });
+            } catch(e) { console.error("Realtime ecosystem error:", e); }
+
+            window.calculateGlobalStats = async () => {
+                showToast("Memperbarui statistik secara real-time...");
+                window.updateRealtimeActivities();
+            };
+
 
             window.wipeTeacherData = async (teacherId, name) => {
                 if(confirm(`Hapus SELURUH isi database jurnal, presensi, mapel milik guru ${name}? (Data profil guru tidak akan dihapus)`)) {
@@ -1780,6 +1854,18 @@
                 const list = document.getElementById('tabel-guru-body'); list.innerHTML = ''; document.getElementById('stat-guru').innerText = snap.size; 
                 snap.forEach(d => { 
                     window.adminDataStore.guru[d.id] = { id: d.id, ...d.data() }; 
+                    const g = d.data();
+                    if (g.username && !window.arsipUnsubscribes[g.username]) {
+                        window.arsipUnsubscribes[g.username] = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', `arsip_guru_${g.username}`), (aSnap) => {
+                            window.realtimePenilaianList = (window.realtimePenilaianList || []).filter(item => item.username !== g.username);
+                            aSnap.forEach(docSnap => {
+                                window.realtimePenilaianList.push({ id: docSnap.id, username: g.username, nama_guru: g.nama, ...docSnap.data() });
+                            });
+                            const statPen = document.getElementById('stat-penilaian');
+                            if (statPen) statPen.innerText = window.realtimePenilaianList.length;
+                            window.updateRealtimeActivities();
+                        });
+                    }
                     const foto = d.data().foto || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.data().nama || 'Guru')}&bg=b91c1c&color=fff`; 
                     list.innerHTML += `<tr class="border-b border-border/20 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
                         <td class="py-3 px-4">
@@ -1857,6 +1943,7 @@
                     }
                     window.dataSiswaLokal.push({id:d.id, ...sData});
                 }); 
+                localStorage.setItem('shared_siswa_cache', JSON.stringify(window.dataSiswaLokal));
                 window.renderTabelSiswa(); 
             });
 

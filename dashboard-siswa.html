@@ -59,10 +59,10 @@
                 
                 <form onsubmit="handleLoginSiswa(event)" class="flex flex-col gap-4 text-left">
                     <div class="flex flex-col gap-1.5">
-                        <label class="block text-slate-500 font-bold text-[10px] uppercase tracking-wider pl-4">NISN / NIS</label>
+                        <label class="block text-slate-500 font-bold text-[10px] uppercase tracking-wider pl-4">NISN / NIS / Nama Siswa</label>
                         <div class="relative group">
                             <i class="ph-bold ph-identification-card absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors text-lg"></i>
-                            <input type="text" id="login-nisn" required placeholder="Cth: 1234567890" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-full px-4 py-3.5 pl-14 text-sm font-semibold focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all">
+                            <input type="text" id="login-nisn" required placeholder="Cth: 1234567890 atau Nama Siswa" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-full px-4 py-3.5 pl-14 text-sm font-semibold focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all">
                         </div>
                     </div>
                     
@@ -70,7 +70,7 @@
                         <label class="block text-slate-500 font-bold text-[10px] uppercase tracking-wider pl-4">PIN Akses</label>
                         <div class="relative group">
                             <i class="ph-bold ph-lock-key absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors text-lg"></i>
-                            <input type="password" id="login-pin" required maxlength="6" pattern="\d{6}" placeholder="6 Digit PIN" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-full px-4 py-3.5 pl-14 pr-12 text-sm tracking-[0.3em] font-mono font-bold focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all">
+                            <input type="password" id="login-pin" required maxlength="6" placeholder="6 Karakter PIN" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-full px-4 py-3.5 pl-14 pr-12 text-sm tracking-[0.3em] font-mono font-bold focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all">
                             <button type="button" onclick="const p=document.getElementById('login-pin'); const i=document.getElementById('eye-icon'); if(p.type==='password'){p.type='text';i.className='ph-bold ph-eye text-lg';}else{p.type='password';i.className='ph-bold ph-eye-closed text-lg';}" class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors outline-none">
                                 <i id="eye-icon" class="ph-bold ph-eye-closed text-lg"></i>
                             </button>
@@ -100,8 +100,8 @@
         </div>
 
         <!-- 4. ILLUSTRATIONS — Prominent and Dynamic -->
-        <img src="./assets/lari.png" alt="Siswa Berlari" class="absolute bottom-[-1%] right-[1%] w-[17vw] max-w-[240px] z-[5] pointer-events-none hidden lg:block opacity-95 animate-slideUp" onerror="this.style.display='none'">
-        <img src="./assets/lompat.png" alt="Siswa Melompat" class="absolute bottom-[2%] left-[2%] w-[10vw] max-w-[130px] z-[60] pointer-events-none hidden lg:block drop-shadow-2xl" onerror="this.style.display='none'">
+        <img src="./assets/lari.png" alt="Siswa Berlari" class="absolute bottom-[-2%] right-[1%] w-[26vw] max-w-[364px] z-[5] pointer-events-none hidden lg:block opacity-95 animate-slideUp drop-shadow-2xl" onerror="this.style.display='none'">
+        <img src="./assets/lompat.png" alt="Siswa Melompat" class="absolute bottom-[-5%] left-[1%] w-[16vw] max-w-[234px] z-[60] pointer-events-none hidden lg:block drop-shadow-2xl" onerror="this.style.display='none'">
 
         <!-- 5. CREDIT TEXT -->
         <div class="absolute bottom-4 right-6 z-40 text-right pointer-events-auto">
@@ -116,48 +116,71 @@
     <div id="app-screen" class="hidden h-full w-full flex overflow-hidden absolute inset-0 z-40 bg-transparent">
         
         <!-- SIDEBAR NAVIGASI -->
-        <aside id="siswa-sidebar" class="absolute md:relative z-50 h-full w-[240px] bg-surface flex flex-col transition-transform duration-300 transform -translate-x-full md:translate-x-0 shadow-[4px_0_24px_rgba(0,0,0,0.04)] md:shadow-none">
-            <button onclick="toggleSidebar()" class="md:hidden absolute top-5 right-4 p-2 text-textSecondary hover:text-textPrimary rounded-lg"><i class="ph-bold ph-x text-xl"></i></button>
+        <aside id="siswa-sidebar" class="app-sidebar absolute md:relative z-[60] shadow-[4px_0_24px_rgba(0,0,0,0.02)] -translate-x-full md:translate-x-0 transform transition-transform duration-300">
+            <button onclick="toggleSidebar()" class="md:hidden absolute top-5 right-4 p-2 text-textSecondary hover:text-textPrimary rounded-lg z-10"><i class="ph-bold ph-x text-xl"></i></button>
             
-            <!-- Profile section -->
-            <div class="h-24 flex items-center gap-3 shrink-0 px-6 mt-2">
-                <div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shadow-sm border border-primary/20 shrink-0">
-                    <i class="ph-fill ph-student text-2xl"></i>
+            <!-- Logo -->
+            <div class="h-20 flex items-center gap-3 shrink-0 px-5 mt-2">
+                <div class="flex relative items-center justify-center shrink-0 w-8 h-8">
+                    <div class="w-5 h-5 rounded-full bg-primary absolute left-0 opacity-90 mix-blend-multiply"></div>
+                    <div class="w-5 h-5 rounded-full bg-accent absolute right-0 opacity-90 mix-blend-multiply"></div>
                 </div>
-                <div class="min-w-0">
-                    <h2 id="profil-nama" class="font-bold text-textPrimary text-sm leading-tight line-clamp-1 tracking-tight">-</h2>
-                    <div class="flex items-center gap-1 mt-1">
-                        <span id="profil-kelas" class="bg-primary/10 text-primary text-[8px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest">-</span>
-                        <span id="profil-nisn" class="bg-surface border border-border text-textSecondary text-[8px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest">-</span>
+                <div class="min-w-0 sidebar-logo-text">
+                    <h2 class="font-bold text-textPrimary text-lg leading-tight line-clamp-1 tracking-tight">SDN Pasirmae</h2>
+                </div>
+            </div>
+
+            <!-- Student profile widget -->
+            <div class="px-4 py-2.5 mx-3 mb-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-border/40 flex items-center gap-3 shrink-0 sidebar-profile-card">
+                <div class="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center text-primary shrink-0 font-bold">
+                    <i class="ph-fill ph-student text-lg"></i>
+                </div>
+                <div class="min-w-0 sidebar-logo-text">
+                    <h2 id="profil-nama" class="font-bold text-textPrimary text-[11px] leading-tight line-clamp-1 tracking-tight">-</h2>
+                    <div class="flex items-center gap-1 mt-0.5">
+                        <span id="profil-kelas" class="bg-primary/10 text-primary text-[7px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-widest">-</span>
+                        <span id="profil-nisn" class="text-textSecondary text-[7px] font-bold truncate">-</span>
                     </div>
                 </div>
             </div>
+
+            <!-- Collapse toggle -->
+            <div class="px-3 mb-1 hidden md:flex justify-start">
+                <button onclick="window.toggleSidebarCollapse('siswa-sidebar')" class="sidebar-collapse-btn" title="Sembunyikan / Tampilkan Sidebar">
+                    <i class="ph-bold ph-caret-left text-base shrink-0"></i>
+                </button>
+            </div>
             
-            <nav class="flex-1 overflow-y-auto custom-scrollbar px-4 py-6 flex flex-col gap-2" id="main-nav-container">
+            <nav class="flex-1 overflow-y-auto custom-scrollbar px-3 py-4 flex flex-col gap-1" id="main-nav-container">
                 <button onclick="switchTabSiswa('beranda', this)" class="nav-btn active" data-tab="beranda">
-                    <i class="ph-bold ph-house text-lg shrink-0"></i> <span>Beranda Belajar</span>
+                    <i class="ph-bold ph-squares-four text-lg shrink-0"></i> 
+                    <span class="nav-label">Beranda Belajar</span>
+                    <span class="nav-tooltip">Beranda Belajar</span>
                 </button>
                 <button onclick="switchTabSiswa('lms', this)" class="nav-btn" data-tab="lms">
-                    <i class="ph-bold ph-books text-lg shrink-0"></i> <span>Modul LMS</span>
+                    <i class="ph-bold ph-books text-lg shrink-0"></i> 
+                    <span class="nav-label">Modul LMS</span>
+                    <span class="nav-tooltip">Modul LMS</span>
                 </button>
                 <button onclick="switchTabSiswa('nilai', this)" class="nav-btn" data-tab="nilai">
-                    <i class="ph-bold ph-exam text-lg shrink-0"></i> <span>Nilai Sumatif</span>
+                    <i class="ph-bold ph-exam text-lg shrink-0"></i> 
+                    <span class="nav-label">Nilai Sumatif</span>
+                    <span class="nav-tooltip">Nilai Sumatif</span>
                 </button>
             </nav>
 
-            <div class="p-6 shrink-0 mt-auto">
-                <div class="bg-primary rounded-3xl p-5 relative overflow-hidden text-center shadow-lg shadow-primary/30">
-                    <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-xl pointer-events-none"></div>
-                    <div class="relative z-10">
-                        <button onclick="logoutSiswa()" class="w-full text-white/90 hover:text-white font-bold text-[10px] uppercase tracking-wider transition-colors flex items-center justify-center gap-2">
-                            <i class="ph-bold ph-sign-out"></i> Keluar
-                        </button>
-                        <div class="mt-3 pt-3 border-t border-border/20">
-                            <p class="text-[8px] font-bold text-white/60 uppercase tracking-[0.2em] mb-0.5">Developed By</p>
-                            <p class="text-[9px] font-bold text-white/80">reezapps &middot; M. Rizki, S.Pd.</p>
-                        </div>
-                    </div>
-                </div>
+            <!-- Footer -->
+            <div class="p-3 border-t border-border/10 shrink-0 mt-auto flex flex-col gap-0.5">
+                <a href="https://sdnegeripasirmae1.github.io/" target="_blank" class="sidebar-footer-item">
+                    <i class="ph-bold ph-globe text-lg shrink-0"></i>
+                    <span class="nav-label">Buka Situs Utama</span>
+                    <span class="nav-tooltip">Buka Situs Utama</span>
+                </a>
+                <button onclick="logoutSiswa()" class="sidebar-footer-item text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10">
+                    <i class="ph-bold ph-sign-out text-lg shrink-0"></i>
+                    <span class="nav-label">Keluar Sesi</span>
+                    <span class="nav-tooltip">Keluar Sesi</span>
+                </button>
             </div>
         </aside>
 
@@ -184,51 +207,104 @@
             <div class="p-4 md:p-6 flex flex-col gap-4 md:gap-6 max-w-4xl mx-auto pb-20">
                 
                 <!-- TAB 1: BERANDA -->
-                <div id="beranda" class="tab-content active">
+                <div id="beranda" class="tab-content active animate-fadeIn">
                     
-                    <!-- Widget Ringkasan -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-5 md:mb-6">
-                        <div class="bg-gradient-to-br from-blue-500 to-indigo-600 p-4 md:p-5 rounded-[1.2rem] md:rounded-[1.5rem] shadow-md text-white flex items-center justify-between relative overflow-hidden active:scale-[0.98] transition-transform">
-                            <div class="absolute right-0 top-0 w-24 h-24 bg-white/20 rounded-full blur-2xl transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-                            <div class="relative z-10">
-                                <h3 class="text-blue-100 font-bold text-[9px] md:text-[10px] uppercase tracking-widest mb-1">Materi Baru (LMS)</h3>
-                                <p class="text-2xl md:text-3xl font-black">Tersedia</p>
-                            </div>
-                            <div class="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-xl flex items-center justify-center text-xl md:text-2xl backdrop-blur-md border border-border/30 relative z-10"><i class="ph-fill ph-book-open"></i></div>
+                    <!-- Hero Welcome Banner -->
+                    <div class="bg-accent rounded-3xl p-5 sm:p-8 mb-5 md:mb-6 relative overflow-hidden shadow-lg shadow-accent/20">
+                        <div class="absolute -right-16 -top-16 w-56 h-56 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+                        <div class="absolute -left-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                        <div class="absolute right-4 bottom-0 opacity-[0.07] pointer-events-none hidden sm:block">
+                            <i class="ph-fill ph-graduation-cap text-[120px] text-white"></i>
                         </div>
-                        <div class="bg-gradient-to-br from-emerald-400 to-teal-500 p-4 md:p-5 rounded-[1.2rem] md:rounded-[1.5rem] shadow-md text-white flex items-center justify-between relative overflow-hidden active:scale-[0.98] transition-transform">
-                            <div class="absolute right-0 top-0 w-24 h-24 bg-white/20 rounded-full blur-2xl transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-                            <div class="relative z-10">
-                                <h3 class="text-emerald-100 font-bold text-[9px] md:text-[10px] uppercase tracking-widest mb-1">Status Nilai Terbaru</h3>
-                                <p class="text-2xl md:text-3xl font-black">Rilis</p>
+                        
+                        <div class="relative z-10 text-white">
+                            <div class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full bg-white/15 border border-white/20 text-white text-[9px] font-bold uppercase tracking-[0.18em] mb-3 backdrop-blur-sm">
+                                <i class="ph-bold ph-student text-xs"></i> Portal Belajar Siswa
                             </div>
-                            <div class="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-xl flex items-center justify-center text-xl md:text-2xl backdrop-blur-md border border-border/30 relative z-10"><i class="ph-fill ph-chart-line-up"></i></div>
+                            <h2 id="hero-sapaan" class="text-xl sm:text-2xl font-black mb-1.5 tracking-tight leading-tight">Selamat datang kembali!</h2>
+                            <p class="text-[11px] text-white/75 font-medium max-w-md leading-relaxed">Pantau materi pelajaran, kerjakan tugas, dan lihat perkembangan nilaimu secara real-time.</p>
+                            
+                            <div class="flex flex-wrap items-center gap-4 mt-5">
+                                <div class="flex items-center gap-2.5 bg-white/10 rounded-xl px-3 py-2 border border-white/10 backdrop-blur-sm">
+                                    <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+                                        <i class="ph-fill ph-calendar-blank text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-[8px] text-white/60 font-bold uppercase tracking-wider">Hari Ini</p>
+                                        <p id="hero-tanggal" class="text-[11px] font-bold leading-tight">-</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2.5 bg-white/10 rounded-xl px-3 py-2 border border-white/10 backdrop-blur-sm">
+                                    <div class="w-8 h-8 rounded-lg bg-primary/40 flex items-center justify-center shrink-0">
+                                        <i class="ph-fill ph-identification-badge text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-[8px] text-white/60 font-bold uppercase tracking-wider">Kelas</p>
+                                        <p id="hero-kelas" class="text-[11px] font-bold leading-tight">-</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- AKSES CEPAT -->
+                    <!-- Quick Action Grid -->
                     <div class="mb-5 md:mb-6">
-                        <h3 class="text-sm md:text-base font-bold text-textPrimary mb-2.5 flex items-center gap-1.5"><i class="ph-fill ph-lightning text-warning"></i> Akses Cepat</h3>
-                        <div class="grid grid-cols-2 gap-3">
-                            <!-- Tombol Cepat ke LMS -->
-                            <button onclick="goToTab('lms')" class="glass-card p-4 md:p-5 rounded-[1.2rem] md:rounded-[1.5rem] flex flex-col items-center justify-center gap-2 hover:bg-surface active:scale-[0.98] transition-all border border-border shadow-sm group">
-                                <div class="w-10 h-10 md:w-12 md:h-12 bg-primary/20 text-primary rounded-full flex items-center justify-center text-xl group-hover:scale-110 transition-transform"><i class="ph-fill ph-books"></i></div>
-                                <span class="font-bold text-xs md:text-sm text-textPrimary">Modul Belajar</span>
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-sm font-bold text-textPrimary flex items-center gap-1.5"><i class="ph-fill ph-squares-four text-primary text-base"></i> Menu Utama</h3>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 md:gap-3">
+                            <button onclick="goToTab('lms')" class="bg-surface rounded-2xl p-4 flex flex-col items-center gap-2.5 shadow-sm border border-border/40 hover:shadow-md hover:border-primary/30 transition-all cursor-pointer group active:scale-[0.97]">
+                                <div class="w-11 h-11 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                                    <i class="ph-fill ph-books"></i>
+                                </div>
+                                <span class="font-bold text-[11px] text-textPrimary text-center leading-tight">Modul<br>Belajar</span>
                             </button>
-                            <!-- Tombol Cepat ke Nilai -->
-                            <button onclick="goToTab('nilai')" class="glass-card p-4 md:p-5 rounded-[1.2rem] md:rounded-[1.5rem] flex flex-col items-center justify-center gap-2 hover:bg-surface active:scale-[0.98] transition-all border border-border shadow-sm group">
-                                <div class="w-10 h-10 md:w-12 md:h-12 bg-success/20 text-success rounded-full flex items-center justify-center text-xl group-hover:scale-110 transition-transform"><i class="ph-fill ph-exam"></i></div>
-                                <span class="font-bold text-xs md:text-sm text-textPrimary">Lihat Nilai</span>
+                            <button onclick="goToTab('nilai')" class="bg-surface rounded-2xl p-4 flex flex-col items-center gap-2.5 shadow-sm border border-border/40 hover:shadow-md hover:border-success/30 transition-all cursor-pointer group active:scale-[0.97]">
+                                <div class="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                                    <i class="ph-fill ph-chart-line-up"></i>
+                                </div>
+                                <span class="font-bold text-[11px] text-textPrimary text-center leading-tight">Rekap<br>Nilai</span>
+                            </button>
+                            <a href="https://sdnegeripasirmae1.github.io/" target="_blank" class="bg-surface rounded-2xl p-4 flex flex-col items-center gap-2.5 shadow-sm border border-border/40 hover:shadow-md hover:border-warning/30 transition-all cursor-pointer group active:scale-[0.97]">
+                                <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                                    <i class="ph-fill ph-globe"></i>
+                                </div>
+                                <span class="font-bold text-[11px] text-textPrimary text-center leading-tight">Situs<br>Sekolah</span>
+                            </a>
+                            <button onclick="window.bukaKotakPesan()" class="bg-surface rounded-2xl p-4 flex flex-col items-center gap-2.5 shadow-sm border border-border/40 hover:shadow-md hover:border-info/30 transition-all cursor-pointer group active:scale-[0.97]">
+                                <div class="w-11 h-11 rounded-xl bg-sky-500/10 text-sky-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                                    <i class="ph-fill ph-envelope-simple"></i>
+                                </div>
+                                <span class="font-bold text-[11px] text-textPrimary text-center leading-tight">Kotak<br>Pesan</span>
                             </button>
                         </div>
                     </div>
 
-                    <div class="glass-card p-4 md:p-6 rounded-[1.2rem] md:rounded-[1.5rem] shadow-sm">
-                        <div class="flex items-center gap-2.5 mb-2.5 md:mb-3">
-                            <div class="w-8 h-8 text-base bg-primary/20/50 text-primary rounded-full flex items-center justify-center border border-blue-200/50"><i class="ph-fill ph-info"></i></div>
-                            <h3 class="text-sm md:text-base font-bold text-textPrimary">Pusat Bantuan Siswa</h3>
+                    <!-- Info & Tips Section -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                        <div class="bg-surface rounded-2xl p-4 md:p-5 shadow-sm border border-border/40">
+                            <div class="flex items-center gap-2.5 mb-3">
+                                <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0"><i class="ph-fill ph-info text-base"></i></div>
+                                <h3 class="text-xs font-bold text-textPrimary">Tentang Portal</h3>
+                            </div>
+                            <p class="text-textSecondary text-[11px] leading-relaxed font-medium">Portal ini terhubung langsung ke database sekolah. Anda dapat mengakses materi, mengerjakan tugas, dan memantau nilai ujian secara real-time.</p>
                         </div>
-                        <p class="text-textSecondary text-xs md:text-sm leading-relaxed font-bold">Dashboard ini terhubung langsung dengan database sekolah. Anda dapat melihat materi yang diberikan guru dan memantau nilai ujian secara real-time. Jika ada data yang tidak sesuai, hubungi Wali Kelas Anda.</p>
+                        <div class="bg-surface rounded-2xl p-4 md:p-5 shadow-sm border border-border/40">
+                            <div class="flex items-center gap-2.5 mb-3">
+                                <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0"><i class="ph-fill ph-lightbulb text-base"></i></div>
+                                <h3 class="text-xs font-bold text-textPrimary">Tips Belajar</h3>
+                            </div>
+                            <ul class="text-textSecondary text-[11px] leading-relaxed font-medium space-y-1.5">
+                                <li class="flex items-start gap-1.5"><i class="ph-fill ph-check-circle text-success text-xs mt-0.5 shrink-0"></i> Periksa modul baru setiap hari</li>
+                                <li class="flex items-start gap-1.5"><i class="ph-fill ph-check-circle text-success text-xs mt-0.5 shrink-0"></i> Kerjakan tugas sebelum batas waktu</li>
+                                <li class="flex items-start gap-1.5"><i class="ph-fill ph-check-circle text-success text-xs mt-0.5 shrink-0"></i> Hubungi wali kelas jika ada kendala</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Footer Credit -->
+                    <div class="mt-6 pt-4 border-t border-border/30 text-center">
+                        <p class="text-[9px] text-textSecondary/50 font-bold uppercase tracking-[0.15em]">Dikembangkan oleh <span class="text-textSecondary/70">reezapps &middot; Mohamad Rizki, S.Pd., Gr.</span></p>
                     </div>
                 </div>
 
@@ -785,10 +861,29 @@
         const initAuth = async () => { 
             try { 
                 await signInAnonymously(auth); 
+                console.log('[LOGIN] Auth berhasil - anonymous sign in OK');
             } catch (e) { 
-                console.error("Gagal inisialisasi Auth", e); 
+                console.error("[LOGIN] Gagal inisialisasi Auth:", e); 
+                throw e;
             } 
         };
+
+        // PENTING: Inisialisasi Auth LANGSUNG saat module load (sama seperti admin.html)
+        // Ini memastikan Auth sudah siap sebelum user mencoba login
+        initAuth().catch(e => console.error('[LOGIN] Auto-init auth gagal:', e));
+
+        window._cachedSiswaList = [];
+        const colRefSiswaInit = collection(db, 'artifacts', 'sd-negeri-pasirmae-1', 'public', 'data', 'siswa');
+        onSnapshot(colRefSiswaInit, (snap) => {
+            window._cachedSiswaList = [];
+            snap.forEach(docSnap => {
+                window._cachedSiswaList.push({ id: docSnap.id, ...docSnap.data() });
+            });
+            console.log('[LOGIN] Data siswa siap (onSnapshot):', window._cachedSiswaList.length);
+            if (window._cachedSiswaList.length > 0) {
+                localStorage.setItem('shared_siswa_cache', JSON.stringify(window._cachedSiswaList));
+            }
+        }, err => console.warn('[LOGIN] onSnapshot info offline/lambat:', err));
 
         window.bukaModalRemedial = window.bukaModalRemedial;
 
@@ -800,54 +895,58 @@
             nilaiContainer.innerHTML = '<div class="py-8 text-center md:col-span-2"><i class="ph-bold ph-spinner animate-spin text-2xl md:text-3xl text-primary inline-block"></i><p class="mt-2 text-textSecondary font-bold text-xs">Memuat rekap nilai...</p></div>';
 
             try {
-                // 1. Ambil Modul LMS
-                const modulCol = collection(db, 'artifacts', 'sd-negeri-pasirmae-1', 'public', 'data', 'modul');
-                const snapModul = await getDocs(modulCol);
+                // 1. Render LMS Modul
+                const modRef = collection(db, 'artifacts', 'sd-negeri-pasirmae-1', 'public', 'data', 'lms_modules');
+                const modSnap = await getDocs(modRef);
                 let htmlModul = '';
                 
-                snapModul.forEach(document => {
-                    const m = document.data();
-                    m.id = document.id;
-                    window.modulDataMap[m.id] = m;
-                    
-                    if (!m.kelas || m.kelas === userData.kelas || m.kelas === 'Semua Kelas') {
-                        let iconClass = 'ph-book-open';
-                        let colorBase = 'blue';
+                modSnap.forEach(docSnap => {
+                    const m = docSnap.data();
+                    const isForUserClass = String(m.kelas) === String(userData.kelas) || m.kelas === 'Semua';
+                    if (isForUserClass) {
+                        const dl = m.deadline ? new Date(m.deadline).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year:'numeric'}) : '-';
+                        
+                        let badgeTipe = '<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[9px] font-bold">Materi</span>';
                         let actionHtml = '';
-                        
-                        if(m.tipe === 'tugas') {
-                            iconClass = 'ph-clipboard-text';
-                            colorBase = 'amber';
-                        } else if(m.tipe === 'video') {
-                            iconClass = 'ph-youtube-logo';
-                            colorBase = 'rose';
-                        }
-                        
-                        if(m.tipe === 'video' && m.link) {
-                            actionHtml = `<button onclick="window.bukaVideo('${m.id}')" class="w-full sm:w-auto bg-gradient-to-r from-${colorBase}-500 to-${colorBase}-600 hover:from-${colorBase}-600 hover:to-${colorBase}-700 text-white font-bold px-3 py-2 md:px-4 md:py-2 rounded-lg transition-all shadow-md text-[10px] md:text-xs text-center border border-${colorBase}-400"><i class="ph-bold ph-play"></i> Putar Video</button>`;
-                        } else {
-                            actionHtml = `<button onclick="window.bukaModulDetail('${m.id}')" class="w-full sm:w-auto bg-gradient-to-r from-${colorBase}-500 to-${colorBase}-600 hover:from-${colorBase}-600 hover:to-${colorBase}-700 text-white font-bold px-3 py-2 md:px-4 md:py-2 rounded-lg transition-all shadow-md text-[10px] md:text-xs text-center border border-${colorBase}-400">Lihat Detail</button>`;
-                        }
-
-                        let descHtml = '';
-                        if(m.deskripsi) descHtml = `<p class="text-[9px] md:text-[10px] text-textSecondary line-clamp-1 mt-1 font-semibold leading-tight">${m.deskripsi}</p>`;
-
+                        let descHtml = m.deskripsi ? `<p class="text-xs text-textSecondary mt-1 line-clamp-2">${m.deskripsi}</p>` : '';
                         let deadlineHtml = '';
-                        if(m.tipe === 'tugas' && m.deadline) {
-                            const dlDate = new Date(m.deadline);
-                            const now = new Date();
-                            const diffTime = Math.max(dlDate - now, 0);
-                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                            let textSisa = diffTime === 0 ? 'Waktu Habis' : `Sisa ${diffDays} Hari`;
+
+                        if (m.tipe === 'tugas' || m.tipe === 'ujian') {
+                            const isUjian = m.tipe === 'ujian';
+                            badgeTipe = isUjian ? '<span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-[9px] font-bold">Ujian</span>' : '<span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[9px] font-bold">Tugas</span>';
+                            deadlineHtml = `<div class="text-[10px] text-error font-bold mt-1.5 flex items-center gap-1"><i class="ph-bold ph-clock"></i> Batas Waktu: ${dl}</div>`;
                             
-                            deadlineHtml = `<span class="mt-1.5 mb-1 inline-block bg-amber-50 text-amber-600 text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded border border-amber-100"><i class="ph-bold ph-clock"></i> ${textSisa}</span>`;
+                            const cekSubRef = doc(db, 'artifacts', 'sd-negeri-pasirmae-1', 'public', 'data', 'lms_submissions', `${m.id}_${userData.id}`);
+                            getDoc(cekSubRef).then(subSnap => {
+                                const el = document.getElementById(`btn-sub-${m.id}`);
+                                if (el) {
+                                    if (subSnap.exists()) {
+                                        el.innerHTML = '<span class="text-success font-bold text-xs flex items-center gap-1"><i class="ph-bold ph-check-circle"></i> Selesai Dikerjakan</span>';
+                                    } else {
+                                        if (isUjian) {
+                                            el.innerHTML = `<button onclick="window.bukaModalUjian('${m.id}', '${m.judul}')" class="px-3 py-1.5 bg-purple-600 text-white rounded-lg font-bold text-xs hover:bg-purple-700 transition-colors shadow-sm">Kerjakan Ujian</button>`;
+                                        } else {
+                                            el.innerHTML = `<button onclick="window.bukaModalTugas('${m.id}', '${m.judul}')" class="px-3 py-1.5 bg-primary text-white rounded-lg font-bold text-xs hover:bg-primary/90 transition-colors shadow-sm">Kumpulkan Tugas</button>`;
+                                        }
+                                    }
+                                }
+                            });
+                            
+                            actionHtml = `<div id="btn-sub-${m.id}" class="mt-2 text-right"><span class="text-xs text-textSecondary font-medium">Memeriksa status...</span></div>`;
+                        } else {
+                            if (m.tautan || m.fileUrl) {
+                                const url = m.tautan || m.fileUrl;
+                                actionHtml = `<div class="mt-2 text-right"><a href="${url}" target="_blank" class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg font-bold text-xs hover:bg-blue-100 transition-colors inline-flex items-center gap-1"><i class="ph-bold ph-book-open"></i> Buka Materi</a></div>`;
+                            }
                         }
 
                         htmlModul += `
-                        <div class="glass-card p-3 md:p-4 rounded-[1rem] md:rounded-[1.2rem] shadow-sm flex flex-col sm:flex-row sm:items-center gap-2.5 md:gap-3 hover:bg-white/70 transition-colors group active:scale-[0.99] border-l-4 border-${colorBase}-400">
-                            <div class="w-8 h-8 md:w-10 md:h-10 bg-${colorBase}-50 text-${colorBase}-600 rounded-lg flex items-center justify-center text-lg md:text-xl shrink-0 border border-${colorBase}-100 group-hover:scale-110 transition-transform shadow-sm"><i class="ph-fill ${iconClass}"></i></div>
-                            <div class="flex-1">
-                                <h4 class="font-black text-textPrimary text-xs md:text-sm leading-tight">${m.judul || m.nama_modul || 'Modul Pembelajaran'}</h4>
+                        <div class="glass-card p-4 rounded-xl border border-border/40 hover:border-primary/30 transition-all flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    ${badgeTipe}
+                                    <h4 class="font-bold text-textPrimary text-sm">${m.judul}</h4>
+                                </div>
                                 <div class="flex gap-2 items-center mt-1 mb-0.5">
                                     <span class="text-[9px] md:text-[10px] bg-slate-100 text-textSecondary font-bold px-1.5 py-0.5 rounded border border-slate-200 uppercase">${m.tipe || 'materi'}</span>
                                     <span class="text-[9px] md:text-[10px] text-textSecondary font-bold">${m.mapel || '-'}</span>
@@ -855,146 +954,88 @@
                                 ${deadlineHtml}
                                 ${descHtml}
                             </div>
-                            <div class="mt-2 sm:mt-0">
-                                ${actionHtml}
-                            </div>
+                            ${actionHtml}
                         </div>`;
                     }
                 });
-                lmsContainer.innerHTML = htmlModul || '<div class="glass-card p-5 md:p-6 rounded-[1.2rem] shadow-sm text-center text-textSecondary text-xs font-bold">Belum ada modul yang diterbitkan untuk kelas Anda.</div>';
+                lmsContainer.innerHTML = htmlModul || '<div class="text-center text-textSecondary py-8">Belum ada modul tersedia.</div>';
 
-                // 2. Refresh Data Siswa
-                const docRef = doc(db, 'artifacts', 'sd-negeri-pasirmae-1', 'public', 'data', 'siswa', userData.id);
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    userData = { id: docSnap.id, ...docSnap.data() };
-                    const sessionData = JSON.parse(localStorage.getItem('siswaSessionInfo'));
-                    if(sessionData) {
-                        sessionData.data = userData;
-                        localStorage.setItem('siswaSessionInfo', JSON.stringify(sessionData));
-                    }
-                }
-
-                // 3. Setting Global Ekosistem
-                let teacherSettings = null;
+                // 2. Render Nilai
                 const setRef = doc(db, 'artifacts', 'sd-negeri-pasirmae-1', 'public', 'data', 'settings', 'global');
                 const setSnap = await getDoc(setRef);
-                
-                if (setSnap.exists()) {
-                    teacherSettings = setSnap.data();
-                    // Filter subjects by the student's class
-                    if (teacherSettings.subjects) {
-                        teacherSettings.subjects = teacherSettings.subjects.filter(s => String(s.kelas) === String(userData.kelas));
-                    }
-                }
+                const teacherSettings = setSnap.exists() ? setSnap.data() : null;
 
-                if(teacherSettings) {
-                     document.getElementById('info-asesmen').innerText = `${teacherSettings.semester || 'Semester Ganjil'} - TA. ${teacherSettings.tahun_ajaran || '2024/2025'}`;
-                }
-
-                // 4. Render Nilai
                 let htmlNilai = '';
-
                 if (teacherSettings && teacherSettings.subjects) {
-                    teacherSettings.subjects.forEach(sub => {
+                    teacherSettings.subjects.filter(s => String(s.kelas) === String(userData.kelas)).forEach(sub => {
                         const subId = sub.nama.replace(/\s+/g, '_').toUpperCase();
-                        const ideal = parseFloat(teacherSettings.skor_ideal?.[subId] || 100);
-                        const calcVal = (raw) => {
-                            if (raw === undefined || raw === null || raw === '') return null;
-                            const v = (parseFloat(raw || 0) / ideal) * 100;
-                            return isNaN(v) ? 0 : v;
-                        };
-
                         const valRaw = userData[subId];
-                        const valNum = calcVal(valRaw);
-                        const isBelumDiinput = valNum === null;
-                        const val = isBelumDiinput ? 0 : valNum;
-                        const displayScore = isBelumDiinput ? '-' : (teacherSettings.display_mode === 'integer' ? Math.round(val) : val.toFixed(1).replace(/\.0$/, ''));
-                        const kktp = parseFloat(teacherSettings.kktp?.[subId] || parseFloat(teacherSettings.kktp_global) || 75);
-
-                        let isRemedial = false;
+                        const val = valRaw !== undefined && valRaw !== null ? parseFloat(valRaw) : null;
+                        const isBelumDiinput = val === null;
+                        const kktp = parseFloat(teacherSettings.kktp?.[subId] || teacherSettings.kktp_global || 75);
+                        
+                        let isRemedial = !isBelumDiinput && val < kktp;
                         let isRemedialTuntas = false;
                         let hasRemedialScore = false;
                         let remedialScore = 0;
                         let displayRemedialScore = '';
                         let isPengayaan = false;
 
-                        if (userData.remedial && userData.remedial[subId] !== undefined && userData.remedial[subId] !== '') {
+                        if (userData.remedial && userData.remedial[subId] !== undefined) {
                             hasRemedialScore = true;
-                            remedialScore = calcVal(userData.remedial[subId]) || 0;
-                            displayRemedialScore = teacherSettings.display_mode === 'integer' ? Math.round(remedialScore) : remedialScore.toFixed(1).replace(/\.0$/, '');
-                        } else if (userData.pengayaan && userData.pengayaan[subId] !== undefined && userData.pengayaan[subId] !== '') {
+                            remedialScore = parseFloat(userData.remedial[subId]);
+                            displayRemedialScore = remedialScore;
+                            if (remedialScore >= kktp) isRemedialTuntas = true;
+                        } else if (userData.pengayaan && userData.pengayaan[subId] !== undefined) {
                             hasRemedialScore = true;
                             isPengayaan = true;
-                            remedialScore = calcVal(userData.pengayaan[subId]) || 0;
-                            displayRemedialScore = teacherSettings.display_mode === 'integer' ? Math.round(remedialScore) : remedialScore.toFixed(1).replace(/\.0$/, '');
+                            remedialScore = parseFloat(userData.pengayaan[subId]);
+                            displayRemedialScore = remedialScore;
                         }
 
-                        const finalScore = hasRemedialScore ? remedialScore : val;
-
+                        let statusBadge = '<span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 text-textSecondary border border-slate-200 inline-flex items-center gap-1"><i class="ph-bold ph-minus-circle"></i> Belum Ada Nilai</span>';
                         if (!isBelumDiinput) {
-                             isRemedial = finalScore < kktp;
-                             if (hasRemedialScore && !isPengayaan && finalScore >= kktp) {
-                                 isRemedialTuntas = true;
-                             }
-                        }
-
-                        const instruksiRemedial = teacherSettings.instruksi_remedial?.[subId] || teacherSettings.instruksi_remedial_global || "Silakan hubungi wali kelas Anda untuk mendapatkan tugas perbaikan nilai.";
-                        
-                        let statusBadge = '';
-                        let cursorClass = '';
-                        let onClickEvent = '';
-                        
-                        if (isBelumDiinput) {
-                            statusBadge = `<span class="inline-flex items-center gap-1 bg-surface border border-border text-textSecondary text-[9px] md:text-[10px] font-bold px-2 py-0.5 md:py-1 rounded-md uppercase tracking-wider backdrop-blur-sm"><i class="ph-bold ph-hourglass-high"></i> Menunggu Penilaian</span>`;
-                        } else if (isRemedial) {
-                            cursorClass = 'cursor-pointer hover:bg-error/10';
-                            const safeLabel = sub.nama.replace(/'/g, "\\'");
-                            const safeInstruksiBase64 = btoa(unescape(encodeURIComponent(instruksiRemedial)));
-                            onClickEvent = `onclick="bukaModalRemedial('${safeLabel}', '${safeInstruksiBase64}')"`;
-                            
-                            statusBadge = `<span class="inline-flex items-center gap-1 bg-error/10 text-error text-[9px] md:text-[10px] font-bold px-2 py-0.5 md:py-1 rounded-md border border-error/20 uppercase tracking-wider backdrop-blur-sm group-hover:bg-error/20 transition-colors"><i class="ph-bold ph-warning-circle"></i> Remedial (KKTP: ${kktp}) - Klik Info</span>`;
-                        } else {
-                            if (isRemedialTuntas) {
-                                statusBadge = `<span class="inline-flex items-center gap-1 bg-success/10 text-success text-[9px] md:text-[10px] font-bold px-2 py-0.5 md:py-1 rounded-md border border-success/20 uppercase tracking-wider backdrop-blur-sm"><i class="ph-bold ph-check-circle"></i> Tuntas Remedial (KKTP: ${kktp})</span>`;
+                            if (isRemedial) {
+                                statusBadge = `<button onclick="window.bukaModalRemedial('${sub.nama}', ${val}, ${kktp}, false)" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-error/10 text-error border border-error/20 inline-flex items-center gap-1 hover:bg-error hover:text-white transition-all shadow-sm"><i class="ph-bold ph-warning-circle"></i> Remedial (Klik)</button>`;
+                            } else if (isRemedialTuntas) {
+                                statusBadge = `<span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-500/10 text-blue-600 border border-blue-500/20 inline-flex items-center gap-1"><i class="ph-bold ph-check-circle"></i> Remedial Tuntas</span>`;
                             } else if (isPengayaan) {
-                                statusBadge = `<span class="inline-flex items-center gap-1 bg-info/10 text-info text-[9px] md:text-[10px] font-bold px-2 py-0.5 md:py-1 rounded-md border border-info/20 uppercase tracking-wider backdrop-blur-sm"><i class="ph-bold ph-check-circle"></i> Tuntas Pengayaan (KKTP: ${kktp})</span>`;
+                                statusBadge = `<span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-purple-500/10 text-purple-600 border border-purple-500/20 inline-flex items-center gap-1"><i class="ph-bold ph-star"></i> Pengayaan</span>`;
                             } else {
-                                statusBadge = `<span class="inline-flex items-center gap-1 bg-success/10 text-success text-[9px] md:text-[10px] font-bold px-2 py-0.5 md:py-1 rounded-md border border-success/20 uppercase tracking-wider backdrop-blur-sm"><i class="ph-bold ph-check-circle"></i> Tuntas (KKTP: ${kktp})</span>`;
+                                statusBadge = '<span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-success/10 text-success border border-success/20 inline-flex items-center gap-1"><i class="ph-bold ph-check-circle"></i> Tuntas (Selesai)</span>';
                             }
                         }
 
-                        htmlNilai += \`
-                        <div \${onClickEvent} class="glass-card p-4 md:p-5 rounded-xl md:rounded-[1.2rem] border \${isRemedial ? 'border-error/50 ring-1 ring-error/30' : 'border-border'} shadow-sm relative overflow-hidden group hover:border-primary/50 transition-all active:scale-[0.98] \${cursorClass}">
-                            <div class="absolute right-0 top-0 p-3 opacity-[0.03]"><i class="ph-fill ph-exam text-5xl \${isRemedial ? 'text-error' : 'text-textPrimary'}"></i></div>
-                            <div class="flex justify-between items-start mb-3 relative z-10">
+                        htmlNilai += `
+                        <div class="glass-card p-4 md:p-5 rounded-2xl relative overflow-hidden flex flex-col justify-between hover:shadow-md transition-all border border-border/40">
+                            <div class="flex justify-between items-start relative z-10">
                                 <div>
                                     <span class="text-[8px] md:text-[9px] font-bold text-textSecondary uppercase tracking-widest block mb-0.5">Nilai Akhir</span>
-                                    <h4 class="font-black text-textPrimary text-sm md:text-base leading-tight pr-6">\${sub.nama}</h4>
+                                    <h4 class="font-black text-textPrimary text-sm md:text-base leading-tight pr-6">${sub.nama}</h4>
                                 </div>
                             </div>
                             <div class="flex items-end gap-1.5 relative z-10 mt-3 md:mt-4">
                                 <div class="relative">
-                                    \${hasRemedialScore ? \`<span class="absolute -top-4 right-0 text-sm md:text-base font-black text-textSecondary line-through opacity-60">\${displayScore}</span>\` : ''}
-                                    <span class="text-3xl md:text-4xl font-black \${isBelumDiinput ? 'text-textSecondary/50' : (isRemedial ? 'text-error' : 'text-success')} tracking-tighter drop-shadow-sm">\${hasRemedialScore ? displayRemedialScore : displayScore}</span>
+                                    ${hasRemedialScore ? `<span class="absolute -top-4 right-0 text-sm md:text-base font-black text-textSecondary line-through opacity-60">${val}</span>` : ''}
+                                    <span class="text-3xl md:text-4xl font-black ${isBelumDiinput ? 'text-textSecondary/50' : (isRemedial ? 'text-error' : 'text-success')} tracking-tighter drop-shadow-sm">${hasRemedialScore ? displayRemedialScore : (isBelumDiinput ? '-' : val)}</span>
                                 </div>
                                 <span class="text-[10px] md:text-xs font-bold text-textSecondary mb-1 md:mb-1.5">/ 100</span>
                             </div>
                             <div class="mt-3 relative z-10">
-                                \${statusBadge}
+                                ${statusBadge}
                             </div>
-                        </div>\`;
+                        </div>`;
                     });
                 } else {
-                    htmlNilai += \`<div class="glass-card p-5 md:p-6 rounded-[1.2rem] shadow-sm text-center text-textSecondary text-xs font-bold md:col-span-2">Belum ada rekap nilai ujian yang diunggah untuk Anda.</div>\`;
+                    htmlNilai += `<div class="glass-card p-5 md:p-6 rounded-[1.2rem] shadow-sm text-center text-textSecondary text-xs font-bold md:col-span-2">Belum ada rekap nilai ujian yang diunggah untuk Anda.</div>`;
                 }
 
                 nilaiContainer.innerHTML = htmlNilai || '<div class="glass-card p-5 md:p-6 rounded-[1.2rem] shadow-sm text-center text-textSecondary text-xs font-bold md:col-span-2">Belum ada rekap nilai ujian yang diunggah untuk Anda.</div>';
 
             } catch (err) {
                 console.error("Gagal mengambil data", err);
-                lmsContainer.innerHTML = '<div class="glass-card bg-error/10 p-3 rounded-lg text-error text-xs font-bold border border-error/20">Gagal memuat data modul dari database.</div>';
-                nilaiContainer.innerHTML = '<div class="glass-card bg-error/10 p-3 rounded-lg text-error text-xs font-bold border border-error/20 md:col-span-2">Gagal memuat data nilai dari database.</div>';
+                lmsContainer.innerHTML = '<div class="glass-card bg-error/10 p-3 rounded-lg text-error text-xs font-bold border border-error/20">Gagal memuat data modul.</div>';
+                nilaiContainer.innerHTML = '<div class="glass-card bg-error/10 p-3 rounded-lg text-error text-xs font-bold border border-error/20 md:col-span-2">Gagal memuat data nilai.</div>';
             }
         }
         
@@ -1009,34 +1050,97 @@
             btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin text-base"></i> Memeriksa...`;
             btn.disabled = true;
 
-            try {
-                await initAuth();
+            console.log('========================================');
+            console.log('[LOGIN] Mulai proses login untuk NISN/Nama:', nisn, '| PIN:', pin);
 
-                const colRef = collection(db, 'artifacts', 'sd-negeri-pasirmae-1', 'public', 'data', 'siswa');
-                const snap = await getDocs(colRef);
+            try {
+                // Jangan blokir terlalu lama jika offline/koneksi lambat
+                if (!auth.currentUser) {
+                    console.log('[LOGIN] Menunggu koneksi Auth (max 2 detik)...');
+                    await Promise.race([
+                        initAuth(),
+                        new Promise(resolve => setTimeout(resolve, 2000))
+                    ]).catch(e => console.warn('[LOGIN] Auth timeout/offline, lanjut dengan cache lokal:', e));
+                }
+
+                let siswaList = [];
+                // Coba ambil dari Firestore dengan timeout 3 detik
+                try {
+                    const colRef = collection(db, 'artifacts', 'sd-negeri-pasirmae-1', 'public', 'data', 'siswa');
+                    console.log('[LOGIN] Mencoba mengambil dari server Firestore...');
+                    const snap = await Promise.race([
+                        getDocs(colRef),
+                        new Promise((_, reject) => setTimeout(() => reject(new Error('Koneksi Firestore timeout/offline')), 3000))
+                    ]);
+                    snap.forEach(docSnap => {
+                        siswaList.push({ id: docSnap.id, ...docSnap.data() });
+                    });
+                    console.log('[LOGIN] Berhasil ambil dari server:', siswaList.length, 'siswa.');
+                } catch (dbErr) {
+                    console.warn('[LOGIN] Gagal/timeout ambil dari server:', dbErr.message);
+                }
+
+                // Jika dari server kosong/gagal, gunakan cache onSnapshot / localStorage
+                if (siswaList.length === 0) {
+                    if (window._cachedSiswaList && window._cachedSiswaList.length > 0) {
+                        siswaList = window._cachedSiswaList;
+                        console.log('[LOGIN] Menggunakan data dari memory cache:', siswaList.length);
+                    } else {
+                        const localStr = localStorage.getItem('shared_siswa_cache');
+                        if (localStr) {
+                            siswaList = JSON.parse(localStr);
+                            console.log('[LOGIN] Menggunakan data dari localStorage (shared cache):', siswaList.length);
+                        }
+                    }
+                }
+
+                if (siswaList.length === 0) {
+                    console.warn('[LOGIN] TIDAK ADA DATA SISWA DI TEMUKAN (SERVER & CACHE KOSONG)');
+                    errBox.innerHTML = '<b>⚠ Database siswa kosong / offline!</b><br>Pastikan internet terhubung atau buka halaman Admin terlebih dahulu agar data terselamatkan di cache.';
+                    errBox.classList.remove('hidden');
+                    btn.innerHTML = `<i class="ph-bold ph-sign-in text-base"></i> Masuk Dashboard`;
+                    btn.disabled = false;
+                    return;
+                }
+                
                 let foundUser = null;
                 
-                snap.forEach(doc => {
-                    const d = doc.data();
-                    if ((d.nisn === nisn || d.nis === nisn) && d.pin === pin) {
-                        foundUser = { id: doc.id, ...d };
+                // Periksa setiap siswa
+                siswaList.forEach(d => {
+                    const dbNisn = String(d.nisn ?? '').trim();
+                    const dbNis = String(d.nis ?? '').trim();
+                    const dbPin = String(d.pin ?? '').trim().toUpperCase();
+                    const dbNama = String(d.nama || d.nama_siswa || '').trim();
+                    const inputIdentitas = nisn.toLowerCase();
+                    
+                    const matchNisn = dbNisn !== '' && dbNisn === nisn;
+                    const matchNis = dbNis !== '' && dbNis === nisn;
+                    const matchNama = dbNama.toLowerCase() !== '' && (dbNama.toLowerCase() === inputIdentitas || dbNama.toLowerCase().includes(inputIdentitas) || inputIdentitas.includes(dbNama.toLowerCase()));
+                    const matchPin = dbPin === pin;
+                    
+                    console.log(`[LOGIN] Cek "${dbNama}" | NISN:"${dbNisn}" | PIN:"${dbPin}" => matchNama/NISN=${matchNisn||matchNis||matchNama}, matchPin=${matchPin}`);
+                    
+                    if ((matchNisn || matchNis || matchNama) && matchPin) {
+                        foundUser = d;
                     }
                 });
 
                 if (foundUser) {
-                    const expireTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 Jam dari sekarang
+                    console.log('[LOGIN] ✅ COCOK! Login BERHASIL:', foundUser.nama);
+                    const expireTime = new Date().getTime() + (24 * 60 * 60 * 1000);
                     const sessionObj = { data: foundUser, expiresAt: expireTime };
                     localStorage.setItem('siswaSessionInfo', JSON.stringify(sessionObj));
                     
                     showToast('Berhasil masuk!');
                     tampilkanDashboard(foundUser);
                 } else {
-                    errBox.innerText = 'NISN/NIS atau PIN tidak ditemukan / salah.';
+                    console.warn('[LOGIN] ❌ GAGAL: Tidak ditemukan kecocokan untuk:', nisn, '| PIN:', pin);
+                    errBox.innerHTML = `<b>Login gagal.</b> NISN/Nama "<b>${nisn}</b>" dengan PIN yang dimasukkan tidak cocok.<br><span class="text-[9px] opacity-70">${siswaList.length} data siswa diperiksa.</span>`;
                     errBox.classList.remove('hidden');
                 }
             } catch (error) {
-                console.error(error);
-                errBox.innerText = 'Gagal terhubung ke database. Coba lagi.';
+                console.error('[LOGIN] ERROR:', error);
+                errBox.innerHTML = `<b>Terjadi kesalahan sistem.</b><br><span class="text-[9px] opacity-70">Error: ${error.message || error}</span>`;
                 errBox.classList.remove('hidden');
             }
             
@@ -1053,6 +1157,25 @@
              document.getElementById('profil-nisn').innerText = `NISN: ${data.nisn || data.nis || '-'}`;
              
              aturSapaan(data.nama || data.nama_siswa || '');
+             
+             // Populate hero banner
+             const nama = data.nama || data.nama_siswa || '';
+             const kataPertama = nama.split(' ')[0];
+             const hour = new Date().getHours();
+             let sapaan = 'malam';
+             if(hour >= 4 && hour < 11) sapaan = 'pagi';
+             else if(hour >= 11 && hour < 15) sapaan = 'siang';
+             else if(hour >= 15 && hour < 18) sapaan = 'sore';
+             
+             const heroSapaan = document.getElementById('hero-sapaan');
+             if (heroSapaan) heroSapaan.innerText = `Selamat ${sapaan}, ${kataPertama}!`;
+             
+             const heroTanggal = document.getElementById('hero-tanggal');
+             if (heroTanggal) heroTanggal.innerText = new Date().toLocaleDateString('id-ID', {weekday: 'long', day: 'numeric', month: 'short', year: 'numeric'});
+             
+             const heroKelas = document.getElementById('hero-kelas');
+             if (heroKelas) heroKelas.innerText = data.kelas || '-';
+             
              muatDataSiswa(data);
          }
  
