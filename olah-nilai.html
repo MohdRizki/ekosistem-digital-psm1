@@ -251,10 +251,26 @@
                         <p id="header-subtitle" class="text-[9px] text-primary uppercase font-bold tracking-widest mt-0.5"></p>
                     </div>
                 </div>
-                <div class="flex items-center gap-3">
-                    <button onclick="window.toggleTheme()" class="text-textSecondary hover:text-primary transition-colors p-2" title="Ganti Mode Tampilan">
+                <div class="flex items-center gap-4 md:gap-5">
+                    <button onclick="window.toggleTheme()" class="relative text-textSecondary hover:text-primary transition-colors p-2" title="Ganti Mode Tampilan">
                         <i class="theme-icon ph-bold ph-moon text-xl"></i>
                     </button>
+                    <button onclick="if(window.bukaKotakPesan) window.bukaKotakPesan();" class="relative text-textSecondary hover:text-primary transition-colors p-2" title="Kotak Pesan">
+                        <i class="ph-bold ph-envelope-simple text-xl"></i>
+                    </button>
+                    <button onclick="if(window.toggleNotifications) window.toggleNotifications();" class="relative text-textSecondary hover:text-primary transition-colors p-2" title="Notifikasi">
+                        <i class="ph-bold ph-bell text-xl"></i>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-teal-500 border-2 border-background rounded-full"></span>
+                    </button>
+                    <div onclick="if(window.toggleProfileMenu) window.toggleProfileMenu();" class="flex items-center gap-3 ml-1 bg-surface p-1.5 pr-4 rounded-full shadow-sm hover:shadow-md transition-all cursor-pointer border border-border/40" title="Profil Guru">
+                        <div class="w-9 h-9 rounded-full bg-teal-500/10 flex items-center justify-center text-teal-600 font-bold shrink-0 overflow-hidden border border-border">
+                            <i class="ph-bold ph-user text-lg"></i>
+                        </div>
+                        <div class="hidden sm:block text-left">
+                            <p class="text-xs font-bold text-textPrimary leading-none">Wali Kelas</p>
+                            <p class="text-[10px] text-textSecondary font-medium mt-1 leading-none">Olah Nilai</p>
+                        </div>
+                    </div>
                 </div>
             </header>
 
