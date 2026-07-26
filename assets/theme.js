@@ -101,6 +101,8 @@
             /* Navigation Buttons - Strictly Left Aligned in Expanded Mode */
             .nav-btn {
                 @apply w-full text-left flex items-center justify-start gap-3.5 py-2.5 px-3.5 rounded-xl text-xs font-semibold text-textSecondary transition-all duration-200 relative overflow-hidden select-none cursor-pointer;
+                text-align: left !important;
+                justify-content: flex-start !important;
             }
             .nav-btn i {
                 @apply w-6 h-6 flex items-center justify-center shrink-0 text-base transition-transform duration-200 ease-out;
@@ -147,6 +149,8 @@
             /* Footer Items - Strictly Left Aligned in Expanded Mode */
             .sidebar-footer-item {
                 @apply w-full text-left flex items-center justify-start gap-3.5 py-2.5 px-3.5 rounded-xl text-xs font-semibold text-textSecondary hover:text-textPrimary hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-all duration-200 relative overflow-hidden cursor-pointer;
+                text-align: left !important;
+                justify-content: flex-start !important;
             }
             .sidebar-footer-item i {
                 @apply w-6 h-6 flex items-center justify-center shrink-0 text-base transition-transform duration-200;
