@@ -162,9 +162,9 @@
                 @apply transition-all duration-200 whitespace-nowrap overflow-hidden font-medium;
             }
 
-            /* Collapse Button Styling (Chevron Only, Left Aligned in Expanded Mode) */
+            /* Collapse Button Styling (Clean & Subtitled in Expanded Mode) */
             .sidebar-collapse-btn {
-                @apply w-full text-left flex items-center justify-start gap-3.5 py-2 px-3.5 rounded-xl text-textSecondary/70 hover:text-primary bg-slate-100/70 dark:bg-slate-800/50 hover:bg-primary/10 dark:hover:bg-primary/15 border border-border/50 transition-all duration-200 shadow-sm cursor-pointer shrink-0;
+                @apply w-full text-left flex items-center justify-start gap-3 py-2.5 px-3.5 rounded-xl text-textSecondary hover:text-primary bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800/60 border border-transparent hover:border-border/40 transition-all duration-200 font-semibold text-xs cursor-pointer shrink-0;
             }
             .sidebar-collapse-btn i {
                 @apply w-6 h-6 flex items-center justify-center shrink-0 text-base transition-transform duration-300;
@@ -199,7 +199,7 @@
                 @apply left-0;
             }
             .app-sidebar.collapsed .sidebar-collapse-btn {
-                @apply justify-center px-0 w-9 h-9 mx-auto rounded-xl !ml-auto !mr-auto;
+                @apply justify-center px-0 w-9 h-9 mx-auto rounded-xl !ml-auto !mr-auto bg-slate-100 dark:bg-slate-800 border border-border/40 shadow-2xs;
             }
             .app-sidebar.collapsed .sidebar-collapse-btn i {
                 transform: rotate(180deg);
