@@ -48,6 +48,8 @@
 
     const fontStylesheet = document.createElement('link');
     fontStylesheet.rel = 'stylesheet';
+    fontStylesheet.media = 'print';
+    fontStylesheet.onload = function() { this.media = 'all'; };
     fontStylesheet.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap';
 
     document.head.appendChild(fontPreconnect1);
@@ -253,8 +255,7 @@
                 border-top-right-radius: 0 !important;
                 border-bottom-right-radius: 0 !important;
                 pointer-events: none !important;
-                transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.35s cubic-bezier(0.16, 1, 0.3, 1), width 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease !important;
-                will-change: top, height, width, opacity !important;
+                transition: top 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease !important;
                 z-index: 1 !important;
             }
             #sidebar-gliding-indicator::before {
@@ -506,36 +507,31 @@
         @keyframes spin { to { transform: rotate(360deg); } }
 
 
-        /* Ultra-Smooth View & Tab Content Transitions (Apple / Stripe Fluid Feel) */
+        /* Ultra-Smooth View & Tab Content Transitions */
         @keyframes smoothViewTransition {
             0% {
                 opacity: 0;
-                transform: translateY(16px) scale(0.988);
-                filter: blur(3px);
+                transform: translateY(10px) scale(0.99);
             }
             100% {
                 opacity: 1;
                 transform: translateY(0) scale(1);
-                filter: blur(0px);
             }
         }
         .tab-content { display: none; }
         .tab-content.active {
             display: block;
-            animation: smoothViewTransition 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            will-change: transform, opacity, filter;
+            animation: smoothViewTransition 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         .animate-fade-in,
         .animate-fadeIn,
         .animate-slideDown,
         #view-container > div:not(.hidden),
         #root > div:not(.hidden) {
-            animation: smoothViewTransition 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            will-change: transform, opacity, filter;
+            animation: smoothViewTransition 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         .animate-popIn {
-            animation: popIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            will-change: transform, opacity;
+            animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         @keyframes popIn {
             0% { opacity: 0; transform: scale(0.95); }
@@ -988,36 +984,33 @@ window.setupGlidingSidebar = function() {
         
         updateIndicator();
         requestAnimationFrame(updateIndicator);
-        setTimeout(updateIndicator, 20);
-        setTimeout(updateIndicator, 150);
-        setTimeout(updateIndicator, 500);
         window.addEventListener('resize', updateIndicator);
         
+        // Cukup gunakan 1 event listener delegasi yang bersihkan timer berlebih
         nav.addEventListener('click', (e) => {
             const btn = e.target.closest('.nav-btn');
             if (btn) {
-                updateIndicator();
-                requestAnimationFrame(updateIndicator);
-                setTimeout(updateIndicator, 20);
-                setTimeout(updateIndicator, 150);
+                requestAnimationFrame(() => {
+                    updateIndicator();
+                    setTimeout(updateIndicator, 50);
+                });
             }
         });
         
-        const navBtns = nav.querySelectorAll('.nav-btn');
-        navBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                updateIndicator();
+        // Observer hanya untuk memantau jika class pada sidebar induk berubah (expand/collapse)
+        const observer = new MutationObserver((mutations) => {
+            let shouldUpdate = false;
+            for (const m of mutations) {
+                if (m.target === sidebar || m.target === nav) {
+                    shouldUpdate = true;
+                    break;
+                }
+            }
+            if (shouldUpdate) {
                 requestAnimationFrame(updateIndicator);
-                setTimeout(updateIndicator, 20);
-                setTimeout(updateIndicator, 150);
-            });
+            }
         });
-        
-        const observer = new MutationObserver(() => {
-            updateIndicator();
-            requestAnimationFrame(updateIndicator);
-        });
-        observer.observe(nav, { attributes: true, subtree: true, attributeFilter: ['class'] });
+        observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
     });
 };
 
