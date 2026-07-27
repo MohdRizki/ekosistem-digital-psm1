@@ -3,16 +3,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="app-primary" content="#EF4444">
     <title class="">Digitalisasi ADM - SD Negeri Pasirmae 1</title>
+    <!-- Preconnect ke CDN Utama -->
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="assets/theme.js"></script>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js" defer></script>
     
     <!-- Pustaka Cropper.js untuk Potong Foto -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js" defer></script>
 </head>
 <body class="bg-background text-textPrimary font-poppins antialiased overflow-hidden" style="-webkit-tap-highlight-color: transparent;">
 
@@ -115,28 +122,24 @@
         <aside id="admin-sidebar" class="app-sidebar absolute md:relative z-[60] shadow-[4px_0_24px_rgba(0,0,0,0.02)] -translate-x-full md:translate-x-0 transform transition-transform duration-300">
         <button onclick="toggleSidebar()" class="md:hidden absolute top-5 right-4 p-2 text-textSecondary hover:text-textPrimary rounded-lg z-10"><i class="ph-bold ph-x text-xl"></i></button>
         
-        <!-- Logo -->
-        <div class="h-20 flex items-center gap-3 shrink-0 px-5 mt-2">
-            <div class="flex relative items-center justify-center shrink-0 w-8 h-8">
-                <div class="w-5 h-5 rounded-full bg-primary absolute left-0 opacity-90 mix-blend-multiply"></div>
-                <div class="w-5 h-5 rounded-full bg-accent absolute right-0 opacity-90 mix-blend-multiply"></div>
+        <!-- Logo & Symbol Collapse Toggle -->
+        <div class="h-20 flex items-center justify-between shrink-0 px-6">
+            <div class="flex items-center gap-3.5 min-w-0">
+                <div class="w-9 h-9 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white border border-white/25 shadow-sm shrink-0">
+                    <i class="ph-bold ph-circles-four text-xl"></i>
+                </div>
+                <div class="min-w-0 sidebar-logo-text">
+                    <h2 class="font-black text-white text-base leading-none tracking-tight">Ekosistem<span class="block text-[10px] font-bold text-white/70 uppercase tracking-widest mt-1">Sekolah</span></h2>
+                </div>
             </div>
-            <div class="min-w-0 sidebar-logo-text">
-                <h2 class="font-bold text-textPrimary text-lg leading-tight line-clamp-1 tracking-tight">SDN Pasirmae</h2>
-            </div>
-        </div>
-
-        <!-- Collapse toggle -->
-        <div class="px-3 mb-2 hidden md:flex justify-start">
-            <button onclick="window.toggleSidebarCollapse('admin-sidebar')" class="sidebar-collapse-btn" title="Sembunyikan / Tampilkan Sidebar">
-                <i class="ph-bold ph-caret-left text-base shrink-0"></i>
-                <span class="nav-label">Perkecil Sidebar</span>
+            <button onclick="window.toggleSidebarCollapse('admin-sidebar')" class="sidebar-collapse-btn-mini hover:bg-white/10 rounded-xl p-2 transition-colors" title="Perkecil / Perbesar Sidebar">
+                <span class="collapse-icon-symbol"></span>
             </button>
         </div>
 
         <div id="sidebar-profile-widget" class="hidden"></div>
 
-        <nav class="flex-1 overflow-y-auto custom-scrollbar px-3 py-4 flex flex-col gap-1">
+        <nav class="flex-1 overflow-y-auto custom-scrollbar px-3 pt-2 pb-4 flex flex-col gap-1">
             <button onclick="switchTab('dasbor', this)" data-app="global" class="nav-btn active">
                 <i class="ph-bold ph-squares-four text-lg shrink-0"></i>
                 <span class="nav-label">Dasbor Utama</span>
@@ -170,8 +173,8 @@
     </aside>
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="absolute inset-0 bg-slate-900/20 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
     <div class="flex-1 flex flex-col h-full overflow-hidden relative">
-        <header class="h-24 bg-background flex items-center justify-between px-8 shrink-0">
-        <div class="flex items-center gap-4 w-full max-w-md">
+        <header id="main-admin-header" class="dynamic-header h-20 bg-background flex items-center justify-between px-6 md:px-8 shrink-0 z-30">
+        <div class="flex items-center gap-4 w-full max-w-md header-shrink-hide">
             <button onclick="toggleSidebar()" class="md:hidden p-2 -ml-2 text-textSecondary hover:text-textPrimary rounded-lg">
                 <i class="ph-bold ph-list text-2xl"></i>
             </button>
@@ -223,7 +226,7 @@
                     <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold shrink-0 border border-border">
                         <i class="ph-bold ph-user text-lg"></i>
                     </div>
-                    <div class="hidden sm:block">
+                    <div class="hidden sm:block header-shrink-hide">
                         <p id="header-profile-name" class="text-xs font-bold text-textPrimary leading-none">Administrator</p>
                         <p id="header-profile-handle" class="text-[10px] text-textSecondary font-medium mt-1 leading-none">@administrator</p>
                     </div>
@@ -244,7 +247,7 @@
                 </div>
             </div>
         </div>
-    </header><main class="flex-1 overflow-y-auto bg-background p-4 custom-scrollbar relative"><div class="max-w-6xl mx-auto space-y-6 pb-20">
+    </header><main class="flex-1 overflow-y-auto bg-background p-6 md:p-8 pt-6 custom-scrollbar relative"><div class="max-w-6xl mx-auto space-y-6 pb-20">
         
         <!-- HUB: MANAJEMEN WEB SEKOLAH -->
         <div id="hub-web-sekolah" class="tab-content hidden">
@@ -1164,6 +1167,21 @@
     <!-- LOGIKA JAVASCRIPT LOKAL (TIDAK ADA DATABASE)-->
     <!-- ========================================== -->
     <script>
+        // Dynamic Header Shrink on Scroll into Floating Pill Symbol
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainContent = document.querySelector('main');
+            const header = document.getElementById('main-admin-header');
+            if (mainContent && header) {
+                mainContent.addEventListener('scroll', () => {
+                    if (mainContent.scrollTop > 30) {
+                        header.classList.add('header-shrunk');
+                    } else {
+                        header.classList.remove('header-shrunk');
+                    }
+                });
+            }
+        });
+
         // Store memori lokal
         window.adminDataStore = { prestasi: {}, pengumuman: {}, artikel: {}, galeri: {}, guru: {}, ekskul: {}, agenda: {}, unduhan: {}, saran: {} };
 

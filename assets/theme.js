@@ -6,6 +6,36 @@
     const metaPrimary = document.querySelector('meta[name="app-primary"]');
     const appPrimary = metaPrimary ? metaPrimary.getAttribute('content') : '#FC6B58';
 
+    // 0.1 Map per-app primary theme to matching sidebar gradient palette & active tab text color
+    let sidebarTop = '#A78BFA', sidebarMid = '#8B5CF6', sidebarBot = '#7C3AED', sidebarText = '#7C3AED';
+    const hex = appPrimary.toUpperCase();
+    if (hex.includes('EF4444') || hex.includes('FC6B58') || hex.includes('DC2626') || hex.includes('F87171')) {
+        // Red / Crimson (Admin Portal) - Bright & clean coral-red (not terlalu pekat)
+        sidebarTop = '#F87171'; sidebarMid = '#EF4444'; sidebarBot = '#DC2626'; sidebarText = '#DC2626';
+    } else if (hex.includes('0D9488') || hex.includes('14B8A6') || hex.includes('0F766E') || hex.includes('10B981')) {
+        // Teal / Emerald (Olah Nilai)
+        sidebarTop = '#2DD4BF'; sidebarMid = '#14B8A6'; sidebarBot = '#0D9488'; sidebarText = '#0D9488';
+    } else if (hex.includes('3B82F6') || hex.includes('2563EB') || hex.includes('60A5FA') || hex.includes('0EA5E9')) {
+        // Blue / Sky (Dashboard Siswa)
+        sidebarTop = '#60A5FA'; sidebarMid = '#3B82F6'; sidebarBot = '#2563EB'; sidebarText = '#2563EB';
+    } else if (hex.includes('8B5CF6') || hex.includes('7C3AED') || hex.includes('6D28D9') || hex.includes('553CEE')) {
+        // Purple / Violet (Jurnal Guru)
+        sidebarTop = '#A78BFA'; sidebarMid = '#8B5CF6'; sidebarBot = '#7C3AED'; sidebarText = '#7C3AED';
+    } else {
+        sidebarTop = appPrimary; sidebarMid = appPrimary; sidebarBot = appPrimary; sidebarText = appPrimary;
+    }
+
+    const rootStyle = document.createElement('style');
+    rootStyle.innerHTML = `
+        :root {
+            --sidebar-grad-top: ${sidebarTop};
+            --sidebar-grad-mid: ${sidebarMid};
+            --sidebar-grad-bot: ${sidebarBot};
+            --sidebar-active-text: ${sidebarText};
+        }
+    `;
+    document.head.appendChild(rootStyle);
+
     // 1. Inject Google Fonts (Poppins)
     const fontPreconnect1 = document.createElement('link');
     fontPreconnect1.rel = 'preconnect';
@@ -32,7 +62,7 @@
         theme: {
             extend: {
                 colors: {
-                    background: '#FAFAFA',
+                    background: '#EEF2F6',
                     surface: '#FFFFFF',
                     border: '#E2E8F0',
                     textPrimary: '#160E4D',
@@ -87,93 +117,291 @@
             .glass-card {
                 @apply bg-surface rounded-[2rem] p-5 md:p-6 shadow-[0_2px_24px_rgba(0,0,0,0.02)];
             }
-            /* Ultra-Premium Sidebar & Navigation System */
+            /* Ultra-Premium Dribbble/Apple Sidebar & Navigation System - Exactly like preview-sidebar.html */
             .app-sidebar {
-                @apply flex flex-col h-full bg-surface border-r border-border/80 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] shrink-0 overflow-hidden relative z-[60];
+                @apply flex flex-col h-full transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] shrink-0 relative z-[60];
                 width: 260px;
-                background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.96) 100%);
-                box-shadow: 2px 0 24px -2px rgba(0,0,0,0.03);
+                overflow: visible !important;
+                -ms-overflow-style: none !important;
+                scrollbar-width: none !important;
+                background: linear-gradient(180deg, var(--sidebar-grad-top, #A78BFA) 0%, var(--sidebar-grad-mid, #8B5CF6) 50%, var(--sidebar-grad-bot, #7C3AED) 100%) !important;
+                border-radius: 0 !important;
+                border-right: none !important;
+                box-shadow: none !important;
+                color: #FFFFFF !important;
+            }
+            .app-sidebar::-webkit-scrollbar,
+            .app-sidebar > div::-webkit-scrollbar,
+            .app-sidebar nav::-webkit-scrollbar,
+            .app-sidebar *::-webkit-scrollbar {
+                display: none !important;
+                width: 0 !important;
+                height: 0 !important;
+            }
+            .app-sidebar nav {
+                overflow-y: auto !important;
+                overflow-x: visible !important;
+                -ms-overflow-style: none !important;
+                scrollbar-width: none !important;
+            }
+            .app-sidebar > div {
+                overflow: visible !important;
+            }
+            .app-sidebar * {
+                border-color: rgba(255, 255, 255, 0.12) !important;
+            }
+            .app-sidebar .text-textPrimary,
+            .app-sidebar .text-textSecondary,
+            .app-sidebar .sidebar-logo-text h2,
+            .app-sidebar .sidebar-logo-text h1,
+            .app-sidebar h1, .app-sidebar h2, .app-sidebar h3, .app-sidebar h4, .app-sidebar p, .app-sidebar span {
+                color: #FFFFFF !important;
+            }
+            .app-sidebar .rounded-full.mix-blend-multiply {
+                mix-blend-mode: normal !important;
+            }
+            .app-sidebar .rounded-full.bg-primary {
+                background-color: #FFFFFF !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+            }
+            .app-sidebar .rounded-full.bg-accent {
+                background-color: rgba(255, 255, 255, 0.75) !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
             }
             .app-sidebar.collapsed {
-                width: 76px;
+                width: 80px !important;
             }
 
-            /* Navigation Buttons - Strictly Left Aligned in Expanded Mode */
+            /* Sidebar Navigation Container */
+            .app-sidebar nav {
+                padding-right: 0 !important;
+                padding-left: 1.25rem !important;
+                position: relative !important;
+            }
+            .app-sidebar.collapsed nav {
+                padding-right: 0 !important;
+                padding-left: 0 !important;
+            }
+
+            /* Navigation Buttons */
             .nav-btn {
-                @apply w-full text-left flex items-center justify-start gap-3.5 py-2.5 px-3.5 rounded-xl text-xs font-semibold text-textSecondary transition-all duration-200 relative overflow-hidden select-none cursor-pointer;
+                @apply w-full text-left flex items-center justify-start gap-3.5 py-3.5 px-5 text-xs font-semibold relative select-none cursor-pointer;
                 text-align: left !important;
                 justify-content: flex-start !important;
+                color: rgba(255, 255, 255, 0.8) !important;
+                background: transparent !important;
+                border-radius: 9999px 0 0 9999px !important;
+                margin-right: 0 !important;
+                z-index: 10 !important;
+                transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
             }
             .nav-btn i {
-                @apply w-6 h-6 flex items-center justify-center shrink-0 text-base transition-transform duration-200 ease-out;
+                @apply w-6 h-6 flex items-center justify-center shrink-0 text-base;
+                color: rgba(255, 255, 255, 0.8) !important;
+                transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease !important;
             }
             .nav-btn .nav-label {
-                @apply transition-all duration-200 whitespace-nowrap overflow-hidden tracking-tight font-medium;
+                @apply whitespace-nowrap overflow-hidden tracking-wide font-medium;
+                color: rgba(255, 255, 255, 0.8) !important;
+                transition: color 0.3s ease !important;
             }
-            .nav-btn:hover {
-                @apply text-textPrimary font-semibold shadow-sm;
-                background: linear-gradient(90deg, rgba(252, 107, 88, 0.08) 0%, rgba(252, 107, 88, 0.01) 100%);
-                transform: translateX(3px);
+            .nav-btn:hover:not(.active) {
+                color: #FFFFFF !important;
+                background: rgba(255, 255, 255, 0.12) !important;
+                transform: translateX(4px) !important;
             }
-            .nav-btn:hover i {
-                @apply text-primary;
-                transform: scale(1.15) rotate(4deg);
+            .nav-btn:hover:not(.active) i,
+            .nav-btn:hover:not(.active) .nav-label {
+                color: #FFFFFF !important;
+            }
+            .nav-btn:hover:not(.active) i {
+                transform: scale(1.15) rotate(4deg) !important;
             }
             .nav-btn:active {
-                transform: translateX(1px) scale(0.98);
+                transform: translateX(1px) scale(0.98) !important;
             }
             .nav-btn.active {
-                @apply font-bold text-primary;
-                background: linear-gradient(90deg, rgba(252, 107, 88, 0.15) 0%, rgba(252, 107, 88, 0.02) 100%);
-                box-shadow: 0 4px 14px -2px rgba(252, 107, 88, 0.12);
+                @apply font-bold;
+                background-color: transparent !important;
+                color: var(--sidebar-active-text, #DC2626) !important;
+                box-shadow: none !important;
+                transform: none !important;
+                border-radius: 9999px 0 0 9999px !important;
+                z-index: 10 !important;
+            }
+            .nav-btn.active i,
+            .nav-btn.active .nav-label,
+            .nav-btn.active span {
+                color: var(--sidebar-active-text, #DC2626) !important;
+                font-weight: 700 !important;
             }
             .nav-btn.active i {
-                @apply text-primary;
-                transform: scale(1.2);
-                filter: drop-shadow(0 2px 6px rgba(252, 107, 88, 0.4));
+                transform: scale(1.22) !important;
             }
-            .nav-btn.active .nav-label {
-                @apply font-bold text-primary;
+            .nav-btn.active::before,
+            .nav-btn.active::after {
+                display: none !important;
             }
-            .nav-btn.active::before {
-                content: '';
-                @apply absolute left-0 top-1/2 -translate-y-1/2 w-[3.5px] h-6 bg-primary rounded-r-full;
-                box-shadow: 0 0 10px var(--primary-color, #FC6B58);
+
+            /* Ultra-Premium Dribbble Cutout Indicator with Vector Notches (Exact copy of preview-sidebar.html) */
+            #sidebar-gliding-indicator {
+                position: absolute !important;
+                right: 0 !important;
+                background-color: #EEF2F6 !important;
+                border-top-left-radius: 9999px !important;
+                border-bottom-left-radius: 9999px !important;
+                border-top-right-radius: 0 !important;
+                border-bottom-right-radius: 0 !important;
+                pointer-events: none !important;
+                transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.35s cubic-bezier(0.16, 1, 0.3, 1), width 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease !important;
+                will-change: top, height, width, opacity !important;
+                z-index: 1 !important;
+            }
+            #sidebar-gliding-indicator::before {
+                content: "" !important;
+                position: absolute !important;
+                top: -23px !important;
+                right: 0 !important;
+                width: 24px !important;
+                height: 24px !important;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M 0 24 L 24 24 L 24 0 A 24 24 0 0 1 0 24 Z' fill='%23EEF2F6'/%3E%3C/svg%3E") !important;
+                background-size: 100% 100% !important;
+                background-repeat: no-repeat !important;
+                pointer-events: none !important;
+            }
+            #sidebar-gliding-indicator.at-top::before {
+                display: none !important;
+                opacity: 0 !important;
+            }
+            #sidebar-gliding-indicator::after {
+                content: "" !important;
+                position: absolute !important;
+                bottom: -23px !important;
+                right: 0 !important;
+                width: 24px !important;
+                height: 24px !important;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M 0 0 L 24 0 L 24 24 A 24 24 0 0 0 0 0 Z' fill='%23EEF2F6'/%3E%3C/svg%3E") !important;
+                background-size: 100% 100% !important;
+                background-repeat: no-repeat !important;
+                pointer-events: none !important;
+            }
+            .dark #sidebar-gliding-indicator {
+                background-color: #0F172A !important;
+            }
+            .dark #sidebar-gliding-indicator::before {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M 0 24 L 24 24 L 24 0 A 24 24 0 0 1 0 24 Z' fill='%230F172A'/%3E%3C/svg%3E") !important;
+            }
+            .dark #sidebar-gliding-indicator::after {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M 0 0 L 24 0 L 24 24 A 24 24 0 0 0 0 0 Z' fill='%230F172A'/%3E%3C/svg%3E") !important;
+            }
+
+            /* Fallback active background if gliding indicator is missing */
+            .app-sidebar nav:not(.has-gliding-indicator) .nav-btn.active {
+                background-color: #EEF2F6 !important;
+                color: var(--sidebar-active-text, #DC2626) !important;
+                border-radius: 9999px 0 0 9999px !important;
             }
 
             /* Group Headers */
             .sidebar-group-header {
-                @apply text-[10px] font-extrabold text-textSecondary/50 mb-2 mt-4 px-3.5 uppercase tracking-[0.16em] flex items-center justify-between transition-all duration-200;
+                @apply text-[10px] font-extrabold mb-2 mt-4 px-5 uppercase tracking-[0.16em] flex items-center justify-between transition-all duration-200;
+                color: rgba(255, 255, 255, 0.5) !important;
             }
 
-            /* Footer Items - Strictly Left Aligned in Expanded Mode */
+            /* Footer Items */
             .sidebar-footer-item {
-                @apply w-full text-left flex items-center justify-start gap-3.5 py-2.5 px-3.5 rounded-xl text-xs font-semibold text-textSecondary hover:text-textPrimary hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-all duration-200 relative overflow-hidden cursor-pointer;
+                @apply w-full text-left flex items-center justify-start gap-3.5 py-2.5 px-4 rounded-xl text-xs font-semibold transition-all duration-200 relative overflow-hidden cursor-pointer;
                 text-align: left !important;
                 justify-content: flex-start !important;
+                color: rgba(255, 255, 255, 0.8) !important;
             }
             .sidebar-footer-item i {
                 @apply w-6 h-6 flex items-center justify-center shrink-0 text-base transition-transform duration-200;
+                color: rgba(255, 255, 255, 0.8) !important;
+            }
+            .sidebar-footer-item .nav-label {
+                @apply transition-all duration-200 whitespace-nowrap overflow-hidden font-medium;
+                color: rgba(255, 255, 255, 0.8) !important;
+            }
+            .sidebar-footer-item:hover {
+                color: #FFFFFF !important;
+                background: rgba(255, 255, 255, 0.12) !important;
+            }
+            .sidebar-footer-item:hover i,
+            .sidebar-footer-item:hover .nav-label {
+                color: #FFFFFF !important;
             }
             .sidebar-footer-item:hover i {
                 transform: scale(1.15);
             }
-            .sidebar-footer-item .nav-label {
-                @apply transition-all duration-200 whitespace-nowrap overflow-hidden font-medium;
+            .sidebar-footer-item.text-red-500 {
+                color: #FF8A8A !important;
+            }
+            .sidebar-footer-item.text-red-500 i,
+            .sidebar-footer-item.text-red-500 .nav-label {
+                color: #FF8A8A !important;
+            }
+            .sidebar-footer-item.text-red-500:hover {
+                background: rgba(239, 68, 68, 0.25) !important;
+                color: #FFFFFF !important;
+            }
+            .sidebar-footer-item.text-red-500:hover i,
+            .sidebar-footer-item.text-red-500:hover .nav-label {
+                color: #FFFFFF !important;
             }
 
-            /* Collapse Button Styling (Clean & Subtitled in Expanded Mode) */
+            /* Collapse Button Styling (Old & Mini) */
             .sidebar-collapse-btn {
-                @apply w-full text-left flex items-center justify-start gap-3 py-2.5 px-3.5 rounded-xl text-textSecondary hover:text-primary bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800/60 border border-transparent hover:border-border/40 transition-all duration-200 font-semibold text-xs cursor-pointer shrink-0;
+                @apply w-full text-left flex items-center justify-start gap-3 py-2.5 px-4 rounded-xl transition-all duration-200 font-semibold text-xs cursor-pointer shrink-0;
+                color: rgba(255, 255, 255, 0.8) !important;
+                background: rgba(255, 255, 255, 0.08) !important;
+                border: none !important;
             }
             .sidebar-collapse-btn i {
                 @apply w-6 h-6 flex items-center justify-center shrink-0 text-base transition-transform duration-300;
+                color: rgba(255, 255, 255, 0.8) !important;
             }
-            .sidebar-collapse-btn:hover i {
-                transform: scale(1.15);
+            .sidebar-collapse-btn .nav-label {
+                color: rgba(255, 255, 255, 0.8) !important;
+            }
+            .sidebar-collapse-btn:hover {
+                color: #FFFFFF !important;
+                background: rgba(255, 255, 255, 0.16) !important;
+            }
+
+            /* New Sleek Mini Symbol Toggle near Web Name */
+            .sidebar-collapse-btn-mini {
+                @apply hidden md:flex items-center justify-center w-7 h-7 rounded-lg transition-all shrink-0 ml-auto font-extrabold text-base select-none cursor-pointer;
+                color: rgba(255, 255, 255, 0.85) !important;
+                background: rgba(255, 255, 255, 0.15) !important;
+                border: none !important;
+                font-family: monospace, sans-serif !important;
+            }
+            .sidebar-collapse-btn-mini:hover {
+                color: #FFFFFF !important;
+                background: rgba(255, 255, 255, 0.3) !important;
+                transform: scale(1.08);
+            }
+            .collapse-icon-symbol::before {
+                content: "<";
+            }
+            .app-sidebar.collapsed .collapse-icon-symbol::before {
+                content: ">";
+            }
+            .app-sidebar.collapsed .h-20 {
+                justify-content: center !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                gap: 6px !important;
+            }
+            .app-sidebar.collapsed .sidebar-collapse-btn-mini {
+                margin-left: 0 !important;
             }
 
             /* Collapsed State Behaviors */
+            .app-sidebar.collapsed .sidebar-profile-card {
+                display: none !important;
+            }
             .app-sidebar.collapsed .nav-label,
             .app-sidebar.collapsed .sidebar-label,
             .app-sidebar.collapsed .sidebar-title-text,
@@ -187,19 +415,26 @@
             .app-sidebar.collapsed .sidebar-group-dot {
                 @apply hidden;
             }
-            .app-sidebar.collapsed .nav-btn,
+            .app-sidebar.collapsed nav {
+                padding-right: 0 !important;
+                padding-left: 0.75rem !important;
+            }
+            .app-sidebar.collapsed .nav-btn {
+                @apply justify-center px-0 !w-full !m-0;
+                border-radius: 9999px 0 0 9999px !important;
+            }
             .app-sidebar.collapsed .sidebar-footer-item {
-                @apply justify-center px-0;
+                @apply justify-center px-0 mx-2 rounded-2xl !w-auto !mr-2 !ml-2;
+                border-radius: 16px !important;
             }
             .app-sidebar.collapsed .nav-btn i,
             .app-sidebar.collapsed .sidebar-footer-item i {
                 @apply mx-auto;
             }
-            .app-sidebar.collapsed .nav-btn.active::before {
-                @apply left-0;
-            }
             .app-sidebar.collapsed .sidebar-collapse-btn {
-                @apply justify-center px-0 w-9 h-9 mx-auto rounded-xl !ml-auto !mr-auto bg-slate-100 dark:bg-slate-800 border border-border/40 shadow-2xs;
+                @apply justify-center px-0 w-9 h-9 mx-auto rounded-xl !ml-auto !mr-auto;
+                background: rgba(255, 255, 255, 0.1) !important;
+                border: none !important;
             }
             .app-sidebar.collapsed .sidebar-collapse-btn i {
                 transform: rotate(180deg);
@@ -271,9 +506,100 @@
         @keyframes spin { to { transform: rotate(360deg); } }
 
 
-        /* Tab content management */
+        /* Ultra-Smooth View & Tab Content Transitions (Apple / Stripe Fluid Feel) */
+        @keyframes smoothViewTransition {
+            0% {
+                opacity: 0;
+                transform: translateY(16px) scale(0.988);
+                filter: blur(3px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0px);
+            }
+        }
         .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .tab-content.active {
+            display: block;
+            animation: smoothViewTransition 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            will-change: transform, opacity, filter;
+        }
+        .animate-fade-in,
+        .animate-fadeIn,
+        .animate-slideDown,
+        #view-container > div:not(.hidden),
+        #root > div:not(.hidden) {
+            animation: smoothViewTransition 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            will-change: transform, opacity, filter;
+        }
+        .animate-popIn {
+            animation: popIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            will-change: transform, opacity;
+        }
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Dynamic Header Shrink into Floating Pill Symbol Overlay */
+        header.dynamic-header {
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+        header.dynamic-header.header-shrunk {
+            position: absolute !important;
+            top: 16px !important;
+            right: 24px !important;
+            z-index: 50 !important;
+            height: 48px !important;
+            max-width: fit-content !important;
+            margin: 0 !important;
+            padding: 0 16px !important;
+            pointer-events: auto !important;
+            display: flex !important;
+            align-items: center !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        header.dynamic-header.header-shrunk::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            border-radius: 9999px;
+            background-color: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.15), 0 4px 12px -2px rgba(0, 0, 0, 0.08);
+            pointer-events: none;
+        }
+        .dark header.dynamic-header.header-shrunk::before {
+            background-color: rgba(30, 41, 59, 0.92);
+            border-color: rgba(51, 65, 85, 0.9);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4);
+        }
+        header.dynamic-header.header-shrunk .header-shrink-hide {
+            display: none !important;
+        }
+        header.dynamic-header.header-shrunk .flex.items-center.gap-5 {
+            gap: 14px !important;
+        }
+        header.dynamic-header.header-shrunk #profile-menu-button {
+            background: transparent !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+        header.dynamic-header.header-shrunk #profile-menu-button > div:first-child {
+            width: 32px !important;
+            height: 32px !important;
+            border: 1.5px solid rgba(37, 99, 235, 0.3) !important;
+        }
+        header.dynamic-header.header-shrunk button i {
+            font-size: 1.15rem !important;
+        }
 
         /* Mirror mode for QR scanner (front camera) */
         .mirror-mode video { transform: scaleX(-1); }
@@ -608,3 +934,95 @@ window.mulaiMendengarChat = window.mulaiMendengarChat || function() {
     // This is a placeholder — the actual implementation will be set
     // by the specific app module that handles real-time chat
 };
+
+/**
+ * Global Gliding Sidebar & Interactive Vector Notches for All Web Apps
+ */
+window.setupGlidingSidebar = function() {
+    const sidebars = document.querySelectorAll('.app-sidebar');
+    sidebars.forEach(sidebar => {
+        const nav = sidebar.querySelector('nav');
+        if (!nav) return;
+        
+        let indicator = nav.querySelector('#sidebar-gliding-indicator');
+        if (nav.classList.contains('has-gliding-indicator')) {
+            if (indicator) {
+                const activeBtn = nav.querySelector('.nav-btn.active');
+                if (activeBtn && activeBtn.offsetTop > 0) {
+                    indicator.style.opacity = '1';
+                    indicator.style.top = activeBtn.offsetTop + 'px';
+                    indicator.style.height = activeBtn.offsetHeight + 'px';
+                }
+            }
+            return;
+        }
+        nav.classList.add('relative', 'has-gliding-indicator');
+        
+        if (!indicator) {
+            indicator = document.createElement('div');
+            indicator.id = 'sidebar-gliding-indicator';
+            nav.insertBefore(indicator, nav.firstChild);
+        }
+        
+        const updateIndicator = () => {
+            if (sidebar.classList.contains('collapsed')) {
+                indicator.style.width = 'calc(100% - 12px)';
+            } else {
+                indicator.style.width = 'calc(100% - 20px)';
+            }
+            const activeBtn = nav.querySelector('.nav-btn.active');
+            const firstBtn = nav.querySelector('.nav-btn');
+            if (activeBtn) {
+                if (firstBtn && (activeBtn === firstBtn || activeBtn.offsetTop <= 16)) {
+                    indicator.classList.add('at-top');
+                } else {
+                    indicator.classList.remove('at-top');
+                }
+                indicator.style.opacity = '1';
+                indicator.style.top = activeBtn.offsetTop + 'px';
+                indicator.style.height = activeBtn.offsetHeight + 'px';
+            } else {
+                indicator.style.opacity = '0';
+            }
+        };
+        
+        updateIndicator();
+        requestAnimationFrame(updateIndicator);
+        setTimeout(updateIndicator, 20);
+        setTimeout(updateIndicator, 150);
+        setTimeout(updateIndicator, 500);
+        window.addEventListener('resize', updateIndicator);
+        
+        nav.addEventListener('click', (e) => {
+            const btn = e.target.closest('.nav-btn');
+            if (btn) {
+                updateIndicator();
+                requestAnimationFrame(updateIndicator);
+                setTimeout(updateIndicator, 20);
+                setTimeout(updateIndicator, 150);
+            }
+        });
+        
+        const navBtns = nav.querySelectorAll('.nav-btn');
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                updateIndicator();
+                requestAnimationFrame(updateIndicator);
+                setTimeout(updateIndicator, 20);
+                setTimeout(updateIndicator, 150);
+            });
+        });
+        
+        const observer = new MutationObserver(() => {
+            updateIndicator();
+            requestAnimationFrame(updateIndicator);
+        });
+        observer.observe(nav, { attributes: true, subtree: true, attributeFilter: ['class'] });
+    });
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', window.setupGlidingSidebar);
+} else {
+    window.setupGlidingSidebar();
+}

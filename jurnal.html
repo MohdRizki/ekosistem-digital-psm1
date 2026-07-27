@@ -7,20 +7,27 @@
     <title>SIJURU - Aplikasi Jurnal Guru</title>
     <link rel="icon" type="image/x-icon" href="reezapps.ico">
     
+    <!-- Preconnect ke CDN Utama -->
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+
     <!-- Design System (theme.js handles Poppins + Tailwind config + shared components) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="assets/theme.js"></script>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
     
     <!-- App Libraries -->
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://unpkg.com/html5-qrcode"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+    <script src="https://unpkg.com/html5-qrcode" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -898,9 +905,9 @@
 
         window.renderNavItem = (view, phIcon, label) => {
             const active = window.appState.currentView === view;
-            return `<button onclick="window.setView('${view}')" class="nav-btn group ${active ? 'active' : ''}" title="${label}">
+            return `<button onclick="window.setView('${view}')" id="nav-jurnal-${view}" class="nav-btn group ${active ? 'active' : ''}" title="${label}">
                 <i class="ph-bold ${phIcon} text-lg shrink-0"></i>
-                <span class="nav-label">${label}</span>
+                <span class="nav-label nav-text">${label}</span>
                 <span class="nav-tooltip">${label}</span>
             </button>`;
         };
@@ -1010,6 +1017,37 @@
             }
 
             const v = window.appState.currentView;
+            const existingSidebar = document.getElementById('jurnal-sidebar');
+            const mainContent = document.getElementById('jurnal-main-content');
+            if (existingSidebar && mainContent && !window.appState.forceFullRender) {
+                document.querySelectorAll('#jurnal-sidebar .nav-btn').forEach(btn => {
+                    const id = btn.id || '';
+                    if (id === `nav-jurnal-${v}`) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+                if (window.appState.mobileMenuOpen) {
+                    existingSidebar.classList.remove('-translate-x-full');
+                    existingSidebar.classList.add('translate-x-0');
+                    const backdrop = document.getElementById('mobile-menu-backdrop');
+                    if (backdrop) backdrop.className = "block absolute inset-0 bg-slate-900/20 backdrop-blur-sm z-40 md:hidden";
+                } else {
+                    existingSidebar.classList.add('-translate-x-full');
+                    existingSidebar.classList.remove('translate-x-0');
+                    const backdrop = document.getElementById('mobile-menu-backdrop');
+                    if (backdrop) backdrop.className = "hidden absolute inset-0 bg-slate-900/20 backdrop-blur-sm z-40 md:hidden";
+                }
+                const mobileTitle = document.querySelector('header h1.md\\:hidden');
+                if (mobileTitle) mobileTitle.textContent = viewTitles[v] || v;
+                mainContent.innerHTML = window.renderCurrentView();
+                window.renderOverlays();
+                if (v === 'dashboard') window.initChart();
+                if (savedScrollTop > 0) { const newContainer = document.querySelector('main.flex-1.overflow-y-auto'); if (newContainer) newContainer.scrollTop = savedScrollTop; }
+                if (typeof window.setupGlidingSidebar === 'function') { window.setupGlidingSidebar(); }
+                return;
+            }
             root.innerHTML = `
                 <div class="h-screen h-[100dvh] bg-background flex flex-col md:flex-row overflow-hidden relative z-0 font-poppins">
                     <div class="absolute top-10 right-10 w-80 h-80 bg-success/5 dark:bg-success/10 rounded-full blur-[100px] animate-blob pointer-events-none"></div>
@@ -1026,29 +1064,25 @@
                             <i class="ph-bold ph-list text-2xl"></i>
                         </button>
                     </header>
-                    <aside id="jurnal-sidebar" class="app-sidebar ${window.appState.mobileMenuOpen ? 'flex' : 'hidden'} md:flex absolute md:relative inset-y-0 left-0 z-[60] shadow-[4px_0_24px_rgba(0,0,0,0.02)] ${localStorage.getItem('sidebarCollapsed') === '1' ? 'collapsed' : ''}">
+                    <aside id="jurnal-sidebar" class="app-sidebar absolute md:relative z-[60] shadow-[4px_0_24px_rgba(0,0,0,0.02)] ${window.appState.mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} transform transition-transform duration-300 ${localStorage.getItem('sidebarCollapsed') === '1' ? 'collapsed' : ''}">
                         <button onclick="window.appState.mobileMenuOpen = false; window.renderApp();" class="md:hidden absolute top-5 right-4 p-2 text-textSecondary hover:text-textPrimary rounded-lg z-10"><i class="ph-bold ph-x text-xl"></i></button>
                         
-                        <!-- Logo -->
-                        <div class="h-20 flex items-center gap-3 shrink-0 px-5 mt-2">
-                            <div class="flex relative items-center justify-center shrink-0 w-8 h-8">
-                                <div class="w-5 h-5 rounded-full bg-primary absolute left-0 opacity-90 mix-blend-multiply"></div>
-                                <div class="w-5 h-5 rounded-full bg-accent absolute right-0 opacity-90 mix-blend-multiply"></div>
+                        <!-- Logo & Symbol Collapse Toggle -->
+                        <div class="h-20 flex items-center justify-between shrink-0 px-6">
+                            <div class="flex items-center gap-3.5 min-w-0">
+                                <div class="w-9 h-9 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white border border-white/25 shadow-sm shrink-0">
+                                    <i class="ph-bold ph-circles-four text-xl"></i>
+                                </div>
+                                <div class="min-w-0 sidebar-logo-text">
+                                    <h2 class="font-black text-white text-base leading-none tracking-tight">Ekosistem<span class="block text-[10px] font-bold text-white/70 uppercase tracking-widest mt-1">Sekolah</span></h2>
+                                </div>
                             </div>
-                            <div class="min-w-0 sidebar-logo-text">
-                                <h2 class="font-bold text-textPrimary text-lg leading-tight line-clamp-1 tracking-tight">SDN Pasirmae</h2>
-                            </div>
-                        </div>
-
-                        <!-- Collapse toggle -->
-                        <div class="px-3 mb-2 hidden md:flex justify-start">
-                            <button onclick="window.toggleSidebarCollapse('jurnal-sidebar')" class="sidebar-collapse-btn" title="Sembunyikan / Tampilkan Sidebar">
-                                <i class="ph-bold ph-caret-left text-base shrink-0"></i>
-                                <span class="nav-label">Perkecil Sidebar</span>
+                            <button onclick="window.toggleSidebarCollapse('jurnal-sidebar')" class="sidebar-collapse-btn-mini hover:bg-white/10 rounded-xl p-2 transition-colors" title="Perkecil / Perbesar Sidebar">
+                                <span class="collapse-icon-symbol"></span>
                             </button>
                         </div>
 
-                        <nav class="flex-1 overflow-y-auto custom-scrollbar px-3 py-4 flex flex-col gap-1">
+                        <nav class="flex-1 overflow-y-auto custom-scrollbar px-3 pt-2 pb-4 flex flex-col gap-1">
                             ${window.renderNavItem('dashboard', 'ph-squares-four', 'Beranda')}
                             ${window.renderNavItem('scanner', 'ph-qr-code', 'Scan QR')}
                             ${window.renderNavItem('input', 'ph-pencil-simple', 'Isi Jurnal')}
@@ -1065,19 +1099,19 @@
                         <div class="p-3 border-t border-border/10 shrink-0 mt-auto flex flex-col gap-0.5">
                             <a href="https://sdnegeripasirmae1.github.io/" target="_blank" class="sidebar-footer-item">
                                 <i class="ph-bold ph-globe text-lg shrink-0"></i>
-                                <span class="nav-label">Situs Utama</span>
+                                <span class="nav-label nav-text">Buka Situs Utama</span>
                                 <span class="nav-tooltip">Buka Situs Utama</span>
                             </a>
                             <button onclick="window.handleLogout()" class="sidebar-footer-item text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10">
                                 <i class="ph-bold ph-sign-out text-lg shrink-0"></i>
-                                <span class="nav-label">Keluar Sesi</span>
+                                <span class="nav-label nav-text">Keluar Sesi</span>
                                 <span class="nav-tooltip">Keluar Sesi</span>
                             </button>
                         </div>
                     </aside>
-                    <div onclick="window.appState.mobileMenuOpen = false; window.renderApp();" class="${window.appState.mobileMenuOpen ? 'block' : 'hidden'} absolute inset-0 bg-slate-900/20 backdrop-blur-sm z-40 md:hidden"></div>
+                    <div id="mobile-menu-backdrop" onclick="window.appState.mobileMenuOpen = false; window.renderApp();" class="${window.appState.mobileMenuOpen ? 'block' : 'hidden'} absolute inset-0 bg-slate-900/20 backdrop-blur-sm z-40 md:hidden"></div>
                     <div class="flex-1 flex flex-col h-full overflow-hidden relative">
-                        <header class="h-24 bg-background flex items-center justify-between px-8 shrink-0">
+                        <header class="h-20 bg-background flex items-center justify-between px-6 md:px-8 shrink-0 z-30">
                             <div class="flex items-center gap-4 w-full max-w-md">
                                 <button onclick="window.appState.mobileMenuOpen = !window.appState.mobileMenuOpen; window.renderApp();" class="md:hidden p-2 -ml-2 text-textSecondary hover:text-textPrimary rounded-lg"><i class="ph-bold ph-list text-2xl"></i></button>
 
@@ -1093,8 +1127,8 @@
                                 </div>
                             </div>
                         </header>
-                        <main class="flex-1 overflow-y-auto bg-background p-4 custom-scrollbar relative">
-                            <div class="max-w-6xl mx-auto space-y-6 pb-20">
+                        <main class="flex-1 overflow-y-auto bg-background p-6 md:p-8 pt-6 custom-scrollbar relative">
+                            <div id="jurnal-main-content" class="max-w-6xl mx-auto space-y-6 pb-20">
                                 ${window.renderCurrentView()}
                             </div>
                         </main>
@@ -1103,6 +1137,7 @@
             
             if (savedScrollTop > 0) { const newContainer = document.querySelector('main.flex-1.overflow-y-auto'); if (newContainer) newContainer.scrollTop = savedScrollTop; }
             window.renderOverlays();
+            if (typeof window.setupGlidingSidebar === 'function') { window.setupGlidingSidebar(); }
             
             if (v === 'dashboard') window.initChart();
             if (window.appState.lastFocusedId) { const el = document.getElementById(window.appState.lastFocusedId); if (el) { el.focus(); el.setSelectionRange(window.appState.lastCaretPos, window.appState.lastCaretPos); } }
@@ -1617,12 +1652,12 @@
         body { font-family: 'Poppins', sans-serif; background: #FAFAFA; -webkit-font-smoothing: antialiased; touch-action: manipulation; direction: ltr; margin: 0; padding: 0; }
         .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-        .animate-fadeIn { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-slideDown { animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .animate-fadeIn { animation: smoothViewTransition 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes smoothViewTransition { from { opacity: 0; transform: translateY(16px) scale(0.988); filter: blur(2px); } to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); } }
+        .animate-slideDown { animation: smoothViewTransition 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         /* New Popup Animation */
-        .animate-popIn { animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .animate-popIn { animation: popIn 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
         button:not(.nav-btn):not(.sidebar-footer-item):not(.sidebar-collapse-btn) { text-align: center; justify-content: center; font-family: 'Poppins', sans-serif !important; }
         .nav-btn, .sidebar-footer-item, .sidebar-footer-item button, .sidebar-footer-item a { text-align: left !important; justify-content: flex-start !important; }
         input, textarea, select { text-align: left !important; font-family: 'Poppins', sans-serif !important; }

@@ -11,11 +11,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="assets/theme.js"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    
-    <style>
-        .tab-content { display: none; animation: fadeIn 0.4s ease; }
-        .tab-content.active { display: block; }
-    </style>
 </head>
 <body class="h-[100dvh] w-full relative bg-background text-textPrimary font-poppins antialiased overflow-hidden" style="-webkit-tap-highlight-color: transparent;">
 
@@ -119,15 +114,20 @@
         <aside id="siswa-sidebar" class="app-sidebar absolute md:relative z-[60] shadow-[4px_0_24px_rgba(0,0,0,0.02)] -translate-x-full md:translate-x-0 transform transition-transform duration-300">
             <button onclick="toggleSidebar()" class="md:hidden absolute top-5 right-4 p-2 text-textSecondary hover:text-textPrimary rounded-lg z-10"><i class="ph-bold ph-x text-xl"></i></button>
             
-            <!-- Logo -->
-            <div class="h-20 flex items-center gap-3 shrink-0 px-5 mt-2">
-                <div class="flex relative items-center justify-center shrink-0 w-8 h-8">
-                    <div class="w-5 h-5 rounded-full bg-primary absolute left-0 opacity-90 mix-blend-multiply"></div>
-                    <div class="w-5 h-5 rounded-full bg-accent absolute right-0 opacity-90 mix-blend-multiply"></div>
+            <!-- Logo & Symbol Collapse Toggle -->
+            <div class="h-20 flex items-center justify-between shrink-0 px-4 mt-2">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="flex relative items-center justify-center shrink-0 w-8 h-8">
+                        <div class="w-5 h-5 rounded-full bg-primary absolute left-0 opacity-90 mix-blend-multiply"></div>
+                        <div class="w-5 h-5 rounded-full bg-accent absolute right-0 opacity-90 mix-blend-multiply"></div>
+                    </div>
+                    <div class="min-w-0 sidebar-logo-text">
+                        <h2 class="font-bold text-white text-lg leading-tight line-clamp-1 tracking-tight">SDN Pasirmae</h2>
+                    </div>
                 </div>
-                <div class="min-w-0 sidebar-logo-text">
-                    <h2 class="font-bold text-textPrimary text-lg leading-tight line-clamp-1 tracking-tight">SDN Pasirmae</h2>
-                </div>
+                <button onclick="window.toggleSidebarCollapse('siswa-sidebar')" class="sidebar-collapse-btn-mini" title="Perkecil / Perbesar Sidebar">
+                    <span class="collapse-icon-symbol"></span>
+                </button>
             </div>
 
             <!-- Student profile widget -->
@@ -142,14 +142,6 @@
                         <span id="profil-nisn" class="text-textSecondary text-[7px] font-bold truncate">-</span>
                     </div>
                 </div>
-            </div>
-
-            <!-- Collapse toggle -->
-            <div class="px-3 mb-1 hidden md:flex justify-start">
-                <button onclick="window.toggleSidebarCollapse('siswa-sidebar')" class="sidebar-collapse-btn" title="Sembunyikan / Tampilkan Sidebar">
-                    <i class="ph-bold ph-caret-left text-base shrink-0"></i>
-                    <span class="nav-label">Perkecil Sidebar</span>
-                </button>
             </div>
             
             <nav class="flex-1 overflow-y-auto custom-scrollbar px-3 py-4 flex flex-col gap-1" id="main-nav-container">
@@ -440,7 +432,7 @@
                 <button onclick="tutupModalVideo()" class="p-1.5 hover:bg-slate-800 rounded-full text-slate-400 transition-all shrink-0"><i class="ph-bold ph-x text-lg"></i></button>
             </div>
             <div class="relative w-full" style="padding-top: 56.25%;">
-                <iframe id="video-iframe" class="absolute top-0 left-0 w-full h-full" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe id="video-iframe" class="absolute top-0 left-0 w-full h-full" src="about:blank" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             <div class="p-4 bg-slate-900">
                 <p class="text-xs text-slate-400 leading-relaxed font-medium" id="modal-video-deskripsi"></p>

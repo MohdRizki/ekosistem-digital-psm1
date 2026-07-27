@@ -7,14 +7,21 @@
     <title>Portal Guru - SDN Pasirmae 1</title>
     <link rel="icon" type="image/png" href="favicon.png">
 
+    <!-- Preconnect ke CDN Utama -->
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+
     <!-- Design System (theme.js handles Poppins + Tailwind config + shared components) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="assets/theme.js"></script>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
 
     <!-- App Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
 
     <style>
         /* PDF print layout — keep as-is */
@@ -152,26 +159,25 @@
 
         <!-- SIDEBAR NAVIGATION -->
         <aside id="sidebar" class="app-sidebar no-print absolute md:relative z-[60] shadow-[4px_0_24px_rgba(0,0,0,0.02)] -translate-x-full md:translate-x-0 transform transition-transform duration-300">
-            <!-- Logo / Brand -->
-            <div class="h-20 flex items-center gap-3 shrink-0 px-5 mt-2">
-                <div class="flex relative items-center justify-center shrink-0 w-8 h-8">
-                    <div class="w-5 h-5 rounded-full bg-primary absolute left-0 opacity-90 mix-blend-multiply"></div>
-                    <div class="w-5 h-5 rounded-full bg-accent absolute right-0 opacity-90 mix-blend-multiply"></div>
+            <!-- Logo & Symbol Collapse Toggle -->
+            <div class="h-20 flex items-center justify-between shrink-0 px-4 mt-2">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="flex relative items-center justify-center shrink-0 w-8 h-8">
+                        <div class="w-5 h-5 rounded-full bg-primary absolute left-0 opacity-90 mix-blend-multiply"></div>
+                        <div class="w-5 h-5 rounded-full bg-accent absolute right-0 opacity-90 mix-blend-multiply"></div>
+                    </div>
+                    <div class="min-w-0 sidebar-logo-text">
+                        <h1 id="sidebar-logo" class="font-bold text-white text-lg leading-tight tracking-tight">OlahNilai</h1>
+                    </div>
                 </div>
-                <div class="min-w-0 sidebar-logo-text">
-                    <h1 id="sidebar-logo" class="font-bold text-textPrimary text-lg leading-tight tracking-tight">OlahNilai</h1>
+                <div class="flex items-center gap-1">
+                    <button onclick="toggleSidebar()" class="md:hidden p-2 text-white/70 hover:text-white rounded-lg transition-colors z-10">
+                        <i class="ph-bold ph-x text-lg"></i>
+                    </button>
+                    <button onclick="window.toggleSidebarCollapse('sidebar')" class="sidebar-collapse-btn-mini" title="Perkecil / Perbesar Sidebar">
+                        <span class="collapse-icon-symbol"></span>
+                    </button>
                 </div>
-                <button onclick="toggleSidebar()" class="md:hidden ml-auto p-2 text-textSecondary hover:text-textPrimary rounded-lg transition-colors z-10">
-                    <i class="ph-bold ph-x text-lg"></i>
-                </button>
-            </div>
-
-            <!-- Collapse toggle -->
-            <div class="px-3 mb-2 hidden md:flex justify-start">
-                <button onclick="window.toggleSidebarCollapse('sidebar')" class="sidebar-collapse-btn" title="Sembunyikan / Tampilkan Sidebar">
-                    <i class="ph-bold ph-caret-left text-base shrink-0"></i>
-                    <span class="nav-label">Perkecil Sidebar</span>
-                </button>
             </div>
 
             <nav class="flex-1 overflow-y-auto custom-scrollbar px-3 py-4 flex flex-col gap-1">
