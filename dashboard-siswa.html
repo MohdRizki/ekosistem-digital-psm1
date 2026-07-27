@@ -1043,24 +1043,19 @@
             btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin text-base"></i> Memeriksa...`;
             btn.disabled = true;
 
-            console.log('========================================');
-            console.log('[LOGIN] Mulai proses login untuk NISN/Nama:', nisn, '| PIN:', pin);
-
             try {
                 // Jangan blokir terlalu lama jika offline/koneksi lambat
                 if (!auth.currentUser) {
-                    console.log('[LOGIN] Menunggu koneksi Auth (max 2 detik)...');
                     await Promise.race([
                         initAuth(),
                         new Promise(resolve => setTimeout(resolve, 2000))
-                    ]).catch(e => console.warn('[LOGIN] Auth timeout/offline, lanjut dengan cache lokal:', e));
+                    ]).catch(() => {});
                 }
 
                 let siswaList = [];
                 // Coba ambil dari Firestore dengan timeout 3 detik
                 try {
                     const colRef = collection(db, 'artifacts', 'sd-negeri-pasirmae-1', 'public', 'data', 'siswa');
-                    console.log('[LOGIN] Mencoba mengambil dari server Firestore...');
                     const snap = await Promise.race([
                         getDocs(colRef),
                         new Promise((_, reject) => setTimeout(() => reject(new Error('Koneksi Firestore timeout/offline')), 3000))
@@ -1068,21 +1063,18 @@
                     snap.forEach(docSnap => {
                         siswaList.push({ id: docSnap.id, ...docSnap.data() });
                     });
-                    console.log('[LOGIN] Berhasil ambil dari server:', siswaList.length, 'siswa.');
                 } catch (dbErr) {
-                    console.warn('[LOGIN] Gagal/timeout ambil dari server:', dbErr.message);
+                    // Fallback ke cache jika offline/timeout
                 }
 
                 // Jika dari server kosong/gagal, gunakan cache onSnapshot / localStorage
                 if (siswaList.length === 0) {
                     if (window._cachedSiswaList && window._cachedSiswaList.length > 0) {
                         siswaList = window._cachedSiswaList;
-                        console.log('[LOGIN] Menggunakan data dari memory cache:', siswaList.length);
                     } else {
                         const localStr = localStorage.getItem('shared_siswa_cache');
                         if (localStr) {
                             siswaList = JSON.parse(localStr);
-                            console.log('[LOGIN] Menggunakan data dari localStorage (shared cache):', siswaList.length);
                         }
                     }
                 }
@@ -1098,8 +1090,8 @@
                 
                 let foundUser = null;
                 
-                // Periksa setiap siswa
-                siswaList.forEach(d => {
+                // Periksa setiap siswa dengan loop yang efisien dan bersih
+                for (const d of siswaList) {
                     const dbNisn = String(d.nisn ?? '').trim();
                     const dbNis = String(d.nis ?? '').trim();
                     const dbPin = String(d.pin ?? '').trim().toUpperCase();
@@ -1111,15 +1103,13 @@
                     const matchNama = dbNama.toLowerCase() !== '' && (dbNama.toLowerCase() === inputIdentitas || dbNama.toLowerCase().includes(inputIdentitas) || inputIdentitas.includes(dbNama.toLowerCase()));
                     const matchPin = dbPin === pin;
                     
-                    console.log(`[LOGIN] Cek "${dbNama}" | NISN:"${dbNisn}" | PIN:"${dbPin}" => matchNama/NISN=${matchNisn||matchNis||matchNama}, matchPin=${matchPin}`);
-                    
                     if ((matchNisn || matchNis || matchNama) && matchPin) {
                         foundUser = d;
+                        break; // Langsung hentikan pencarian setelah ketemu agar ringan
                     }
-                });
+                }
 
                 if (foundUser) {
-                    console.log('[LOGIN] ✅ COCOK! Login BERHASIL:', foundUser.nama);
                     const expireTime = new Date().getTime() + (24 * 60 * 60 * 1000);
                     const sessionObj = { data: foundUser, expiresAt: expireTime };
                     localStorage.setItem('siswaSessionInfo', JSON.stringify(sessionObj));
@@ -1127,7 +1117,6 @@
                     showToast('Berhasil masuk!');
                     tampilkanDashboard(foundUser);
                 } else {
-                    console.warn('[LOGIN] ❌ GAGAL: Tidak ditemukan kecocokan untuk:', nisn, '| PIN:', pin);
                     errBox.innerHTML = `<b>Login gagal.</b> NISN/Nama "<b>${nisn}</b>" dengan PIN yang dimasukkan tidak cocok.<br><span class="text-[9px] opacity-70">${siswaList.length} data siswa diperiksa.</span>`;
                     errBox.classList.remove('hidden');
                 }
