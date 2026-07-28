@@ -369,8 +369,9 @@
             border-bottom-left-radius: 9999px !important;
             border-top-right-radius: 0 !important;
             border-bottom-right-radius: 0 !important;
+            left: 16px !important;
             pointer-events: none !important;
-            transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.4s cubic-bezier(0.16, 1, 0.3, 1), left 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease !important;
+            transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease !important;
             z-index: 1 !important;
         }
         .app-sidebar.collapsed #sidebar-gliding-indicator {
@@ -1105,19 +1106,7 @@ window.setupGlidingSidebar = function() {
                 const sidebarRect = sidebar.getBoundingClientRect();
                 const btnRect = activeBtn.getBoundingClientRect();
                 
-                let l = btnRect.left - sidebarRect.left;
-                // Untuk mode normal, pastikan indikator menempel utuh ke tepi kanan sidebar
-                let w = sidebarRect.width - l;
-                
-                // Jika collapsed, paksa indikator berukuran pill (cutout) di sisi kanan
-                if (sidebar.classList.contains('collapsed')) {
-                    w = 64; // Lebar total 80 - margin 16
-                    l = 16;
-                }
-                
-                // Set precise width, left, top, and height matching the button exactly
-                indicator.style.setProperty('width', w + 'px', 'important');
-                indicator.style.setProperty('left', l + 'px', 'important');
+                // Lebar dan posisi kiri diatur mutlak oleh CSS (left: 16px, right: 0) agar otomatis mengikuti lebar parent tanpa delay JS
                 indicator.style.setProperty('top', (btnRect.top - sidebarRect.top) + 'px', 'important');
                 indicator.style.setProperty('height', btnRect.height + 'px', 'important');
             } else {
