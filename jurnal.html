@@ -1111,8 +1111,8 @@
                     </aside>
                     <div id="mobile-menu-backdrop" onclick="window.appState.mobileMenuOpen = false; window.renderApp();" class="${window.appState.mobileMenuOpen ? 'block' : 'hidden'} absolute inset-0 bg-slate-900/20 backdrop-blur-sm z-40 md:hidden"></div>
                     <div class="flex-1 flex flex-col h-full overflow-hidden relative">
-                        <header class="h-20 bg-background flex items-center justify-between px-6 md:px-8 shrink-0 z-30">
-                            <div class="flex items-center gap-4 w-full max-w-md">
+                        <header class="dynamic-header h-20 bg-background flex items-center justify-between px-6 md:px-8 shrink-0 z-30">
+                            <div class="flex items-center gap-4 w-full max-w-md header-shrink-hide">
                                 <button onclick="window.appState.mobileMenuOpen = !window.appState.mobileMenuOpen; window.renderApp();" class="md:hidden p-2 -ml-2 text-textSecondary hover:text-textPrimary rounded-lg"><i class="ph-bold ph-list text-2xl"></i></button>
 
                                 <h1 class="md:hidden text-lg font-bold text-textPrimary tracking-tight">${viewTitles[v]||v}</h1>
