@@ -993,20 +993,11 @@ window.setupGlidingSidebar = function() {
             }
         });
         
-        // Observer hanya untuk memantau jika class pada sidebar induk berubah (expand/collapse)
-        const observer = new MutationObserver((mutations) => {
-            let shouldUpdate = false;
-            for (const m of mutations) {
-                if (m.target === sidebar || m.target === nav) {
-                    shouldUpdate = true;
-                    break;
-                }
-            }
-            if (shouldUpdate) {
-                requestAnimationFrame(updateIndicator);
-            }
+        // Observer memantau jika class pada sidebar/nav atau anak tombolnya berubah (.active, expand/collapse)
+        const observer = new MutationObserver(() => {
+            requestAnimationFrame(updateIndicator);
         });
-        observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+        observer.observe(sidebar, { attributes: true, subtree: true, attributeFilter: ['class'] });
     });
 };
 
