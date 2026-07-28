@@ -213,7 +213,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
             flex-shrink: 0;
             position: relative;
             z-index: 60;
@@ -283,7 +283,7 @@
 
         /* Navigation Buttons */
         .app-sidebar nav {
-            padding: 0 16px !important;
+            padding: 0 0 0 16px !important;
         }
         .nav-btn {
             width: 100%;
@@ -326,7 +326,6 @@
         .nav-btn:hover:not(.active) {
             color: #FFFFFF !important;
             background: rgba(255, 255, 255, 0.12) !important;
-            transform: translateX(4px) !important;
         }
         .nav-btn:hover:not(.active) i,
         .nav-btn:hover:not(.active) .nav-label {
@@ -371,7 +370,7 @@
             border-top-right-radius: 0 !important;
             border-bottom-right-radius: 0 !important;
             pointer-events: none !important;
-            transition: top 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1), left 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease !important;
+            transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.4s cubic-bezier(0.16, 1, 0.3, 1), left 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease !important;
             z-index: 1 !important;
         }
         .app-sidebar.collapsed #sidebar-gliding-indicator {
