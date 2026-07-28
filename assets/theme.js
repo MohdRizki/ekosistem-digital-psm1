@@ -256,8 +256,18 @@
                 border-top-right-radius: 0 !important;
                 border-bottom-right-radius: 0 !important;
                 pointer-events: none !important;
-                transition: top 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease !important;
+                transition: top 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1), left 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease !important;
                 z-index: 1 !important;
+            }
+            .app-sidebar.collapsed #sidebar-gliding-indicator {
+                width: 44px !important;
+                left: 18px !important;
+                right: auto !important;
+                border-radius: 9999px !important;
+            }
+            .app-sidebar.collapsed #sidebar-gliding-indicator::before,
+            .app-sidebar.collapsed #sidebar-gliding-indicator::after {
+                display: none !important;
             }
             #sidebar-gliding-indicator::before {
                 content: "" !important;
@@ -970,9 +980,11 @@ window.setupGlidingSidebar = function() {
         
         const updateIndicator = () => {
             if (sidebar.classList.contains('collapsed')) {
-                indicator.style.width = 'calc(100% - 12px)';
+                indicator.style.width = '44px';
+                indicator.style.left = '18px';
             } else {
                 indicator.style.width = 'calc(100% - 20px)';
+                indicator.style.left = '';
             }
             const activeBtn = nav.querySelector('.nav-btn.active');
             if (activeBtn) {
@@ -1023,7 +1035,7 @@ window.setupDynamicHeaders = () => {
                             
         const handleScroll = (target) => {
             const scrollTop = target === window ? window.scrollY : target.scrollTop;
-            if (scrollTop > 20) {
+            if (scrollTop > 50) {
                 header.classList.add('header-shrunk');
             } else {
                 header.classList.remove('header-shrunk');
