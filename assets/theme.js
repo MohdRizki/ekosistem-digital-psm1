@@ -525,12 +525,8 @@
             background: rgba(255, 255, 255, 0.12) !important;
             transform: scale(1.08);
         }
-        .collapse-icon-symbol::before {
-            content: "<";
-        }
-        .app-sidebar.collapsed .collapse-icon-symbol::before {
-            content: ">";
-        }
+        .collapse-icon { display: inline-block; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important; }
+        .app-sidebar.collapsed .collapse-icon { transform: rotate(180deg) !important; }
         .app-sidebar.collapsed .h-20 {
             justify-content: center !important;
             padding-left: 0 !important;
@@ -724,60 +720,10 @@
         header.dynamic-header {
             transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
-        header.dynamic-header.header-shrunk {
-            position: absolute !important;
-            top: 16px !important;
-            right: 24px !important;
-            z-index: 50 !important;
-            height: 48px !important;
-            max-width: fit-content !important;
-            margin: 0 !important;
-            padding: 0 16px !important;
-            pointer-events: auto !important;
-            display: flex !important;
-            align-items: center !important;
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-        }
-        header.dynamic-header.header-shrunk::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            z-index: -1;
-            border-radius: 9999px;
-            background-color: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(226, 232, 240, 0.9);
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.15), 0 4px 12px -2px rgba(0, 0, 0, 0.08);
-            pointer-events: none;
-        }
-        .dark header.dynamic-header.header-shrunk::before {
-            background-color: rgba(30, 41, 59, 0.92);
-            border-color: rgba(51, 65, 85, 0.9);
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4);
-        }
-        header.dynamic-header.header-shrunk .header-shrink-hide {
-            display: none !important;
-        }
-        header.dynamic-header.header-shrunk .flex.items-center.gap-5 {
-            gap: 14px !important;
-        }
-        header.dynamic-header.header-shrunk #profile-menu-button {
-            background: transparent !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            box-shadow: none !important;
-            border: none !important;
-        }
-        header.dynamic-header.header-shrunk #profile-menu-button > div:first-child {
-            width: 32px !important;
-            height: 32px !important;
-            border: 1.5px solid rgba(37, 99, 235, 0.3) !important;
-        }
-        header.dynamic-header.header-shrunk button i {
-            font-size: 1.15rem !important;
-        }
+        header.dynamic-header { transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important; }
+        header.dynamic-header.header-shrunk { margin: 0.75rem 1.5rem !important; border-radius: 9999px !important; padding-left: 1.5rem !important; padding-right: 1.5rem !important; height: 4rem !important; background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(16px) !important; border: 1px solid rgba(0, 0, 0, 0.05) !important; box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1) !important; top: 0.75rem !important; width: calc(100% - 3rem) !important; }
+        .dark header.dynamic-header.header-shrunk { background: rgba(30, 41, 59, 0.92) !important; border-color: rgba(51, 65, 85, 0.9) !important; box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4) !important; }
+
 
         /* Mirror mode for QR scanner (front camera) */
         .mirror-mode video { transform: scaleX(-1); }
@@ -1183,3 +1129,6 @@ if (document.readyState === 'loading') {
 } else {
     initAppThemeBehaviors();
 }
+
+
+
