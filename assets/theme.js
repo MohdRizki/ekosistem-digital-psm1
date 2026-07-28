@@ -372,14 +372,15 @@
             z-index: 1 !important;
         }
         .app-sidebar.collapsed #sidebar-gliding-indicator {
-            width: 44px !important;
-            left: 18px !important;
-            right: auto !important;
-            border-radius: 9999px !important;
+            width: calc(100% - 16px) !important;
+            left: 16px !important;
+            right: 0 !important;
+            border-radius: 9999px 0 0 9999px !important;
         }
         .app-sidebar.collapsed #sidebar-gliding-indicator::before,
         .app-sidebar.collapsed #sidebar-gliding-indicator::after {
-            display: none !important;
+            display: block !important;
+            right: 0 !important;
         }
         #sidebar-gliding-indicator::before {
             content: "" !important;
