@@ -361,8 +361,6 @@
         /* Ultra-Premium Dribbble Cutout Indicator with Vector Notches (Exact copy of preview-sidebar.html) */
         #sidebar-gliding-indicator {
             position: absolute !important;
-            left: 12px !important;
-            width: calc(100% - 12px) !important;
             right: 0 !important;
             background-color: #EEF2F6 !important;
             border-top-left-radius: 9999px !important;
@@ -374,8 +372,6 @@
             z-index: 1 !important;
         }
         .app-sidebar.collapsed #sidebar-gliding-indicator {
-            width: calc(100% - 16px) !important;
-            left: 16px !important;
             right: 0 !important;
             border-radius: 9999px 0 0 9999px !important;
         }
@@ -1084,14 +1080,7 @@ window.setupGlidingSidebar = function() {
         
         let indicator = nav.querySelector('#sidebar-gliding-indicator');
         if (nav.classList.contains('has-gliding-indicator')) {
-            if (indicator) {
-                const activeBtn = nav.querySelector('.nav-btn.active');
-                if (activeBtn && activeBtn.offsetTop > 0) {
-                    indicator.style.opacity = '1';
-                    indicator.style.top = activeBtn.offsetTop + 'px';
-                    indicator.style.height = activeBtn.offsetHeight + 'px';
-                }
-            }
+            // Setup already done
             return;
         }
         nav.classList.add('relative', 'has-gliding-indicator');
@@ -1103,26 +1092,26 @@ window.setupGlidingSidebar = function() {
         }
         
         const updateIndicator = () => {
-            if (sidebar.classList.contains('collapsed')) {
-                indicator.style.width = '44px';
-                indicator.style.left = '18px';
-            } else {
-                indicator.style.width = 'calc(100% - 20px)';
-                indicator.style.left = '';
-            }
             const activeBtn = nav.querySelector('.nav-btn.active');
             if (activeBtn) {
-                indicator.style.opacity = '1';
+                indicator.style.setProperty('opacity', '1', 'important');
                 const sidebarRect = sidebar.getBoundingClientRect();
                 const btnRect = activeBtn.getBoundingClientRect();
-                indicator.style.top = (btnRect.top - sidebarRect.top) + 'px';
-                indicator.style.height = btnRect.height + 'px';
+                
+                // Set precise width, left, top, and height matching the button exactly
+                indicator.style.setProperty('width', btnRect.width + 'px', 'important');
+                indicator.style.setProperty('left', (btnRect.left - sidebarRect.left) + 'px', 'important');
+                indicator.style.setProperty('top', (btnRect.top - sidebarRect.top) + 'px', 'important');
+                indicator.style.setProperty('height', btnRect.height + 'px', 'important');
             } else {
-                indicator.style.opacity = '0';
+                indicator.style.setProperty('opacity', '0', 'important');
             }
         };
         
+        // Initial setup and force first frame highlight
         updateIndicator();
+        setTimeout(updateIndicator, 50);
+        setTimeout(updateIndicator, 150);
         requestAnimationFrame(updateIndicator);
         window.addEventListener('resize', updateIndicator);
         nav.addEventListener('scroll', () => {
