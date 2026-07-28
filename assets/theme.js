@@ -1106,8 +1106,9 @@ window.setupGlidingSidebar = function() {
                 const sidebarRect = sidebar.getBoundingClientRect();
                 const btnRect = activeBtn.getBoundingClientRect();
                 
-                let w = btnRect.width;
                 let l = btnRect.left - sidebarRect.left;
+                // Untuk mode normal, pastikan indikator menempel utuh ke tepi kanan sidebar
+                let w = sidebarRect.width - l;
                 
                 // Jika collapsed, paksa indikator berukuran pill (cutout) di sisi kanan
                 if (sidebar.classList.contains('collapsed')) {
