@@ -270,10 +270,6 @@
                 background-repeat: no-repeat !important;
                 pointer-events: none !important;
             }
-            #sidebar-gliding-indicator.at-top::before {
-                display: none !important;
-                opacity: 0 !important;
-            }
             #sidebar-gliding-indicator::after {
                 content: "" !important;
                 position: absolute !important;
@@ -967,13 +963,7 @@ window.setupGlidingSidebar = function() {
                 indicator.style.width = 'calc(100% - 20px)';
             }
             const activeBtn = nav.querySelector('.nav-btn.active');
-            const firstBtn = nav.querySelector('.nav-btn');
             if (activeBtn) {
-                if (firstBtn && (activeBtn === firstBtn || activeBtn.offsetTop <= 16)) {
-                    indicator.classList.add('at-top');
-                } else {
-                    indicator.classList.remove('at-top');
-                }
                 indicator.style.opacity = '1';
                 indicator.style.top = activeBtn.offsetTop + 'px';
                 indicator.style.height = activeBtn.offsetHeight + 'px';
