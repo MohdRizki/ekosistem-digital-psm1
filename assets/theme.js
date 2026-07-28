@@ -178,9 +178,8 @@
             .app-sidebar nav {
                 padding-right: 0 !important;
                 padding-left: 1.25rem !important;
-                padding-top: 1.5rem !important;
-                padding-bottom: 1.5rem !important;
                 position: relative !important;
+                z-index: 10 !important;
             }
             .app-sidebar.collapsed nav {
                 padding-right: 0 !important;
@@ -263,7 +262,7 @@
             #sidebar-gliding-indicator::before {
                 content: "" !important;
                 position: absolute !important;
-                top: -23px !important;
+                top: -24px !important;
                 right: 0 !important;
                 width: 24px !important;
                 height: 24px !important;
@@ -275,7 +274,7 @@
             #sidebar-gliding-indicator::after {
                 content: "" !important;
                 position: absolute !important;
-                bottom: -23px !important;
+                bottom: -24px !important;
                 right: 0 !important;
                 width: 24px !important;
                 height: 24px !important;
@@ -955,7 +954,7 @@ window.setupGlidingSidebar = function() {
         if (!indicator) {
             indicator = document.createElement('div');
             indicator.id = 'sidebar-gliding-indicator';
-            nav.insertBefore(indicator, nav.firstChild);
+            sidebar.insertBefore(indicator, nav);
         }
         
         const updateIndicator = () => {
@@ -967,8 +966,10 @@ window.setupGlidingSidebar = function() {
             const activeBtn = nav.querySelector('.nav-btn.active');
             if (activeBtn) {
                 indicator.style.opacity = '1';
-                indicator.style.top = activeBtn.offsetTop + 'px';
-                indicator.style.height = activeBtn.offsetHeight + 'px';
+                const sidebarRect = sidebar.getBoundingClientRect();
+                const btnRect = activeBtn.getBoundingClientRect();
+                indicator.style.top = (btnRect.top - sidebarRect.top) + 'px';
+                indicator.style.height = btnRect.height + 'px';
             } else {
                 indicator.style.opacity = '0';
             }
@@ -977,6 +978,9 @@ window.setupGlidingSidebar = function() {
         updateIndicator();
         requestAnimationFrame(updateIndicator);
         window.addEventListener('resize', updateIndicator);
+        nav.addEventListener('scroll', () => {
+            requestAnimationFrame(updateIndicator);
+        });
         
         // Cukup gunakan 1 event listener delegasi yang bersihkan timer berlebih
         nav.addEventListener('click', (e) => {
