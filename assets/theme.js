@@ -583,6 +583,7 @@
         .app-sidebar.collapsed .nav-btn i,
         .app-sidebar.collapsed .sidebar-footer-item i {
             margin: 0 auto !important;
+            transform: translateX(-6px) !important;
         }
         .app-sidebar.collapsed .sidebar-collapse-btn {
             justify-content: center;
@@ -599,6 +600,12 @@
         }
         .app-sidebar.collapsed .sidebar-collapse-btn .nav-label {
             display: none;
+        }
+        .app-sidebar.collapsed .nav-btn:hover:not(.active) i {
+            transform: translateX(-6px) scale(1.15) rotate(4deg) !important;
+        }
+        .app-sidebar.collapsed .nav-btn.active i {
+            transform: translateX(-6px) !important;
         }
 
         /* Tooltip for Collapsed Sidebar Items */
@@ -868,43 +875,43 @@ window.bukaKotakPesan = function() {
     modal.id = 'modal-kotak-pesan';
     modal.className = 'fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm';
     modal.innerHTML = `
-        <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] border border-slate-100 dark:border-slate-700" style="animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
-            <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
+        <div class="bg-white  w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] border border-slate-100 " style="animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
+            <div class="px-6 py-5 border-b border-slate-100  flex justify-between items-center bg-slate-50/50 ">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold">
                         <i class="ph-bold ph-envelope-simple text-xl" style="color: var(--primary-color, #FC6B58)"></i>
                     </div>
                     <div>
-                        <h3 class="text-base font-bold text-slate-900 dark:text-slate-100 tracking-tight">Kotak Pesan</h3>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Pesan sistem & pengumuman</p>
+                        <h3 class="text-base font-bold text-slate-900  tracking-tight">Kotak Pesan</h3>
+                        <p class="text-[11px] text-slate-500  font-medium">Pesan sistem & pengumuman</p>
                     </div>
                 </div>
-                <button onclick="document.getElementById('modal-kotak-pesan').classList.add('hidden')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors">
+                <button onclick="document.getElementById('modal-kotak-pesan').classList.add('hidden')" class="p-2 hover:bg-slate-100  rounded-full transition-colors">
                     <i class="ph-bold ph-x text-lg text-slate-500"></i>
                 </button>
             </div>
             <div class="p-4 flex-1 overflow-y-auto space-y-3 custom-scrollbar text-left">
-                <div class="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-100 dark:border-slate-700/60 hover:shadow-sm transition-all text-left">
+                <div class="p-4 bg-slate-50  rounded-2xl border border-slate-100  hover:shadow-sm transition-all text-left">
                     <div class="flex justify-between items-center mb-1">
-                        <span class="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                        <span class="text-xs font-bold text-slate-800  flex items-center gap-1.5">
                             <i class="ph-fill ph-megaphone text-amber-500 text-sm"></i> Pengumuman Sekolah
                         </span>
                         <span class="text-[10px] text-slate-400 font-medium">Hari ini</span>
                     </div>
-                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">Selamat datang di Sistem Digital SDN Pasirmae 1. Silakan periksa pembaharuan kalender akademik dan administrasi secara berkala.</p>
+                    <p class="text-xs text-slate-600  leading-relaxed">Selamat datang di Sistem Digital SDN Pasirmae 1. Silakan periksa pembaharuan kalender akademik dan administrasi secara berkala.</p>
                 </div>
-                <div class="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-100 dark:border-slate-700/60 hover:shadow-sm transition-all text-left">
+                <div class="p-4 bg-slate-50  rounded-2xl border border-slate-100  hover:shadow-sm transition-all text-left">
                     <div class="flex justify-between items-center mb-1">
-                        <span class="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                        <span class="text-xs font-bold text-slate-800  flex items-center gap-1.5">
                             <i class="ph-fill ph-info text-blue-500 text-sm"></i> Tips Pengolahan Data
                         </span>
                         <span class="text-[10px] text-slate-400 font-medium">Sistem</span>
                     </div>
-                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">Gunakan fitur ekspor Excel dan PDF pada masing-masing modul untuk mencetak laporan resmi atau menyimpan arsip dokumen.</p>
+                    <p class="text-xs text-slate-600  leading-relaxed">Gunakan fitur ekspor Excel dan PDF pada masing-masing modul untuk mencetak laporan resmi atau menyimpan arsip dokumen.</p>
                 </div>
             </div>
-            <div class="p-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-center">
-                <button onclick="document.getElementById('modal-kotak-pesan').classList.add('hidden')" class="w-full py-2.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl font-bold text-xs transition-colors">
+            <div class="p-4 border-t border-slate-100  bg-slate-50/50  text-center">
+                <button onclick="document.getElementById('modal-kotak-pesan').classList.add('hidden')" class="w-full py-2.5 bg-slate-200 hover:bg-slate-300   text-slate-700  rounded-xl font-bold text-xs transition-colors">
                     Tutup Kotak Pesan
                 </button>
             </div>
@@ -933,58 +940,58 @@ window.toggleNotifications = function() {
     modal.id = 'modal-notifikasi-global';
     modal.className = 'fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm';
     modal.innerHTML = `
-        <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] border border-slate-100 dark:border-slate-700" style="animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
-            <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
+        <div class="bg-white  w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] border border-slate-100 " style="animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
+            <div class="px-6 py-5 border-b border-slate-100  flex justify-between items-center bg-slate-50/50 ">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold">
                         <i class="ph-bold ph-bell text-xl" style="color: var(--primary-color, #FC6B58)"></i>
                     </div>
                     <div>
-                        <h3 class="text-base font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pusat Notifikasi</h3>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Informasi & aktivitas terbaru</p>
+                        <h3 class="text-base font-bold text-slate-900  tracking-tight">Pusat Notifikasi</h3>
+                        <p class="text-[11px] text-slate-500  font-medium">Informasi & aktivitas terbaru</p>
                     </div>
                 </div>
-                <button onclick="document.getElementById('modal-notifikasi-global').classList.add('hidden')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors">
+                <button onclick="document.getElementById('modal-notifikasi-global').classList.add('hidden')" class="p-2 hover:bg-slate-100  rounded-full transition-colors">
                     <i class="ph-bold ph-x text-lg text-slate-500"></i>
                 </button>
             </div>
             <div class="p-4 flex-1 overflow-y-auto space-y-2.5 custom-scrollbar text-left">
-                <div class="p-3.5 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-100 dark:border-slate-700/60 flex items-start gap-3 hover:shadow-sm transition-all text-left">
+                <div class="p-3.5 bg-slate-50  rounded-2xl border border-slate-100  flex items-start gap-3 hover:shadow-sm transition-all text-left">
                     <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 mt-1.5 shrink-0 shadow-sm shadow-emerald-500/50"></div>
                     <div class="flex-1 min-w-0">
                         <div class="flex justify-between items-center mb-0.5">
-                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200">Presensi & Jurnal Harian</h4>
-                            <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full">Aktif</span>
+                            <h4 class="text-xs font-bold text-slate-800 ">Presensi & Jurnal Harian</h4>
+                            <span class="text-[10px] text-emerald-600  font-bold bg-emerald-50  px-2 py-0.5 rounded-full">Aktif</span>
                         </div>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">Sistem siap mencatat kehadiran siswa dan jurnal pengajaran hari ini.</p>
-                        <span class="text-[10px] text-slate-400 dark:text-slate-500 font-semibold block mt-1.5">Baru saja</span>
+                        <p class="text-[11px] text-slate-500  leading-relaxed">Sistem siap mencatat kehadiran siswa dan jurnal pengajaran hari ini.</p>
+                        <span class="text-[10px] text-slate-400  font-semibold block mt-1.5">Baru saja</span>
                     </div>
                 </div>
-                <div class="p-3.5 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-100 dark:border-slate-700/60 flex items-start gap-3 hover:shadow-sm transition-all text-left">
+                <div class="p-3.5 bg-slate-50  rounded-2xl border border-slate-100  flex items-start gap-3 hover:shadow-sm transition-all text-left">
                     <div class="w-2.5 h-2.5 rounded-full bg-blue-500 mt-1.5 shrink-0"></div>
                     <div class="flex-1 min-w-0">
                         <div class="flex justify-between items-center mb-0.5">
-                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200">Integrasi Ekosistem Sekolah</h4>
-                            <span class="text-[10px] text-blue-600 dark:text-blue-400 font-bold bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-full">Sistem</span>
+                            <h4 class="text-xs font-bold text-slate-800 ">Integrasi Ekosistem Sekolah</h4>
+                            <span class="text-[10px] text-blue-600  font-bold bg-blue-50  px-2 py-0.5 rounded-full">Sistem</span>
                         </div>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">Portal Admin, Siswa, Jurnal, dan Olah Nilai telah diselaraskan dengan standar warna baru.</p>
-                        <span class="text-[10px] text-slate-400 dark:text-slate-500 font-semibold block mt-1.5">1 jam lalu</span>
+                        <p class="text-[11px] text-slate-500  leading-relaxed">Portal Admin, Siswa, Jurnal, dan Olah Nilai telah diselaraskan dengan standar warna baru.</p>
+                        <span class="text-[10px] text-slate-400  font-semibold block mt-1.5">1 jam lalu</span>
                     </div>
                 </div>
-                <div class="p-3.5 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-100 dark:border-slate-700/60 flex items-start gap-3 hover:shadow-sm transition-all text-left">
+                <div class="p-3.5 bg-slate-50  rounded-2xl border border-slate-100  flex items-start gap-3 hover:shadow-sm transition-all text-left">
                     <div class="w-2.5 h-2.5 rounded-full bg-amber-500 mt-1.5 shrink-0"></div>
                     <div class="flex-1 min-w-0">
                         <div class="flex justify-between items-center mb-0.5">
-                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200">Backup Cloud Spreadsheet</h4>
-                            <span class="text-[10px] text-amber-600 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-900/30 px-2 py-0.5 rounded-full">Tips</span>
+                            <h4 class="text-xs font-bold text-slate-800 ">Backup Cloud Spreadsheet</h4>
+                            <span class="text-[10px] text-amber-600  font-bold bg-amber-50  px-2 py-0.5 rounded-full">Tips</span>
                         </div>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">Pastikan URL Webhook Google Apps Script terkonfigurasi di menu Pengaturan.</p>
-                        <span class="text-[10px] text-slate-400 dark:text-slate-500 font-semibold block mt-1.5">Hari ini</span>
+                        <p class="text-[11px] text-slate-500  leading-relaxed">Pastikan URL Webhook Google Apps Script terkonfigurasi di menu Pengaturan.</p>
+                        <span class="text-[10px] text-slate-400  font-semibold block mt-1.5">Hari ini</span>
                     </div>
                 </div>
             </div>
-            <div class="p-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-center">
-                <button onclick="document.getElementById('modal-notifikasi-global').classList.add('hidden')" class="w-full py-2.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl font-bold text-xs transition-colors">
+            <div class="p-4 border-t border-slate-100  bg-slate-50/50  text-center">
+                <button onclick="document.getElementById('modal-notifikasi-global').classList.add('hidden')" class="w-full py-2.5 bg-slate-200 hover:bg-slate-300   text-slate-700  rounded-xl font-bold text-xs transition-colors">
                     Tutup Notifikasi
                 </button>
             </div>
@@ -1023,23 +1030,23 @@ window.toggleProfileMenu = function() {
     modal.id = 'modal-profil-global';
     modal.className = 'fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm';
     modal.innerHTML = `
-        <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-slate-100 dark:border-slate-700 text-center p-6" style="animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
+        <div class="bg-white  w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-slate-100  text-center p-6" style="animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
             <div class="flex justify-end mb-2">
-                <button onclick="document.getElementById('modal-profil-global').classList.add('hidden')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors">
+                <button onclick="document.getElementById('modal-profil-global').classList.add('hidden')" class="p-2 hover:bg-slate-100  rounded-full transition-colors">
                     <i class="ph-bold ph-x text-lg text-slate-500"></i>
                 </button>
             </div>
             <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold mx-auto mb-4 border-2 border-primary/20 shadow-inner">
                 <i class="ph-bold ph-user text-3xl" style="color: var(--primary-color, #FC6B58)"></i>
             </div>
-            <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">${userName}</h3>
+            <h3 class="text-lg font-bold text-slate-900  tracking-tight">${userName}</h3>
             <p class="text-xs text-primary font-bold uppercase tracking-wider mt-0.5">${userRole}</p>
-            <div class="my-5 p-3.5 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-100 dark:border-slate-700/60 text-left space-y-2">
-                <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+            <div class="my-5 p-3.5 bg-slate-50  rounded-2xl border border-slate-100  text-left space-y-2">
+                <div class="flex items-center gap-2 text-xs text-slate-600 ">
                     <i class="ph-fill ph-buildings text-slate-400 text-base"></i>
                     <span class="font-semibold truncate">${userSchool}</span>
                 </div>
-                <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+                <div class="flex items-center gap-2 text-xs text-slate-600 ">
                     <i class="ph-fill ph-calendar-check text-slate-400 text-base"></i>
                     <span class="font-semibold">Tahun Ajaran 2024/2025</span>
                 </div>
@@ -1048,7 +1055,7 @@ window.toggleProfileMenu = function() {
                 <button onclick="document.getElementById('modal-profil-global').classList.add('hidden'); if(window.setView) window.setView('settings'); else if(window.openModal) window.openModal('settings'); else if(window.switchTab) window.switchTab('admin');" class="w-full py-3.5 bg-primary/10 hover:bg-primary/20 text-primary font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2">
                     <i class="ph-bold ph-gear text-base"></i> Pengaturan Akun & Profil
                 </button>
-                <button onclick="document.getElementById('modal-profil-global').classList.add('hidden'); if(window.handleLogout) window.handleLogout(); else if(window.keluarSesi) window.keluarSesi(); else window.location.href='index.html';" class="w-full py-3.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2">
+                <button onclick="document.getElementById('modal-profil-global').classList.add('hidden'); if(window.handleLogout) window.handleLogout(); else if(window.keluarSesi) window.keluarSesi(); else window.location.href='index.html';" class="w-full py-3.5 bg-red-50 hover:bg-red-100   text-red-600  font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2">
                     <i class="ph-bold ph-sign-out text-base"></i> Keluar Sesi
                 </button>
             </div>
