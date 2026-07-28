@@ -309,7 +309,6 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            font-size: 1rem;
             color: rgba(255, 255, 255, 0.8) !important;
             transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease !important;
         }
@@ -468,7 +467,6 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            font-size: 1rem;
             transition: transform 0.2s ease;
             color: rgba(255, 255, 255, 0.8) !important;
         }
@@ -574,14 +572,14 @@
         }
         .app-sidebar.collapsed .nav-btn {
             justify-content: center !important;
-            padding: 0 !important;
+            padding: 0.75rem 0 !important;
             width: 100% !important;
             margin: 0 !important;
             border-radius: 9999px 0 0 9999px !important;
         }
         .app-sidebar.collapsed .sidebar-footer-item {
             justify-content: center !important;
-            padding: 0 !important;
+            padding: 0.625rem 0 !important;
             margin: 0 0.5rem !important;
             border-radius: 1rem !important;
             width: auto !important;

@@ -57,7 +57,7 @@
                         <label class="block text-slate-500 font-bold text-[10px] uppercase tracking-wider pl-4">NISN / NIS / Nama Siswa</label>
                         <div class="relative group">
                             <i class="ph-bold ph-identification-card absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors text-lg"></i>
-                            <input type="text" id="login-nisn" required placeholder="Cth: 1234567890 atau Nama Siswa" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-full px-4 py-3.5 pl-14 text-sm font-semibold focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all">
+                            <input type="text" id="login-nisn" required placeholder="Cth: 1234567890 atau Nama Siswa" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-full px-4 py-3.5 pl-14 text-sm font-semibold focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 focus:bg-white transition-all">
                         </div>
                     </div>
                     
@@ -65,7 +65,7 @@
                         <label class="block text-slate-500 font-bold text-[10px] uppercase tracking-wider pl-4">PIN Akses</label>
                         <div class="relative group">
                             <i class="ph-bold ph-lock-key absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors text-lg"></i>
-                            <input type="password" id="login-pin" required maxlength="6" placeholder="6 Karakter PIN" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-full px-4 py-3.5 pl-14 pr-12 text-sm tracking-[0.3em] font-mono font-bold focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all">
+                            <input type="password" id="login-pin" required maxlength="6" placeholder="6 Karakter PIN" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-full px-4 py-3.5 pl-14 pr-12 text-sm tracking-[0.3em] font-mono font-bold focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 focus:bg-white transition-all">
                             <button type="button" onclick="const p=document.getElementById('login-pin'); const i=document.getElementById('eye-icon'); if(p.type==='password'){p.type='text';i.className='ph-bold ph-eye text-lg';}else{p.type='password';i.className='ph-bold ph-eye-closed text-lg';}" class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors outline-none">
                                 <i id="eye-icon" class="ph-bold ph-eye-closed text-lg"></i>
                             </button>
