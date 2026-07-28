@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="id" class=""><head class="">
     <meta charset="UTF-8" class="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="app-primary" content="#EF4444">
+    <meta name="app-primary" content="#FF6500">
     <title class="">Digitalisasi ADM - SD Negeri Pasirmae 1</title>
     <!-- Preconnect ke CDN Utama -->
     <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
@@ -115,8 +115,8 @@
     <!-- ========================================== -->
     <div id="app-screen" class="hidden w-full h-screen min-h-screen bg-background flex overflow-hidden absolute inset-0 z-40">
         <!-- Floating animated background blobs for main content -->
-        <div class="absolute top-10 right-10 w-80 h-80 bg-red-500/5 dark:bg-red-500/10 rounded-full blur-[100px] animate-blob pointer-events-none"></div>
-        <div class="absolute bottom-10 left-10 w-96 h-96 bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-[120px] animate-blob animation-delay-2000 pointer-events-none"></div>
+        <div class="absolute top-10 right-10 w-80 h-80 bg-red-500/5  rounded-full blur-[100px] animate-blob pointer-events-none"></div>
+        <div class="absolute bottom-10 left-10 w-96 h-96 bg-blue-500/5  rounded-full blur-[120px] animate-blob animation-delay-2000 pointer-events-none"></div>
         <div class="absolute inset-0 bg-grid-pattern pointer-events-none opacity-40"></div>
 
         <aside id="admin-sidebar" class="app-sidebar absolute md:relative z-[60] shadow-[4px_0_24px_rgba(0,0,0,0.02)] -translate-x-full md:translate-x-0 transform transition-transform duration-300">
@@ -164,7 +164,7 @@
                 <span class="nav-label">Buka Situs Utama</span>
                 <span class="nav-tooltip">Buka Situs Utama</span>
             </a>
-            <button onclick="handleLogout()" class="sidebar-footer-item text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10">
+            <button onclick="handleLogout()" class="sidebar-footer-item text-red-500 hover:bg-red-50 ">
                 <i class="ph-bold ph-sign-out text-lg shrink-0"></i>
                 <span class="nav-label">Keluar Sesi</span>
                 <span class="nav-tooltip">Keluar Sesi</span>
@@ -195,21 +195,21 @@
                     <i class="ph-bold ph-bell text-2xl"></i>
                     <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-primary border-2 border-background rounded-full"></span>
                 </button>
-                <div id="notifications-dropdown" class="absolute right-0 mt-4 w-72 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 hidden z-50 animate-fadeIn">
-                    <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
-                        <h3 class="font-bold text-sm text-textPrimary dark:text-white">Notifikasi</h3>
+                <div id="notifications-dropdown" class="absolute right-0 mt-4 w-72 bg-white  rounded-2xl shadow-xl border border-slate-100  hidden z-50 animate-fadeIn">
+                    <div class="p-4 border-b border-slate-100  flex justify-between items-center">
+                        <h3 class="font-bold text-sm text-textPrimary ">Notifikasi</h3>
                         <span class="text-[10px] text-primary font-bold bg-primary/10 px-2 py-0.5 rounded-full">2 Baru</span>
                     </div>
                     <div class="p-2 max-h-64 overflow-y-auto custom-scrollbar">
-                        <div class="p-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-xl transition-colors cursor-pointer relative">
+                        <div class="p-3 hover:bg-slate-50  rounded-xl transition-colors cursor-pointer relative">
                             <div class="w-2 h-2 bg-primary rounded-full absolute left-2 top-4"></div>
-                            <p class="text-xs font-bold text-textPrimary dark:text-white pl-3">Aplikasi Diperbarui</p>
+                            <p class="text-xs font-bold text-textPrimary  pl-3">Aplikasi Diperbarui</p>
                             <p class="text-[10px] text-textSecondary mt-1 pl-3 leading-relaxed">Ekosistem modul PPDB kini mendukung fitur auto-sync.</p>
                             <p class="text-[9px] text-textSecondary mt-2 pl-3 font-medium uppercase tracking-wider">Baru saja</p>
                         </div>
-                        <div class="p-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-xl transition-colors cursor-pointer relative mt-1">
+                        <div class="p-3 hover:bg-slate-50  rounded-xl transition-colors cursor-pointer relative mt-1">
                             <div class="w-2 h-2 bg-primary rounded-full absolute left-2 top-4"></div>
-                            <p class="text-xs font-bold text-textPrimary dark:text-white pl-3">Login Baru Terdeteksi</p>
+                            <p class="text-xs font-bold text-textPrimary  pl-3">Login Baru Terdeteksi</p>
                             <p class="text-[10px] text-textSecondary mt-1 pl-3 leading-relaxed">Login dari perangkat Windows 11 Chrome terdeteksi.</p>
                             <p class="text-[9px] text-textSecondary mt-2 pl-3 font-medium uppercase tracking-wider">2 jam yang lalu</p>
                         </div>
@@ -228,16 +228,16 @@
                         <p id="header-profile-handle" class="text-[10px] text-textSecondary font-medium mt-1 leading-none">@administrator</p>
                     </div>
                 </div>
-                <div id="profile-dropdown" class="absolute right-0 mt-4 w-48 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 hidden z-50 animate-fadeIn overflow-hidden">
+                <div id="profile-dropdown" class="absolute right-0 mt-4 w-48 bg-white  rounded-2xl shadow-xl border border-slate-100  hidden z-50 animate-fadeIn overflow-hidden">
                     <div class="p-2">
-                        <button onclick="switchTab('admin', this); window.toggleProfileMenu()" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-xl transition-colors flex items-center gap-2">
+                        <button onclick="switchTab('admin', this); window.toggleProfileMenu()" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary  hover:bg-slate-50  rounded-xl transition-colors flex items-center gap-2">
                             <i class="ph-bold ph-user"></i> Profil Saya
                         </button>
-                        <button onclick="switchTab('admin', this); window.toggleProfileMenu()" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-xl transition-colors flex items-center gap-2">
+                        <button onclick="switchTab('admin', this); window.toggleProfileMenu()" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary  hover:bg-slate-50  rounded-xl transition-colors flex items-center gap-2">
                             <i class="ph-bold ph-gear"></i> Pengaturan Akun
                         </button>
-                        <div class="h-px bg-slate-100 dark:bg-slate-700 my-1"></div>
-                        <button onclick="window.handleLogout()" class="w-full text-left px-4 py-2.5 text-xs font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors flex items-center gap-2">
+                        <div class="h-px bg-slate-100  my-1"></div>
+                        <button onclick="window.handleLogout()" class="w-full text-left px-4 py-2.5 text-xs font-medium text-red-500 hover:bg-red-50  rounded-xl transition-colors flex items-center gap-2">
                             <i class="ph-bold ph-sign-out"></i> Keluar
                         </button>
                     </div>
@@ -1883,14 +1883,14 @@
                         });
                     }
                     const foto = d.data().foto || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.data().nama || 'Guru')}&bg=b91c1c&color=fff`; 
-                    list.innerHTML += `<tr class="border-b border-border/20 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                    list.innerHTML += `<tr class="border-b border-border/20 hover:bg-slate-50  transition-colors">
                         <td class="py-3 px-4">
                             <div class="flex items-center gap-3">
                                 <img src="${foto}" loading="lazy" class="w-10 h-10 rounded-full object-cover shadow-sm shrink-0 border border-border/50">
                                 <div class="min-w-0"><p class="font-bold text-xs text-textPrimary truncate max-w-[150px]">${d.data().nama}</p></div>
                             </div>
                         </td>
-                        <td class="py-3 px-4 text-xs font-semibold text-textSecondary">${d.data().nip||'-'}<br><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 mt-1.5 inline-block">${d.data().kelas}</span></td>
+                        <td class="py-3 px-4 text-xs font-semibold text-textSecondary">${d.data().nip||'-'}<br><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600  mt-1.5 inline-block">${d.data().kelas}</span></td>
                         <td class="py-3 px-4 text-xs font-mono text-muted">
                             <div class="flex flex-col gap-1.5">
                                 <div class="flex items-center justify-between bg-background/50 border border-border p-1 rounded-lg gap-1.5">
@@ -1898,7 +1898,7 @@
                                     <button type="button" onclick="window.salinTeks('${d.data().username}')" class="text-textSecondary hover:text-red-600 p-0.5 rounded transition-colors shrink-0" title="Salin Username"><i class="ph-bold ph-copy text-xs"></i></button>
                                 </div>
                                 <div class="flex items-center justify-between bg-background/50 border border-border p-1 rounded-lg gap-1.5">
-                                    <span class="text-red-600 dark:text-red-400 font-bold text-[10px] truncate max-w-[80px]" title="PIN">${d.data().pin}</span>
+                                    <span class="text-red-600  font-bold text-[10px] truncate max-w-[80px]" title="PIN">${d.data().pin}</span>
                                     <button type="button" onclick="window.salinTeks('${d.data().pin}')" class="text-textSecondary hover:text-red-600 p-0.5 rounded transition-colors shrink-0" title="Salin PIN"><i class="ph-bold ph-copy text-xs"></i></button>
                                 </div>
                             </div>
@@ -1938,7 +1938,7 @@
                         return (a.nama || '').localeCompare(b.nama || '');
                     });
 
-                document.getElementById('tabel-siswa-body').innerHTML = filtered.map(d => `<tr class="text-xs cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors border-b border-border/20" onclick="window.bukaEditSiswa('${d.id}')"><td class="py-3 px-4 font-semibold text-textPrimary">${d.nama}</td><td class="py-3 px-4 text-textSecondary font-medium">${d.nisn||d.nis||'-'}</td><td class="py-3 px-4 text-center font-bold text-textSecondary">${d.jk||'-'}</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-500/10 text-red-600 dark:text-red-400">${d.kelas||'-'}</span></td><td class="py-3 px-4 font-mono font-bold text-textSecondary"><div class="flex items-center gap-1.5"><span>${d.pin||'-'}</span><button type="button" onclick="event.stopPropagation(); window.salinTeks('${d.pin}')" class="text-textSecondary hover:text-red-600 p-0.5 rounded transition-colors"><i class="ph-bold ph-copy text-xs"></i></button></div></td></tr>`).join('');
+                document.getElementById('tabel-siswa-body').innerHTML = filtered.map(d => `<tr class="text-xs cursor-pointer hover:bg-slate-50  transition-colors border-b border-border/20" onclick="window.bukaEditSiswa('${d.id}')"><td class="py-3 px-4 font-semibold text-textPrimary">${d.nama}</td><td class="py-3 px-4 text-textSecondary font-medium">${d.nisn||d.nis||'-'}</td><td class="py-3 px-4 text-center font-bold text-textSecondary">${d.jk||'-'}</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-500/10 text-red-600 ">${d.kelas||'-'}</span></td><td class="py-3 px-4 font-mono font-bold text-textSecondary"><div class="flex items-center gap-1.5"><span>${d.pin||'-'}</span><button type="button" onclick="event.stopPropagation(); window.salinTeks('${d.pin}')" class="text-textSecondary hover:text-red-600 p-0.5 rounded transition-colors"><i class="ph-bold ph-copy text-xs"></i></button></div></td></tr>`).join('');
             };
             
             window.generatePinFromName = (nama) => {
@@ -2212,7 +2212,7 @@
                 );
 
                 if (filtered.length === 0) {
-                    list.innerHTML = `<p class="text-center text-[10px] text-textSecondary dark:text-slate-400 py-6">Kontak tidak ditemukan</p>`;
+                    list.innerHTML = `<p class="text-center text-[10px] text-textSecondary  py-6">Kontak tidak ditemukan</p>`;
                     return;
                 }
 
@@ -2225,15 +2225,15 @@
                     const avatar = c.foto || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.nama)}&bg=f3f4f6&color=1f2937`;
 
                     list.innerHTML += `
-                        <div onclick="window.pilihKontakChat('${c.id}')" class="p-3 flex items-center gap-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all ${activeClass}">
-                            <img src="${avatar}" class="w-8 h-8 rounded-full object-cover border border-slate-100 dark:border-slate-700 shrink-0">
+                        <div onclick="window.pilihKontakChat('${c.id}')" class="p-3 flex items-center gap-3 cursor-pointer hover:bg-slate-50  transition-all ${activeClass}">
+                            <img src="${avatar}" class="w-8 h-8 rounded-full object-cover border border-slate-100  shrink-0">
                             <div class="flex-grow min-w-0">
                                 <div class="flex justify-between items-center">
-                                    <h4 class="font-bold text-[11px] text-textPrimary dark:text-white truncate">${c.nama}</h4>
+                                    <h4 class="font-bold text-[11px] text-textPrimary  truncate">${c.nama}</h4>
                                     ${unreadCount > 0 ? `<span class="bg-primary text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full shrink-0">${unreadCount}</span>` : ''}
                                 </div>
                                 <div class="flex justify-between items-center mt-0.5">
-                                    <p class="text-[9px] text-textSecondary dark:text-slate-400 font-medium truncate">${c.role} ${c.kelas ? `(${c.kelas})` : ''}</p>
+                                    <p class="text-[9px] text-textSecondary  font-medium truncate">${c.role} ${c.kelas ? `(${c.kelas})` : ''}</p>
                                 </div>
                             </div>
                         </div>
@@ -2338,7 +2338,7 @@
 
                 if (conversation.length === 0) {
                     log.innerHTML = `
-                        <div class="m-auto text-center p-6 text-textSecondary/60 dark:text-slate-400/60 max-w-xs animate-fadeIn">
+                        <div class="m-auto text-center p-6 text-textSecondary/60  max-w-xs animate-fadeIn">
                             <i class="ph-bold ph-chat-circle-dots text-4xl text-primary/40 block mb-2 animate-bounce"></i>
                             <p class="text-xs font-bold">Mulai obrolan baru dengan mengirimkan pesan di bawah ini.</p>
                         </div>
@@ -2359,20 +2359,20 @@
                 conversation.forEach(m => {
                     const isSelf = m.senderId === 'admin';
                     const alignment = isSelf ? 'self-end items-end' : 'self-start items-start';
-                    const bubbleBg = isSelf ? 'bg-primary text-white rounded-tr-none' : 'bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 text-textPrimary dark:text-white rounded-tl-none';
+                    const bubbleBg = isSelf ? 'bg-primary text-white rounded-tr-none' : 'bg-white  border border-slate-100  text-textPrimary  rounded-tl-none';
                     const sourceLabel = m.sourceApp || (isSelf ? 'Admin' : 'Portal');
                     const badgeColor = 
-                        sourceLabel === 'Admin' ? 'bg-red-500/10 text-red-600 dark:text-red-400' :
-                        sourceLabel === 'Jurnal' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' :
-                        sourceLabel === 'Penilaian' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400' :
-                        'bg-blue-500/10 text-blue-600 dark:text-blue-400';
+                        sourceLabel === 'Admin' ? 'bg-red-500/10 text-red-600 ' :
+                        sourceLabel === 'Jurnal' ? 'bg-emerald-500/10 text-emerald-600 ' :
+                        sourceLabel === 'Penilaian' ? 'bg-amber-500/10 text-amber-600 ' :
+                        'bg-blue-500/10 text-blue-600 ';
 
                     log.innerHTML += `
                         <div class="flex flex-col max-w-[85%] ${alignment} animate-fadeIn">
                             <div class="${bubbleBg} text-xs font-medium rounded-2xl px-4 py-2.5 shadow-sm whitespace-pre-wrap break-words">
                                 ${m.message}
                             </div>
-                            <div class="flex items-center gap-1.5 mt-1 text-[9px] text-textSecondary dark:text-slate-400 font-semibold uppercase tracking-wider">
+                            <div class="flex items-center gap-1.5 mt-1 text-[9px] text-textSecondary  font-semibold uppercase tracking-wider">
                                 <span>${formatTime(m.timestamp)}</span>
                                 <span class="px-1.5 py-0.5 rounded font-bold ${badgeColor}">via ${sourceLabel}</span>
                             </div>
@@ -2419,59 +2419,59 @@
 
     <!-- Modal Kotak Pesan (Chat System) -->
     <div id="modal-kotak-pesan" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
-        <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-[2rem] shadow-2xl border border-slate-200/50 dark:border-slate-800/50 w-[95%] max-w-4xl h-[80vh] min-h-[500px] max-h-[700px] overflow-hidden flex flex-row">
+        <div class="bg-white/95  backdrop-blur-md rounded-[2rem] shadow-2xl border border-slate-200/50  w-[95%] max-w-4xl h-[80vh] min-h-[500px] max-h-[700px] overflow-hidden flex flex-row">
             <!-- Sidebar Kontak -->
-            <div id="chat-sidebar" class="w-full md:w-80 border-r border-slate-100 dark:border-slate-800 flex flex-col shrink-0">
+            <div id="chat-sidebar" class="w-full md:w-80 border-r border-slate-100  flex flex-col shrink-0">
                 <!-- Header Sidebar -->
-                <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <div class="p-4 border-b border-slate-100  flex items-center justify-between">
                     <div>
-                        <h3 class="font-bold text-sm text-textPrimary dark:text-white uppercase tracking-wider flex items-center gap-2">
+                        <h3 class="font-bold text-sm text-textPrimary  uppercase tracking-wider flex items-center gap-2">
                             <i class="ph-bold ph-chats text-primary text-lg"></i> Kotak Pesan
                         </h3>
-                        <p class="text-[9px] text-textSecondary dark:text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Admin Portal</p>
+                        <p class="text-[9px] text-textSecondary  font-semibold uppercase tracking-wider mt-0.5">Admin Portal</p>
                     </div>
-                    <button onclick="window.tutupKotakPesan()" class="text-textSecondary hover:text-primary p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors md:hidden">
+                    <button onclick="window.tutupKotakPesan()" class="text-textSecondary hover:text-primary p-2 rounded-full hover:bg-slate-100  transition-colors md:hidden">
                         <i class="ph-bold ph-x text-lg"></i>
                     </button>
                 </div>
                 <!-- Daftar Kontak (Scrollable) -->
-                <div id="chat-contact-list" class="flex-grow overflow-y-auto custom-scroll divide-y divide-slate-50 dark:divide-slate-800/50">
+                <div id="chat-contact-list" class="flex-grow overflow-y-auto custom-scroll divide-y divide-slate-50 ">
                     <!-- Kontak render di sini -->
                 </div>
             </div>
 
             <!-- Area Chat -->
-            <div id="chat-window" class="hidden md:flex flex-grow flex-col bg-slate-50/50 dark:bg-slate-900/30">
+            <div id="chat-window" class="hidden md:flex flex-grow flex-col bg-slate-50/50 ">
                 <!-- Header Chat -->
-                <div class="p-4 border-b border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm flex items-center justify-between">
+                <div class="p-4 border-b border-slate-100  bg-white/50  backdrop-blur-sm flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <button onclick="window.kembaliKeKontak()" class="text-textSecondary hover:text-primary p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors md:hidden">
+                        <button onclick="window.kembaliKeKontak()" class="text-textSecondary hover:text-primary p-2 rounded-full hover:bg-slate-100  transition-colors md:hidden">
                             <i class="ph-bold ph-arrow-left text-lg"></i>
                         </button>
                         <div id="chat-active-avatar" class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs uppercase border border-primary/20">
                             ?
                         </div>
                         <div>
-                            <h4 id="chat-active-name" class="font-bold text-xs text-textPrimary dark:text-white leading-none">Pilih Kontak</h4>
-                            <p id="chat-active-role" class="text-[9px] text-textSecondary dark:text-slate-400 font-semibold uppercase mt-1 leading-none">-</p>
+                            <h4 id="chat-active-name" class="font-bold text-xs text-textPrimary  leading-none">Pilih Kontak</h4>
+                            <p id="chat-active-role" class="text-[9px] text-textSecondary  font-semibold uppercase mt-1 leading-none">-</p>
                         </div>
                     </div>
-                    <button onclick="window.tutupKotakPesan()" class="text-textSecondary hover:text-primary p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors hidden md:block">
+                    <button onclick="window.tutupKotakPesan()" class="text-textSecondary hover:text-primary p-2 rounded-full hover:bg-slate-100  transition-colors hidden md:block">
                         <i class="ph-bold ph-x text-lg"></i>
                     </button>
                 </div>
 
                 <!-- Balon Pesan (Scrollable) -->
                 <div id="chat-message-log" class="flex-grow overflow-y-auto custom-scroll p-4 space-y-3 flex flex-col">
-                    <div class="m-auto text-center p-6 text-textSecondary/60 dark:text-slate-400/60 max-w-xs">
+                    <div class="m-auto text-center p-6 text-textSecondary/60  max-w-xs">
                         <i class="ph-bold ph-chat-circle-dots text-4xl text-primary/40 block mb-2 animate-bounce"></i>
                         <p class="text-xs font-bold">Silakan pilih salah satu kontak di samping untuk mulai mengobrol.</p>
                     </div>
                 </div>
 
                 <!-- Input Form -->
-                <form id="chat-input-form" onsubmit="window.kirimPesanChat(event)" class="p-3 border-t border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm flex gap-2 items-center hidden">
-                    <input type="text" id="chat-message-input" autocomplete="off" placeholder="Tulis pesan..." class="flex-grow bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-2.5 text-[11px] text-textPrimary dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium placeholder:text-slate-400">
+                <form id="chat-input-form" onsubmit="window.kirimPesanChat(event)" class="p-3 border-t border-slate-100  bg-white/50  backdrop-blur-sm flex gap-2 items-center hidden">
+                    <input type="text" id="chat-message-input" autocomplete="off" placeholder="Tulis pesan..." class="flex-grow bg-slate-50  border-none rounded-xl px-4 py-2.5 text-[11px] text-textPrimary  focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium placeholder:text-slate-400">
                     <button type="submit" class="bg-primary text-white font-bold rounded-xl p-2.5 hover:opacity-90 transition-transform active:scale-95 flex items-center justify-center shrink-0 shadow-sm" title="Kirim">
                         <i class="ph-bold ph-paper-plane-right text-base"></i>
                     </button>

@@ -7,20 +7,21 @@
     const appPrimary = metaPrimary ? metaPrimary.getAttribute('content') : '#FC6B58';
 
     // 0.1 Map per-app primary theme to matching sidebar gradient palette & active tab text color
-    let sidebarTop = '#A78BFA', sidebarMid = '#8B5CF6', sidebarBot = '#7C3AED', sidebarText = '#7C3AED';
+    let sidebarTop = '#FF8B3D', sidebarMid = '#FF6500', sidebarBot = '#E65C00', sidebarText = '#FF6500', btnText = '#FFFFFF';
     const hex = appPrimary.toUpperCase();
-    if (hex.includes('EF4444') || hex.includes('FC6B58') || hex.includes('DC2626') || hex.includes('F87171')) {
-        // Red / Crimson (Admin Portal) - Bright & clean coral-red (not terlalu pekat)
-        sidebarTop = '#F87171'; sidebarMid = '#EF4444'; sidebarBot = '#DC2626'; sidebarText = '#DC2626';
-    } else if (hex.includes('0D9488') || hex.includes('14B8A6') || hex.includes('0F766E') || hex.includes('10B981')) {
-        // Teal / Emerald (Olah Nilai)
-        sidebarTop = '#2DD4BF'; sidebarMid = '#14B8A6'; sidebarBot = '#0D9488'; sidebarText = '#0D9488';
-    } else if (hex.includes('3B82F6') || hex.includes('2563EB') || hex.includes('60A5FA') || hex.includes('0EA5E9')) {
-        // Blue / Sky (Dashboard Siswa)
-        sidebarTop = '#60A5FA'; sidebarMid = '#3B82F6'; sidebarBot = '#2563EB'; sidebarText = '#2563EB';
-    } else if (hex.includes('8B5CF6') || hex.includes('7C3AED') || hex.includes('6D28D9') || hex.includes('553CEE')) {
-        // Purple / Violet (Jurnal Guru)
-        sidebarTop = '#A78BFA'; sidebarMid = '#8B5CF6'; sidebarBot = '#7C3AED'; sidebarText = '#7C3AED';
+    if (hex.includes('FF6500') || hex.includes('FF8B3D') || hex.includes('E65C00')) {
+        // Vibrant Orange (Admin Portal)
+        sidebarTop = '#FFA566'; sidebarMid = '#FF6500'; sidebarBot = '#CC5100'; sidebarText = '#FF6500';
+    } else if (hex.includes('004E9B') || hex.includes('003366')) {
+        // Cobalt / Deep Blue (Jurnal Guru)
+        sidebarTop = '#3385D6'; sidebarMid = '#004E9B'; sidebarBot = '#003A75'; sidebarText = '#004E9B';
+    } else if (hex.includes('0091B9') || hex.includes('BAE4F0')) {
+        // Cyan / Cerulean Blue (Olah Nilai)
+        sidebarTop = '#33BCE6'; sidebarMid = '#0091B9'; sidebarBot = '#007494'; sidebarText = '#0091B9';
+    } else if (hex.includes('FFD500') || hex.includes('FFE666')) {
+        // Vibrant Yellow (Dashboard Siswa)
+        sidebarTop = '#FFE666'; sidebarMid = '#FFD500'; sidebarBot = '#CCAA00'; sidebarText = '#CCAA00';
+        btnText = '#160E4D'; // Dark text on yellow button for readability
     } else {
         sidebarTop = appPrimary; sidebarMid = appPrimary; sidebarBot = appPrimary; sidebarText = appPrimary;
     }
@@ -32,6 +33,7 @@
             --sidebar-grad-mid: ${sidebarMid};
             --sidebar-grad-bot: ${sidebarBot};
             --sidebar-active-text: ${sidebarText};
+            --primary-btn-text: ${btnText};
         }
     `;
     document.head.appendChild(rootStyle);
@@ -69,8 +71,8 @@
                     textPrimary: '#160E4D',
                     textSecondary: '#64748B',
                     primary: appPrimary,
-                    secondary: '#F6BB00',
-                    accent: '#57BAAB',
+                    secondary: '#FFD500', // Vibrant Yellow
+                    accent: '#0091B9', // Cerulean Blue
                     success: '#10b981',
                     error: '#ef4444',
                     warning: '#f59e0b',
@@ -103,29 +105,29 @@
     tailwindStyle.type = 'text/css';
     tailwindStyle.innerHTML = `
         /* Theme Utility Colors Fallback for Production CDN */
-        .bg-background { background-color: #EEF2F6 !important; }
-        .bg-surface { background-color: #FFFFFF !important; }
-        .bg-primary { background-color: ${appPrimary} !important; }
-        .bg-secondary { background-color: #F6BB00 !important; }
-        .bg-accent { background-color: #57BAAB !important; }
-        .bg-success { background-color: #10b981 !important; }
-        .bg-error { background-color: #ef4444 !important; }
-        .bg-warning { background-color: #f59e0b !important; }
-        .bg-info { background-color: #0ea5e9 !important; }
+        .bg-background { background-color: #EEF2F6; }
+        .bg-surface { background-color: #FFFFFF; }
+        .bg-primary { background-color: ${appPrimary}; }
+        .bg-secondary { background-color: #FFD500; }
+        .bg-accent { background-color: #0091B9; }
+        .bg-success { background-color: #10b981; }
+        .bg-error { background-color: #ef4444; }
+        .bg-warning { background-color: #f59e0b; }
+        .bg-info { background-color: #0ea5e9; }
 
-        .text-textPrimary { color: #160E4D !important; }
-        .text-textSecondary { color: #64748B !important; }
-        .text-primary { color: ${appPrimary} !important; }
-        .text-secondary { color: #F6BB00 !important; }
-        .text-accent { color: #57BAAB !important; }
-        .text-success { color: #10b981 !important; }
-        .text-error { color: #ef4444 !important; }
-        .text-warning { color: #f59e0b !important; }
-        .text-info { color: #0ea5e9 !important; }
+        .text-textPrimary { color: #160E4D; }
+        .text-textSecondary { color: #64748B; }
+        .text-primary { color: ${appPrimary}; }
+        .text-secondary { color: #FFD500; }
+        .text-accent { color: #0091B9; }
+        .text-success { color: #10b981; }
+        .text-error { color: #ef4444; }
+        .text-warning { color: #f59e0b; }
+        .text-info { color: #0ea5e9; }
 
-        .border-border { border-color: #E2E8F0 !important; }
-        .shadow-accent\/20 { box-shadow: 0 10px 25px -5px rgba(87, 186, 171, 0.35) !important; }
-        .shadow-primary\/20 { box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.25) !important; }
+        .border-border { border-color: #E2E8F0; }
+        .shadow-accent\/20 { box-shadow: 0 10px 25px -5px rgba(87, 186, 171, 0.35); }
+        .shadow-primary\/20 { box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.25); }
 
         .db-input {
             background-color: #F8FAFC;
@@ -145,7 +147,7 @@
         }
         .db-btn-primary {
             background-color: var(--primary-color, #FC6B58);
-            color: #FFFFFF;
+            color: var(--primary-btn-text, #FFFFFF);
             font-weight: 700;
             font-size: 11px;
             text-transform: uppercase;
