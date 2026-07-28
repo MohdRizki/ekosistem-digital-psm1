@@ -362,6 +362,8 @@
         /* Ultra-Premium Dribbble Cutout Indicator with Vector Notches (Exact copy of preview-sidebar.html) */
         #sidebar-gliding-indicator {
             position: absolute !important;
+            left: 12px !important;
+            width: calc(100% - 12px) !important;
             right: 0 !important;
             background-color: #EEF2F6 !important;
             border-top-left-radius: 9999px !important;
