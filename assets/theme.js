@@ -59,7 +59,6 @@
     // 2. Setup Tailwind Configuration with dynamic primary color
     window.tailwind = window.tailwind || {};
     window.tailwind.config = {
-        darkMode: 'class',
         safelist: ['nav-btn', 'active'],
         theme: {
             extend: {
@@ -351,7 +350,7 @@
             font-weight: 700 !important;
         }
         .nav-btn.active i {
-            transform: scale(1.22) !important;
+            transform: none !important;
         }
         .nav-btn.active::before,
         .nav-btn.active::after {
@@ -833,42 +832,6 @@
 // ============================================================
 // GLOBAL UTILITY FUNCTIONS (Shared across all apps)
 // ============================================================
-
-/**
- * Toggle Dark/Light Theme
- * Used by: admin.html, dashboard_siswa.html, penilaian.html, jurnal.html
- */
-window.toggleTheme = function() {
-    const html = document.documentElement;
-    const isDark = html.classList.toggle('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    
-    // Update theme icon on all pages
-    document.querySelectorAll('.theme-icon').forEach(icon => {
-        if (isDark) {
-            icon.classList.remove('ph-moon');
-            icon.classList.add('ph-sun');
-        } else {
-            icon.classList.remove('ph-sun');
-            icon.classList.add('ph-moon');
-        }
-    });
-};
-
-// Auto-apply saved theme on load (default to dark)
-(function() {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    if (savedTheme === 'dark') {
-        document.documentElement.classList.add('dark');
-        // Defer icon update to after DOM is ready
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.theme-icon').forEach(icon => {
-                icon.classList.remove('ph-moon');
-                icon.classList.add('ph-sun');
-            });
-        });
-    }
-})();
 
 /**
  * Sidebar Collapse/Expand Toggle
