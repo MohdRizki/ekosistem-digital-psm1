@@ -103,6 +103,31 @@
     const tailwindStyle = document.createElement('style');
     tailwindStyle.type = 'text/css';
     tailwindStyle.innerHTML = `
+        /* Theme Utility Colors Fallback for Production CDN */
+        .bg-background { background-color: #EEF2F6 !important; }
+        .bg-surface { background-color: #FFFFFF !important; }
+        .bg-primary { background-color: ${appPrimary} !important; }
+        .bg-secondary { background-color: #F6BB00 !important; }
+        .bg-accent { background-color: #57BAAB !important; }
+        .bg-success { background-color: #10b981 !important; }
+        .bg-error { background-color: #ef4444 !important; }
+        .bg-warning { background-color: #f59e0b !important; }
+        .bg-info { background-color: #0ea5e9 !important; }
+
+        .text-textPrimary { color: #160E4D !important; }
+        .text-textSecondary { color: #64748B !important; }
+        .text-primary { color: ${appPrimary} !important; }
+        .text-secondary { color: #F6BB00 !important; }
+        .text-accent { color: #57BAAB !important; }
+        .text-success { color: #10b981 !important; }
+        .text-error { color: #ef4444 !important; }
+        .text-warning { color: #f59e0b !important; }
+        .text-info { color: #0ea5e9 !important; }
+
+        .border-border { border-color: #E2E8F0 !important; }
+        .shadow-accent\/20 { box-shadow: 0 10px 25px -5px rgba(87, 186, 171, 0.35) !important; }
+        .shadow-primary\/20 { box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.25) !important; }
+
         .db-input {
             background-color: #F8FAFC;
             border: 1px solid rgba(226, 232, 240, 0.6);
