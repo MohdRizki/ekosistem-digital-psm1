@@ -1271,6 +1271,12 @@
             document.getElementById('app-screen').classList.remove('hidden', 'opacity-0');
             // Refresh profile display after login
             window.updateProfileDisplay();
+            
+            // Activate first menu
+            const firstNavBtn = document.querySelector('.nav-btn');
+            if (firstNavBtn && window.switchTab) {
+                window.switchTab('dasbor', firstNavBtn);
+            }
         }
         function handleLogout() { 
             localStorage.removeItem('adminSessionInfo');

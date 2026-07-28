@@ -282,6 +282,9 @@
         }
 
         /* Navigation Buttons */
+        .app-sidebar nav {
+            padding: 0 16px !important;
+        }
         .nav-btn {
             width: 100%;
             text-align: left !important;
@@ -289,7 +292,7 @@
             align-items: center;
             justify-content: flex-start !important;
             gap: 0.875rem;
-            padding: 0.875rem 1.25rem;
+            padding: 12px 12px 12px 12px !important;
             font-size: 0.75rem;
             font-weight: 600;
             position: relative;
@@ -563,12 +566,10 @@
             display: none;
         }
         .app-sidebar.collapsed nav {
-            padding-right: 0 !important;
-            padding-left: 0.75rem !important;
+            padding: 0 !important;
         }
         .app-sidebar.collapsed .nav-btn {
-            justify-content: center !important;
-            padding: 0.75rem 0 !important;
+            padding: 12px 0 !important;
             width: 100% !important;
             margin: 0 !important;
             border-radius: 9999px 0 0 9999px !important;
@@ -583,7 +584,7 @@
         .app-sidebar.collapsed .nav-btn i,
         .app-sidebar.collapsed .sidebar-footer-item i {
             margin: 0 auto !important;
-            transform: translateX(-6px) !important;
+            transform: translateX(0px) !important;
         }
         .app-sidebar.collapsed .sidebar-collapse-btn {
             justify-content: center;
@@ -602,10 +603,10 @@
             display: none;
         }
         .app-sidebar.collapsed .nav-btn:hover:not(.active) i {
-            transform: translateX(-6px) scale(1.15) rotate(4deg) !important;
+            transform: translateX(0px) scale(1.15) rotate(4deg) !important;
         }
         .app-sidebar.collapsed .nav-btn.active i {
-            transform: translateX(-6px) !important;
+            transform: translateX(0px) !important;
         }
 
         /* Tooltip for Collapsed Sidebar Items */
@@ -1105,9 +1106,18 @@ window.setupGlidingSidebar = function() {
                 const sidebarRect = sidebar.getBoundingClientRect();
                 const btnRect = activeBtn.getBoundingClientRect();
                 
+                let w = btnRect.width;
+                let l = btnRect.left - sidebarRect.left;
+                
+                // Jika collapsed, paksa indikator berukuran pill (cutout) di sisi kanan
+                if (sidebar.classList.contains('collapsed')) {
+                    w = 64; // Lebar total 80 - margin 16
+                    l = 16;
+                }
+                
                 // Set precise width, left, top, and height matching the button exactly
-                indicator.style.setProperty('width', btnRect.width + 'px', 'important');
-                indicator.style.setProperty('left', (btnRect.left - sidebarRect.left) + 'px', 'important');
+                indicator.style.setProperty('width', w + 'px', 'important');
+                indicator.style.setProperty('left', l + 'px', 'important');
                 indicator.style.setProperty('top', (btnRect.top - sidebarRect.top) + 'px', 'important');
                 indicator.style.setProperty('height', btnRect.height + 'px', 'important');
             } else {

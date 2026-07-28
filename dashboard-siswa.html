@@ -1149,6 +1149,14 @@
              const heroSapaan = document.getElementById('hero-sapaan');
              if (heroSapaan) heroSapaan.innerText = `Selamat ${sapaan}, ${kataPertama}!`;
              
+             // Activate first menu
+             if (window.switchTabSiswa) {
+                 const firstNavBtn = document.querySelector('.nav-btn');
+                 if (firstNavBtn) {
+                     window.switchTabSiswa(firstNavBtn.dataset.tab || 'beranda', firstNavBtn);
+                 }
+             }
+             
              const heroTanggal = document.getElementById('hero-tanggal');
              if (heroTanggal) heroTanggal.innerText = new Date().toLocaleDateString('id-ID', {weekday: 'long', day: 'numeric', month: 'short', year: 'numeric'});
              
