@@ -178,6 +178,8 @@
             .app-sidebar nav {
                 padding-right: 0 !important;
                 padding-left: 1.25rem !important;
+                padding-top: 1.5rem !important;
+                padding-bottom: 1.5rem !important;
                 position: relative !important;
             }
             .app-sidebar.collapsed nav {
