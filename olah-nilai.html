@@ -2336,6 +2336,9 @@
             if (state.user) {
                 window.switchView(state.currentView);
             }
+            if (typeof window.setupGlidingSidebar === 'function') {
+                window.setupGlidingSidebar('sidebar');
+            }
         };
     </script>
 </body>
