@@ -301,7 +301,7 @@
         <div class="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-scale-up border border-white">
             <div class="px-8 py-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
                 <h3 class="text-xl font-bold text-textPrimary tracking-tight uppercase">Setup Laporan & Penilaian</h3>
-                <button onclick="closeModal('settings')" class="p-2 hover:bg-slate-200 rounded-full transition-all"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="closeModal('settings')" class="p-2 hover:bg-slate-200 rounded-full transition-all"><i class="ph-bold ph-x text-lg"></i></button>
             </div>
             <div class="p-8 overflow-y-auto flex-1 no-scrollbar space-y-8">
                 <!-- Data Laporan Umum -->
@@ -309,16 +309,16 @@
                 
                 <!-- Manajemen Mapel -->
                 <div class="p-8 bg-slate-50 rounded-[2rem] border border-border">
-                    <h4 class="text-slate-900 font-bold mb-6 flex items-center gap-3 text-[10px] uppercase tracking-widest"><i data-lucide="book" class="text-teal-600 w-4 h-4"></i> Manajemen Mata Pelajaran</h4>
+                    <h4 class="text-slate-900 font-bold mb-6 flex items-center gap-3 text-[10px] uppercase tracking-widest"><i class="ph-bold ph-book text-teal-600 text-sm"></i> Manajemen Mata Pelajaran</h4>
                     <div class="flex gap-3 mb-6">
                         <input id="new-sub-label" type="text" placeholder="Nama Mapel Baru..." class="flex-1 px-6 py-4 bg-white border border-border rounded-2xl shadow-sm outline-none focus:border-teal-600 text-sm font-bold">
-                        <button onclick="addSubject()" class="p-4 bg-slate-900 text-white rounded-2xl hover:bg-teal-600 transition-all shadow-lg"><i data-lucide="plus" class="w-6 h-6"></i></button>
+                        <button onclick="addSubject()" class="p-4 bg-slate-900 text-white rounded-2xl hover:bg-teal-600 transition-all shadow-lg"><i class="ph-bold ph-plus text-xl"></i></button>
                     </div>
                     <div id="subjects-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
                 </div>
             </div>
             <div class="px-8 py-6 border-t border-slate-50 bg-slate-50/80">
-                <button onclick="saveSettings()" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-xl hover:bg-teal-600 transition-all text-[11px] uppercase tracking-widest leading-none"><i data-lucide="save" class="w-4 h-4"></i> Simpan Pengaturan</button>
+                <button onclick="saveSettings()" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-xl hover:bg-teal-600 transition-all text-[11px] uppercase tracking-widest leading-none"><i class="ph-bold ph-floppy-disk text-sm"></i> Simpan Pengaturan</button>
             </div>
         </div>
     </div>
@@ -328,11 +328,11 @@
         <div class="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-scale-up border border-white">
             <div class="px-8 py-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
                 <h3 class="text-xl font-bold text-textPrimary tracking-tight uppercase">Database Siswa</h3>
-                <button onclick="closeModal('siswa')" class="p-2 hover:bg-slate-200 rounded-full transition-all"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="closeModal('siswa')" class="p-2 hover:bg-slate-200 rounded-full transition-all"><i class="ph-bold ph-x text-lg"></i></button>
             </div>
             <div class="p-8 overflow-y-auto flex-1 no-scrollbar space-y-10">
                 <div class="bg-teal-50/30 p-8 rounded-[2rem] border border-teal-100">
-                    <div class="flex items-center gap-3 mb-4"><i data-lucide="file-text" class="text-teal-600 w-5 h-5"></i><h4 class="text-sm font-bold text-textPrimary uppercase">Import Daftar Nama</h4></div>
+                    <div class="flex items-center gap-3 mb-4"><i class="ph-bold ph-file-text text-teal-600 text-lg"></i><h4 class="text-sm font-bold text-textPrimary uppercase">Import Daftar Nama</h4></div>
                     <textarea id="bulk-names-input" rows="4" class="w-full p-6 bg-white border border-border rounded-2xl outline-none focus:border-teal-600 transition-all text-sm font-bold shadow-sm" placeholder="Salin daftar nama dari Excel dan tempel di sini (pisahkan baris)..."></textarea>
                     <button onclick="bulkImport()" id="btn-bulk-import" class="mt-4 w-full py-4 bg-teal-600 text-white rounded-2xl font-bold text-[10px] uppercase tracking-widest shadow-lg active:scale-95 transition-all">Proses Import</button>
                 </div>
@@ -358,7 +358,7 @@
         <div class="bg-white w-full max-w-4xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-scale-up border border-white">
             <div class="px-8 py-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
                 <h3 id="judul-arsip-modal" class="text-xl font-bold text-textPrimary tracking-tight uppercase">Detail Arsip</h3>
-                <button onclick="closeModal('arsip-view')" class="p-2 hover:bg-slate-200 rounded-full transition-all"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="closeModal('arsip-view')" class="p-2 hover:bg-slate-200 rounded-full transition-all"><i class="ph-bold ph-x text-lg"></i></button>
             </div>
             <div class="p-8 overflow-y-auto flex-1 no-scrollbar">
                 <div id="konten-arsip-modal" class="bg-white rounded-[2rem] border overflow-hidden">
@@ -572,8 +572,8 @@
             
             container.className = `fixed bottom-8 right-8 z-[9999] flex items-center gap-4 px-6 py-4 rounded-2xl shadow-2xl border border-white/10 text-white animate-slide-up ${type === 'error' ? 'bg-rose-600' : 'bg-teal-900'}`;
             msgEl.textContent = msg;
-            icon.setAttribute('data-lucide', type === 'error' ? 'alert-circle' : 'check-circle-2');
-            lucide.createIcons();
+            icon.className = type === 'error' ? 'ph-fill ph-warning-circle text-lg shrink-0' : 'ph-fill ph-check-circle text-lg shrink-0';
+            
             
             container.classList.remove('hidden');
             setTimeout(() => container.classList.add('hidden'), 3500);
@@ -1242,10 +1242,10 @@
                 <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-white hover:bg-white hover:shadow-md transition-all">
                     <input type="text" onblur="renameSiswa('${s.id}', this.value)" class="flex-1 bg-transparent border-none outline-none font-bold text-textPrimary uppercase text-xs px-2 focus:ring-1 focus:ring-teal-600 rounded-md" value="${s.nama}">
                     <button onclick="confirmDeleteSiswa('${s.id}', '${s.nama}')" class="p-2 text-slate-300 hover:text-rose-500 transition-colors">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        <i class="ph-bold ph-trash text-sm"></i>
                     </button>
                 </div>`).join('');
-            lucide.createIcons();
+            
         };
 
         window.renderSubjectSettings = () => {
@@ -1254,7 +1254,7 @@
                 <div class="p-5 bg-white rounded-2xl border border-border shadow-sm hover:border-teal-600 transition-all">
                     <div class="flex items-center justify-between mb-4">
                         <span class="text-[10px] font-bold text-slate-900 uppercase">${sub.label}</span>
-                        <button onclick="removeSubject('${sub.id}')" class="text-slate-300 hover:text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                        <button onclick="removeSubject('${sub.id}')" class="text-slate-300 hover:text-rose-500"><i class="ph-bold ph-trash text-[14px]"></i></button>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
@@ -1267,7 +1267,7 @@
                         </div>
                     </div>
                 </div>`).join('');
-            lucide.createIcons();
+            
         };
 
         window.renderActiveView = () => {
@@ -1483,7 +1483,7 @@
                     }
                     html += `</div></div>`;
                     container.innerHTML = html;
-                    lucide.createIcons();
+                    
                 });
             } else if (state.currentView === 'input') {
                 const sub = state.settings.subjects.find(s => s.id === state.activeSubjectId) || state.settings.subjects[0];
@@ -2039,7 +2039,7 @@
                     </div>`;
                 setTimeout(window.updatePreviewScale, 100);
             }
-            // lucide.createIcons(); // Replaced with Phosphor
+            //  // Replaced with Phosphor
         };
 
         // --- EXPORT PDF CONTROL ---
@@ -2321,7 +2321,7 @@
                 window.renderSubjectSettings();
             } else window.renderSiswaList();
             document.getElementById(`modal-${type}`).classList.remove('hidden');
-            lucide.createIcons();
+            
         };
 
         window.closeModal = (type) => document.getElementById(`modal-${type}`).classList.add('hidden');
@@ -2345,7 +2345,7 @@
             }
 
             window.addEventListener('resize', window.updatePreviewScale);
-            lucide.createIcons();
+            
             
             if (state.user) {
                 window.switchView(state.currentView);
@@ -2357,6 +2357,7 @@
     </script>
 </body>
 </html>
+
 
 
 
