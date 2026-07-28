@@ -367,17 +367,28 @@
                 background: rgba(255, 255, 255, 0.16) !important;
             }
 
-            /* New Sleek Mini Symbol Toggle near Web Name */
+            /* Clean Sidebar Header & Mini Symbol Toggle without distracting background boxes */
+            .app-sidebar .h-20 {
+                background: transparent !important;
+            }
+            .app-sidebar .h-20 .bg-white\/15,
+            .app-sidebar .h-20 .bg-white\/10,
+            .app-sidebar .h-20 [class*="bg-white"] {
+                background-color: transparent !important;
+                border-color: transparent !important;
+                box-shadow: none !important;
+                backdrop-filter: none !important;
+            }
             .sidebar-collapse-btn-mini {
                 @apply hidden md:flex items-center justify-center w-7 h-7 rounded-lg transition-all shrink-0 ml-auto font-extrabold text-base select-none cursor-pointer;
                 color: rgba(255, 255, 255, 0.85) !important;
-                background: rgba(255, 255, 255, 0.15) !important;
+                background: transparent !important;
                 border: none !important;
                 font-family: monospace, sans-serif !important;
             }
             .sidebar-collapse-btn-mini:hover {
                 color: #FFFFFF !important;
-                background: rgba(255, 255, 255, 0.3) !important;
+                background: rgba(255, 255, 255, 0.12) !important;
                 transform: scale(1.08);
             }
             .collapse-icon-symbol::before {
