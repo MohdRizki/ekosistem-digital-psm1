@@ -186,6 +186,16 @@
                     <span class="nav-label nav-text">Dashboard</span>
                     <span class="nav-tooltip">Dashboard</span>
                 </button>
+                <button onclick="openModal('siswa')" class="nav-btn">
+                    <i class="ph-bold ph-users text-lg shrink-0"></i>
+                    <span class="nav-label nav-text">Data Siswa</span>
+                    <span class="nav-tooltip">Data Siswa</span>
+                </button>
+                <button onclick="openModal('settings')" class="nav-btn">
+                    <i class="ph-bold ph-gear text-lg shrink-0"></i>
+                    <span class="nav-label nav-text">Pengaturan</span>
+                    <span class="nav-tooltip">Pengaturan</span>
+                </button>
                 <button onclick="switchView('input')" id="nav-input" class="nav-btn">
                     <i class="ph-bold ph-pencil-simple text-lg shrink-0"></i>
                     <span class="nav-label nav-text">Input Nilai</span>
@@ -220,16 +230,6 @@
                     <i class="ph-bold ph-archive text-lg shrink-0"></i>
                     <span class="nav-label nav-text">Arsip Nilai</span>
                     <span class="nav-tooltip">Arsip Nilai</span>
-                </button>
-                <button onclick="openModal('siswa')" class="nav-btn">
-                    <i class="ph-bold ph-users text-lg shrink-0"></i>
-                    <span class="nav-label nav-text">Data Siswa</span>
-                    <span class="nav-tooltip">Data Siswa</span>
-                </button>
-                <button onclick="openModal('settings')" class="nav-btn">
-                    <i class="ph-bold ph-gear text-lg shrink-0"></i>
-                    <span class="nav-label nav-text">Pengaturan</span>
-                    <span class="nav-tooltip">Pengaturan</span>
                 </button>
             </nav>
 
@@ -266,13 +266,27 @@
                         <i class="ph-bold ph-bell text-xl"></i>
                         <span class="absolute top-1 right-1 w-2 h-2 bg-teal-500 border-2 border-background rounded-full"></span>
                     </button>
-                    <div onclick="if(window.toggleProfileMenu) window.toggleProfileMenu();" class="flex items-center gap-3 ml-1 bg-surface p-1.5 pr-4 rounded-full shadow-sm hover:shadow-md transition-all cursor-pointer border border-border/40" title="Profil Guru">
-                        <div class="w-9 h-9 rounded-full bg-teal-500/10 flex items-center justify-center text-teal-600 font-bold shrink-0 overflow-hidden border border-border">
-                            <i class="ph-bold ph-user text-lg"></i>
+                    <!-- Profil -->
+                    <div class="relative">
+                        <div id="profile-menu-button" onclick="if(window.toggleProfileMenu) window.toggleProfileMenu();" class="flex items-center gap-3 ml-1 bg-surface p-1.5 pr-4 rounded-full shadow-sm hover:shadow-md transition-all cursor-pointer border border-border/40" title="Profil Guru">
+                            <div class="w-9 h-9 rounded-full bg-teal-500/10 flex items-center justify-center text-teal-600 font-bold shrink-0 overflow-hidden border border-border">
+                                <i class="ph-bold ph-user text-lg"></i>
+                            </div>
+                            <div class="hidden sm:block text-left header-shrink-hide">
+                                <p class="text-xs font-bold text-textPrimary leading-none">Wali Kelas</p>
+                                <p class="text-[10px] text-textSecondary font-medium mt-1 leading-none">Olah Nilai</p>
+                            </div>
                         </div>
-                        <div class="hidden sm:block text-left">
-                            <p class="text-xs font-bold text-textPrimary leading-none">Wali Kelas</p>
-                            <p class="text-[10px] text-textSecondary font-medium mt-1 leading-none">Olah Nilai</p>
+                        <div id="profile-dropdown" class="absolute right-0 mt-4 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 hidden z-50 animate-fadeIn overflow-hidden">
+                            <div class="p-2">
+                                <button onclick="openModal('settings'); if(window.toggleProfileMenu) window.toggleProfileMenu()" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary hover:bg-slate-50 rounded-xl transition-colors flex items-center gap-2">
+                                    <i class="ph-bold ph-gear"></i> Pengaturan
+                                </button>
+                                <div class="h-px bg-slate-100 my-1"></div>
+                                <button onclick="window.logout()" class="w-full text-left px-4 py-2.5 text-xs font-medium text-red-500 hover:bg-red-50 rounded-xl transition-colors flex items-center gap-2">
+                                    <i class="ph-bold ph-sign-out"></i> Keluar
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
