@@ -1143,12 +1143,17 @@ if (document.readyState === 'loading') {
    ========================================================================== */
 const dynamicHeaderStyles = document.createElement('style');
   dynamicHeaderStyles.textContent = `
-      /* Dynamic Header Styles */
+      /* Dynamic Header Styles - Allow content to scroll behind header */
       .dynamic-header {
           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
           position: sticky !important;
           top: 0;
           z-index: 40 !important;
+          margin-bottom: -5rem !important; /* Pull sibling up to y=0 */
+      }
+      
+      .dynamic-header + * {
+          padding-top: 6rem !important; /* 5rem for header + 1rem visual gap */
       }
       
       .dynamic-header.header-collapsed {
