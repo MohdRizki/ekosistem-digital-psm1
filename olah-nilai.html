@@ -15,7 +15,7 @@
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
 
     <!-- Design System (theme.js handles Poppins + Tailwind config + shared components) -->
-    <script src="assets/theme.js?v=1785413397445"></script>
+    <script src="assets/theme.js?v=1785414458776"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
 
@@ -250,47 +250,54 @@
 
         <!-- MAIN CONTAINER -->
         <main class="flex-1 flex flex-col overflow-hidden relative">
-            <header class="dynamic-header h-20 bg-background/80 backdrop-blur-md sticky top-0 z-30 px-8 border-b border-border flex justify-between items-center no-print shrink-0">
-                <div class="flex items-center gap-4 header-shrink-hide">
-                    <button onclick="toggleSidebar()" class="md:hidden p-2 text-textSecondary hover:text-textPrimary rounded-lg"><i class="ph-bold ph-list text-xl"></i></button>
-                    <div>
-                        <h2 id="header-judul" class="font-bold text-textPrimary text-base md:text-xl tracking-tight"></h2>
-                        <p id="header-subtitle" class="text-[9px] text-primary uppercase font-bold tracking-widest mt-0.5"></p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 md:gap-5">
-                    <button onclick="if(window.bukaKotakPesan) window.bukaKotakPesan();" class="relative text-textSecondary hover:text-primary transition-colors p-2" title="Kotak Pesan">
-                        <i class="ph-bold ph-envelope-simple text-xl"></i>
+            <header class="dynamic-header h-20 bg-surface/90 backdrop-blur-md sticky top-0 z-40 px-4 md:px-8 border-b border-border transition-all duration-500 w-full flex justify-between items-center no-print shrink-0" style="margin-bottom: -5rem;">
+    <!-- Left Section -->
+    <div class="header-left flex items-center gap-4 transition-all duration-500 ">
+        <!-- Mobile Menu Toggle -->
+        <button onclick="window.toggleSidebar ? window.toggleSidebar() : (window.appState.mobileMenuOpen = !window.appState.mobileMenuOpen, window.renderApp())" class="md:hidden p-2 -ml-2 text-textSecondary hover:text-textPrimary rounded-lg">
+            <i class="ph-bold ph-list text-2xl"></i>
+        </button>
+        <!-- Title -->
+        <div>
+            <h1 class="font-bold text-textPrimary text-lg md:text-xl tracking-tight leading-none"><span id="header-judul"></span></h1>
+            <p class="text-[10px] text-primary uppercase font-bold tracking-widest mt-1"><span id="header-subtitle"></span></p>
+        </div>
+    </div>
+
+    <!-- Right Section -->
+    <div class="header-right flex items-center gap-2 md:gap-3 transition-all duration-500 relative">
+        <!-- Messages -->
+        <button class="header-icon-btn relative p-2 text-textSecondary hover:text-primary transition-all duration-500 rounded-full hover:bg-primary/5" onclick="if(window.bukaKotakPesan) window.bukaKotakPesan()">
+            <i class="ph-bold ph-envelope-simple text-xl md:text-2xl"></i>
+        </button>
+        <!-- Notifications -->
+        <button class="header-icon-btn relative p-2 text-textSecondary hover:text-primary transition-all duration-500 rounded-full hover:bg-primary/5" onclick="if(window.toggleNotifications) window.toggleNotifications()">
+            <i class="ph-bold ph-bell text-xl md:text-2xl"></i>
+            <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-teal-500 border-2 border-white rounded-full"></span>
+        </button>
+        <!-- Profile Container -->
+        <div class="profile-container relative z-50 ml-2">
+            <button id="unified-profile-btn" onclick="if(window.toggleProfileMenu) window.toggleProfileMenu()" class="w-10 h-10 md:w-11 md:h-11 rounded-full bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-sm hover:shadow-md hover:bg-primary/20 transition-all duration-500 relative bg-surface">
+                <i class="ph-bold ph-user text-lg md:text-xl"></i>
+            </button>
+            
+            <!-- Standard Dropdown -->
+            <div id="profile-dropdown" class="absolute right-0 mt-3 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 hidden opacity-0 transition-all duration-200 origin-top-right z-50">
+                <div class="p-2">
+                    <button onclick="if(window.openModal) openModal('settings'); if(window.toggleProfileMenu) window.toggleProfileMenu()" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary hover:bg-slate-50 rounded-xl transition-colors flex items-center gap-2">
+                        <i class="ph-bold ph-gear text-lg"></i> Pengaturan
                     </button>
-                    <button onclick="if(window.toggleNotifications) window.toggleNotifications();" class="relative text-textSecondary hover:text-primary transition-colors p-2" title="Notifikasi">
-                        <i class="ph-bold ph-bell text-xl"></i>
-                        <span class="absolute top-1 right-1 w-2 h-2 bg-teal-500 border-2 border-background rounded-full"></span>
+                    <div class="h-px bg-slate-100 my-1"></div>
+                    <button onclick="if(window.logout) window.logout(); else if(window.handleLogout) window.handleLogout();" class="w-full text-left px-4 py-2.5 text-xs font-medium text-red-500 hover:bg-red-50 rounded-xl transition-colors flex items-center gap-2">
+                        <i class="ph-bold ph-sign-out text-lg"></i> Keluar
                     </button>
-                    <!-- Profil -->
-                    <div class="relative">
-                        <div id="profile-menu-button" onclick="if(window.toggleProfileMenu) window.toggleProfileMenu();" class="flex items-center gap-3 ml-1 bg-surface p-1.5 pr-4 rounded-full shadow-sm hover:shadow-md transition-all cursor-pointer border border-border/40" title="Profil Guru">
-                            <div class="w-9 h-9 rounded-full bg-teal-500/10 flex items-center justify-center text-teal-600 font-bold shrink-0 overflow-hidden border border-border">
-                                <i class="ph-bold ph-user text-lg"></i>
-                            </div>
-                            <div class="hidden sm:block text-left header-shrink-hide">
-                                <p class="text-xs font-bold text-textPrimary leading-none">Wali Kelas</p>
-                                <p class="text-[10px] text-textSecondary font-medium mt-1 leading-none">Olah Nilai</p>
-                            </div>
-                        </div>
-                        <div id="profile-dropdown" class="absolute right-0 mt-4 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 hidden z-50 animate-fadeIn overflow-hidden">
-                            <div class="p-2">
-                                <button onclick="openModal('settings'); if(window.toggleProfileMenu) window.toggleProfileMenu()" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary hover:bg-slate-50 rounded-xl transition-colors flex items-center gap-2">
-                                    <i class="ph-bold ph-gear"></i> Pengaturan
-                                </button>
-                                <div class="h-px bg-slate-100 my-1"></div>
-                                <button onclick="window.logout()" class="w-full text-left px-4 py-2.5 text-xs font-medium text-red-500 hover:bg-red-50 rounded-xl transition-colors flex items-center gap-2">
-                                    <i class="ph-bold ph-sign-out"></i> Keluar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-            </header>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- Dummy spacer for layout -->
+<div class="no-print" style="padding-top: 6rem;"></div>
 
             <div id="view-container" class="flex-1 overflow-auto p-4 md:p-8 scroll-smooth custom-scrollbar"></div>
         </main>
