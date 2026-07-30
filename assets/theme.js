@@ -1143,20 +1143,30 @@ if (document.readyState === 'loading') {
    ========================================================================== */
 const dynamicHeaderStyles = document.createElement('style');
   dynamicHeaderStyles.textContent = `
+      
       /* Dynamic Header Styles - Allow content to scroll behind header */
       .dynamic-header {
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-          position: sticky !important;
-          top: 0;
+          transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 100% !important;
           z-index: 40 !important;
-          margin-bottom: -5rem !important; /* Pull sibling up to y=0 */
       }
       
-      .dynamic-header + * {
-          padding-top: 6rem !important; /* 5rem for header + 1rem visual gap */
+      /* Dummy spacer INSIDE the scrolling container so content scrolls UP BEHIND the absolute header */
+      #main-content::before,
+      #view-container::before,
+      main.flex-1.overflow-y-auto::before {
+          content: "";
+          display: block;
+          height: 80px; /* Same as header h-20 */
+          width: 100%;
+          flex-shrink: 0;
       }
       
       .dynamic-header.header-collapsed {
+
           background: transparent !important;
           border-color: transparent !important;
           box-shadow: none !important;

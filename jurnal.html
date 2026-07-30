@@ -15,7 +15,7 @@
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
 
     <!-- Design System (theme.js handles Poppins + Tailwind config + shared components) -->
-    <script src="assets/theme.js?v=1785414458762"></script>
+    <script src="assets/theme.js?v=1785414760646"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
     
@@ -1129,7 +1129,7 @@
                     </aside>
                     <div id="mobile-menu-backdrop" onclick="window.appState.mobileMenuOpen = false; window.renderApp();" class="${window.appState.mobileMenuOpen ? 'block' : 'hidden'} absolute inset-0 bg-slate-900/20 backdrop-blur-sm z-40 md:hidden"></div>
                     <div class="flex-1 flex flex-col h-full overflow-hidden relative">
-                        <header class="dynamic-header h-20 bg-surface/90 backdrop-blur-md sticky top-0 z-40 px-4 md:px-8 border-b border-border transition-all duration-500 w-full flex justify-between items-center no-print shrink-0" style="margin-bottom: -5rem;">
+                        <header class="dynamic-header h-20 bg-surface/90 backdrop-blur-md sticky top-0 z-40 px-4 md:px-8 border-b border-border transition-all duration-500 w-full flex justify-between items-center no-print shrink-0" >
     <!-- Left Section -->
     <div class="header-left flex items-center gap-4 transition-all duration-500 ">
         <!-- Mobile Menu Toggle -->
@@ -1175,8 +1175,7 @@
         </div>
     </div>
 </header>
-<!-- Dummy spacer for layout -->
-<div class="no-print" style="padding-top: 6rem;"></div>
+
                         <main class="flex-1 overflow-y-auto bg-background p-6 md:p-8 pt-6 custom-scrollbar relative">
                             <div id="jurnal-main-content" class="w-full space-y-6 pb-20">
                                 ${window.renderCurrentView()}
