@@ -1185,17 +1185,17 @@ dynamicHeaderStyles.textContent = `
     }
     
     /* Right section icons */
-    .dynamic-header > div:nth-child(2) > :not(#profile-menu-button):not(#profile-dropdown) {
+    .dynamic-header > div:nth-child(2) > :not(#profile-menu-button):not([onclick*="toggleProfileMenu"]):not(.border-l):not(#profile-dropdown) {
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .dynamic-header.header-collapsed > div:nth-child(2) > :not(#profile-menu-button):not(#profile-dropdown) {
+    .dynamic-header.header-collapsed > div:nth-child(2) > :not(#profile-menu-button):not([onclick*="toggleProfileMenu"]):not(.border-l):not(#profile-dropdown) {
         opacity: 0;
         transform: translateX(40px) scale(0.5);
         pointer-events: none;
     }
     
     /* Profile Menu Button */
-    .dynamic-header > div:nth-child(2) > #profile-menu-button {
+    .dynamic-header > div:nth-child(2) > #profile-menu-button, .dynamic-header > div:nth-child(2) > div[onclick*="toggleProfileMenu"], .dynamic-header > div:nth-child(2) > .border-l {
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         pointer-events: auto !important; /* ensure clickable even when header collapsed */
         background: var(--surface) !important;
@@ -1204,7 +1204,7 @@ dynamicHeaderStyles.textContent = `
     }
     
     /* Hide text in Profile Menu Button when collapsed */
-    .dynamic-header.header-collapsed > div:nth-child(2) > #profile-menu-button .header-shrink-hide {
+    .dynamic-header.header-collapsed > div:nth-child(2) > #profile-menu-button .header-shrink-hide, .dynamic-header.header-collapsed > div:nth-child(2) > div[onclick*="toggleProfileMenu"] .header-shrink-hide, .dynamic-header.header-collapsed > div:nth-child(2) > .border-l .header-shrink-hide, .dynamic-header.header-collapsed > div:nth-child(2) > div[onclick*="toggleProfileMenu"] .hidden\.sm\:block {
         display: none !important;
     }
 `;

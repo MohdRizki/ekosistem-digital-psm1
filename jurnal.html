@@ -681,7 +681,10 @@
                 await window.stopScanner(); window.appState.html5QrCode = new window.Html5Qrcode("reader");
                 window.appState.scannerActive = true;
                   const mode = window.appState.settings.voiceMode || 'tts';
-                  if (mode === 'tts') setTimeout(() => window.speakText("sistem presensi sudah siap!"), 800); 
+                  if (mode === 'tts' && !window.appState.hasSpokenReady) {
+                      setTimeout(() => window.speakText("sistem presensi sudah siap!"), 800);
+                      window.appState.hasSpokenReady = true;
+                  } 
                 await window.appState.html5QrCode.start({ facingMode: window.appState.cameraFacingMode }, { fps: 20, qrbox: (viewfinderWidth, viewfinderHeight) => { const minEdge = Math.min(viewfinderWidth, viewfinderHeight); const qrboxSize = Math.floor(minEdge * 0.85); return { width: qrboxSize, height: qrboxSize }; }, aspectRatio: 1.0 }, async (text) => {
                         if (window.appState.scannerLock) return;
                         const student = window.appState.students.find(s => (s.kode_qr && s.kode_qr === text) || s.nama_siswa.toLowerCase() === text.trim().toLowerCase());
