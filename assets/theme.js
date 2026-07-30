@@ -1135,23 +1135,43 @@ if (document.readyState === 'loading') {
 
 
 
+
+
+
 /* ==========================================================================
-   DYNAMIC HEADER SCROLL OVERLAY (ADDED)
+   DYNAMIC HEADER SCROLL OVERLAY (FIXED OVERLAP)
    ========================================================================== */
 const dynamicHeaderStyles = document.createElement('style');
 dynamicHeaderStyles.textContent = `
+    /* Make header take 0 physical space so content underlaps it, but visually remains at top */
     .dynamic-header {
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        /* Make sure it's positioned so it can stay on top */
-        position: sticky;
+        position: sticky !important;
         top: 0;
+        z-index: 40 !important;
+        margin-bottom: -5rem !important; /* Pulls the next sibling up by 80px (h-20) */
+        pointer-events: none; /* Let clicks pass through transparent background when collapsed */
     }
+    
+    /* Re-enable pointer events for actual header contents */
+    .dynamic-header > * {
+        pointer-events: auto;
+    }
+    
+    /* Create an invisible 80px spacer at the top of the scrolling content to prevent overlap when NOT scrolled */
+    .dynamic-header + *::before {
+        content: "";
+        display: block;
+        height: 5rem; /* 80px */
+        width: 100%;
+        flex-shrink: 0;
+    }
+
     .dynamic-header.header-collapsed {
         background: transparent !important;
         border-color: transparent !important;
         box-shadow: none !important;
         backdrop-filter: none !important;
-        pointer-events: none;
     }
     
     /* Left section (title/hamburger) */
