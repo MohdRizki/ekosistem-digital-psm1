@@ -1273,13 +1273,6 @@ window.toggleProfileMenu = function() {
     }
 };
 
-window.toggleNotifications = function() {
-    const notifDd = document.getElementById('notifications-dropdown');
-    const profileDd = document.getElementById('profile-dropdown');
-    if (profileDd) profileDd.classList.add('hidden');
-    if (notifDd) notifDd.classList.toggle('hidden');
-};
-
 document.addEventListener('click', (e) => {
     // Close dropdowns when clicking outside
     if (!e.target.closest('#profile-dropdown') && !e.target.closest('#unified-profile-btn')) {
