@@ -1174,19 +1174,19 @@ const dynamicHeaderStyles = document.createElement('style');
       }
       
       /* Right section icons (hide everything except the profile container when collapsed) */
-      .dynamic-header > div:nth-child(2) > :not(#profile-menu-button):not([onclick*="toggleProfileMenu"]):not(.border-l):not(#profile-dropdown) {
+      .dynamic-header > div:nth-child(2) :not(#profile-menu-button):not([onclick*="toggleProfileMenu"]):not(.border-l):not(#profile-dropdown) {
           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
-      .dynamic-header.header-collapsed > div:nth-child(2) > :not(#profile-menu-button):not([onclick*="toggleProfileMenu"]):not(.border-l):not(#profile-dropdown) {
+      .dynamic-header.header-collapsed > div:nth-child(2) :not(#profile-menu-button):not([onclick*="toggleProfileMenu"]):not(.border-l):not(#profile-dropdown) {
           opacity: 0;
           transform: translateX(40px) scale(0.5);
           pointer-events: none;
       }
       
       /* Profile Container Base - Make it a perfect floating circle AT ALL TIMES */
-      .dynamic-header > div:nth-child(2) > #profile-menu-button,
-      .dynamic-header > div:nth-child(2) > div[onclick*="toggleProfileMenu"],
-      .dynamic-header > div:nth-child(2) > .border-l {
+      .dynamic-header > div:nth-child(2) #profile-menu-button,
+      .dynamic-header > div:nth-child(2) div[onclick*="toggleProfileMenu"],
+      .dynamic-header > div:nth-child(2) .border-l {
           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
           pointer-events: auto !important; 
           background: var(--surface) !important;
@@ -1200,18 +1200,18 @@ const dynamicHeaderStyles = document.createElement('style');
       }
 
       /* When inside a primary (blue) header, ensure the white backdrop is properly applied */
-      header.bg-primary .dynamic-header > div:nth-child(2) > .border-l {
+      header.bg-primary .dynamic-header > div:nth-child(2) .border-l {
           background: rgba(255, 255, 255, 0.2) !important;
       }
 
       /* PERMANENTLY hide all text/extra elements in Profile Container */
-      .dynamic-header > div:nth-child(2) > #profile-menu-button .header-shrink-hide, 
-      .dynamic-header > div:nth-child(2) > div[onclick*="toggleProfileMenu"] .header-shrink-hide, 
-      .dynamic-header > div:nth-child(2) > .border-l .header-shrink-hide,
-      .dynamic-header > div:nth-child(2) > div[onclick*="toggleProfileMenu"] .hidden\.sm\:block,
-      .dynamic-header > div:nth-child(2) > #profile-menu-button p,
-      .dynamic-header > div:nth-child(2) > div[onclick*="toggleProfileMenu"] p,
-      .dynamic-header > div:nth-child(2) > .border-l p {
+      .dynamic-header > div:nth-child(2) #profile-menu-button .header-shrink-hide, 
+      .dynamic-header > div:nth-child(2) div[onclick*="toggleProfileMenu"] .header-shrink-hide, 
+      .dynamic-header > div:nth-child(2) .border-l .header-shrink-hide,
+      .dynamic-header > div:nth-child(2) div[onclick*="toggleProfileMenu"] .hidden\.sm\:block,
+      .dynamic-header > div:nth-child(2) #profile-menu-button p,
+      .dynamic-header > div:nth-child(2) div[onclick*="toggleProfileMenu"] p,
+      .dynamic-header > div:nth-child(2) .border-l p {
           display: none !important;
       }
   `;
