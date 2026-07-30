@@ -593,7 +593,20 @@
             data.createdAt = new Date().toISOString(); data.semester = window.appState.settings.semester;
             const classStudents = window.appState.students.filter(s => String(s.kelas) === String(data.kelas_mengajar));
             const attToday = window.appState.attendance.filter(a => a.date === data.tanggal && String(a.studentClass) === String(data.kelas_mengajar));
-            data.hadir = attToday.filter(a => a.status === 'Hadir').length; data.izin = attToday.filter(a => a.status === 'Izin').length;
+            data.hadir = attToday.filter(a => a.status === 'Hadir').length; 
+            data.izin = attToday.filter(a => a.status === 'Izin').length; 
+            data.sakit = attToday.filter(a => a.status === 'Sakit').length; 
+            let missingCount = 0; 
+            const batch = writeBatch(db); 
+            classStudents.forEach(s => { 
+                if (!attToday.find(a => a.studentId === s.id)) { 
+                    const newRef = doc(collection(db, 'artifacts', appId, 'users', window.appState.teacherId, 'attendance')); 
+                    batch.set(newRef, { studentId: s.id, studentName: s.nama_siswa, studentClass: s.kelas, date: data.tanggal, status: 'Alpa', timestamp: new Date().toISOString(), semester: window.appState.settings.semester }); 
+                    missingCount++; 
+                } 
+            }); 
+            if (missingCount > 0) await batch.commit(); 
+            data.alpa = attToday.filter(a => a.status === 'Alpa').length + missingCount;
             data.nama_guru = window.appState.settings.nama_guru || window.appState.teacherId || 'Guru Sekolah';
             await addDoc(getColRef('journals'), data); 
             try {
