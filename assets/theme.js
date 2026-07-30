@@ -1142,73 +1142,90 @@ if (document.readyState === 'loading') {
    DYNAMIC HEADER SCROLL OVERLAY (FIXED OVERLAP)
    ========================================================================== */
 const dynamicHeaderStyles = document.createElement('style');
-dynamicHeaderStyles.textContent = `
-    /* Make header take 0 physical space so content underlaps it, but visually remains at top */
-    .dynamic-header {
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        position: sticky !important;
-        top: 0;
-        z-index: 40 !important;
-        margin-bottom: -5rem !important; /* Pulls the next sibling up by 80px (h-20) */
-        pointer-events: none; /* Let clicks pass through transparent background when collapsed */
-    }
-    
-    /* Re-enable pointer events for actual header contents */
-    .dynamic-header > * {
-        pointer-events: auto;
-    }
-    
-    /* Create an invisible 80px spacer at the top of the scrolling content to prevent overlap when NOT scrolled */
-    .dynamic-header + *::before {
-        content: "";
-        display: block;
-        height: 5rem; /* 80px */
-        width: 100%;
-        flex-shrink: 0;
-    }
+  dynamicHeaderStyles.textContent = `
+      /* Make header take 0 physical space so content underlaps it, but visually remains at top */
+      .dynamic-header {
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          position: sticky !important;
+          top: 0;
+          z-index: 40 !important;
+          margin-bottom: -5rem !important; /* Pulls the next sibling up by 80px (h-20) */
+          pointer-events: none; /* Let clicks pass through transparent background when collapsed */
+      }
+      
+      /* Re-enable pointer events for actual header contents */
+      .dynamic-header > * {
+          pointer-events: auto;
+      }
+      
+      /* Create an invisible 80px spacer at the top of the scrolling content to prevent overlap when NOT scrolled */
+      .dynamic-header + *::before {
+          content: "";
+          display: block;
+          height: 5rem; /* 80px */
+          width: 100%;
+          flex-shrink: 0;
+      }
+  
+      .dynamic-header.header-collapsed {
+          background: transparent !important;
+          border-color: transparent !important;
+          box-shadow: none !important;
+          backdrop-filter: none !important;
+      }
+      
+      /* Left section (title/hamburger) */
+      .dynamic-header > div:nth-child(1) {
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .dynamic-header.header-collapsed > div:nth-child(1) {
+          opacity: 0;
+          transform: translateX(-20px);
+          pointer-events: none;
+      }
+      
+      /* Right section icons (hide everything except the profile container) */
+      .dynamic-header > div:nth-child(2) > :not(#profile-menu-button):not([onclick*="toggleProfileMenu"]):not(.border-l):not(#profile-dropdown) {
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .dynamic-header.header-collapsed > div:nth-child(2) > :not(#profile-menu-button):not([onclick*="toggleProfileMenu"]):not(.border-l):not(#profile-dropdown) {
+          opacity: 0;
+          transform: translateX(40px) scale(0.5);
+          pointer-events: none;
+          position: absolute; /* Take it out of flow so gap doesn't remain */
+      }
+      
+      /* Profile Container (Original state transitions) */
+      .dynamic-header > div:nth-child(2) > #profile-menu-button,
+      .dynamic-header > div:nth-child(2) > div[onclick*="toggleProfileMenu"],
+      .dynamic-header > div:nth-child(2) > .border-l {
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          pointer-events: auto !important; 
+      }
 
-    .dynamic-header.header-collapsed {
-        background: transparent !important;
-        border-color: transparent !important;
-        box-shadow: none !important;
-        backdrop-filter: none !important;
-    }
-    
-    /* Left section (title/hamburger) */
-    .dynamic-header > div:nth-child(1) {
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .dynamic-header.header-collapsed > div:nth-child(1) {
-        opacity: 0;
-        transform: translateX(-20px);
-        pointer-events: none;
-    }
-    
-    /* Right section icons */
-    .dynamic-header > div:nth-child(2) > :not(#profile-menu-button):not([onclick*="toggleProfileMenu"]):not(.border-l):not(#profile-dropdown) {
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .dynamic-header.header-collapsed > div:nth-child(2) > :not(#profile-menu-button):not([onclick*="toggleProfileMenu"]):not(.border-l):not(#profile-dropdown) {
-        opacity: 0;
-        transform: translateX(40px) scale(0.5);
-        pointer-events: none;
-    }
-    
-    /* Profile Menu Button */
-    .dynamic-header > div:nth-child(2) > #profile-menu-button, .dynamic-header > div:nth-child(2) > div[onclick*="toggleProfileMenu"], .dynamic-header > div:nth-child(2) > .border-l {
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        pointer-events: auto !important; /* ensure clickable even when header collapsed */
-        background: var(--surface) !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
-        border-color: transparent !important;
-    }
-    
-    /* Hide text in Profile Menu Button when collapsed */
-    .dynamic-header.header-collapsed > div:nth-child(2) > #profile-menu-button .header-shrink-hide, .dynamic-header.header-collapsed > div:nth-child(2) > div[onclick*="toggleProfileMenu"] .header-shrink-hide, .dynamic-header.header-collapsed > div:nth-child(2) > .border-l .header-shrink-hide, .dynamic-header.header-collapsed > div:nth-child(2) > div[onclick*="toggleProfileMenu"] .hidden\.sm\:block {
-        display: none !important;
-    }
-`;
-document.head.appendChild(dynamicHeaderStyles);
+      /* Profile Container (Collapsed state - Perfect Floating Icon) */
+      .dynamic-header.header-collapsed > div:nth-child(2) > #profile-menu-button,
+      .dynamic-header.header-collapsed > div:nth-child(2) > div[onclick*="toggleProfileMenu"],
+      .dynamic-header.header-collapsed > div:nth-child(2) > .border-l {
+          background: var(--surface) !important;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+          border-color: transparent !important;
+          border: none !important;
+          border-radius: 9999px !important;
+          padding: 0.375rem !important; /* Minimal padding for the perfect circle */
+          gap: 0 !important;
+          opacity: 1 !important;
+      }
+      
+      /* Hide all text/extra elements in Profile Container when collapsed */
+      .dynamic-header.header-collapsed > div:nth-child(2) > #profile-menu-button .header-shrink-hide, 
+      .dynamic-header.header-collapsed > div:nth-child(2) > div[onclick*="toggleProfileMenu"] .header-shrink-hide, 
+      .dynamic-header.header-collapsed > div:nth-child(2) > .border-l .header-shrink-hide,
+      .dynamic-header.header-collapsed > div:nth-child(2) > div[onclick*="toggleProfileMenu"] .hidden\.sm\:block {
+          display: none !important;
+      }
+  `;
+  document.head.appendChild(dynamicHeaderStyles);
 
 // Universal Scroll Listener via Capture Phase
 document.addEventListener('scroll', (e) => {
