@@ -1132,3 +1132,77 @@ if (document.readyState === 'loading') {
 
 
 
+
+
+
+/* ==========================================================================
+   DYNAMIC HEADER SCROLL OVERLAY (ADDED)
+   ========================================================================== */
+const dynamicHeaderStyles = document.createElement('style');
+dynamicHeaderStyles.textContent = `
+    .dynamic-header {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        /* Make sure it's positioned so it can stay on top */
+        position: sticky;
+        top: 0;
+    }
+    .dynamic-header.header-collapsed {
+        background: transparent !important;
+        border-color: transparent !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        pointer-events: none;
+    }
+    
+    /* Left section (title/hamburger) */
+    .dynamic-header > div:nth-child(1) {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .dynamic-header.header-collapsed > div:nth-child(1) {
+        opacity: 0;
+        transform: translateX(-20px);
+        pointer-events: none;
+    }
+    
+    /* Right section icons */
+    .dynamic-header > div:nth-child(2) > :not(#profile-menu-button):not(#profile-dropdown) {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .dynamic-header.header-collapsed > div:nth-child(2) > :not(#profile-menu-button):not(#profile-dropdown) {
+        opacity: 0;
+        transform: translateX(40px) scale(0.5);
+        pointer-events: none;
+    }
+    
+    /* Profile Menu Button */
+    .dynamic-header > div:nth-child(2) > #profile-menu-button {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: auto !important; /* ensure clickable even when header collapsed */
+        background: var(--surface) !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+        border-color: transparent !important;
+    }
+    
+    /* Hide text in Profile Menu Button when collapsed */
+    .dynamic-header.header-collapsed > div:nth-child(2) > #profile-menu-button .header-shrink-hide {
+        display: none !important;
+    }
+`;
+document.head.appendChild(dynamicHeaderStyles);
+
+// Universal Scroll Listener via Capture Phase
+document.addEventListener('scroll', (e) => {
+    const target = e.target;
+    // We only care about vertical scrolls on window or overflow containers
+    if (target === document || (target.classList && (target.classList.contains('overflow-y-auto') || target.classList.contains('custom-scrollbar') || target.classList.contains('custom-scroll')))) {
+        const scrollTop = target.scrollTop || document.documentElement.scrollTop || window.scrollY || 0;
+        const headers = document.querySelectorAll('.dynamic-header');
+        headers.forEach(header => {
+            if (scrollTop > 20) {
+                header.classList.add('header-collapsed');
+            } else {
+                header.classList.remove('header-collapsed');
+            }
+        });
+    }
+}, true);
