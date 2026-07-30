@@ -1145,11 +1145,28 @@ const dynamicHeaderStyles = document.createElement('style');
   dynamicHeaderStyles.textContent = `
       
       /* Dynamic Header Styles */
+      
+      /* Header must be absolute so it overlaps and scrolls away, leaving the fixed profile icon */
       .dynamic-header {
           transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
-          position: relative !important;
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 100% !important;
           z-index: 40 !important;
       }
+      
+      /* Dummy spacer INSIDE the scrolling container so content scrolls UP BEHIND the absolute header to the top edge */
+      #main-content::before,
+      #view-container::before,
+      main.flex-1.overflow-y-auto::before {
+          content: "";
+          display: block;
+          height: 80px; /* Same as header h-20 */
+          width: 100%;
+          flex-shrink: 0;
+      }
+
       
       /* When Scrolled: transparent, pointer-events none except profile */
       .dynamic-header.header-collapsed {
@@ -1232,3 +1249,58 @@ document.addEventListener('scroll', (e) => {
         });
     }
 }, true);
+
+
+// Auto-populate uniform header profile info based on active session
+window.updateGlobalHeaderProfileInfo = function() {
+    let name = "—";
+    let role = "—";
+    
+    try {
+        const path = window.location.pathname;
+        const adminStr = localStorage.getItem('adminSessionInfo');
+        const jurnalStr = localStorage.getItem('jurnalSessionInfo');
+        const olahStr = localStorage.getItem('olahNilaiSessionInfo');
+        const siswaStr = localStorage.getItem('siswaSessionInfo');
+        
+        if (adminStr && path.includes('admin')) {
+            const obj = JSON.parse(adminStr);
+            name = obj.username === 'admin' ? 'Administrator' : obj.username;
+            role = "Admin Sistem";
+        } else if (jurnalStr && path.includes('jurnal')) {
+            const obj = JSON.parse(jurnalStr);
+            if (obj.matchedGuru) {
+                name = obj.matchedGuru.nama || obj.matchedGuru.username || "Guru";
+                let kls = obj.matchedGuru.kelas_diampu || obj.matchedGuru.kelas;
+                if (Array.isArray(kls)) kls = kls.join(', ');
+                role = kls ? "Kelas " + kls : "Guru Mapel";
+            }
+        } else if (olahStr && path.includes('olah-nilai')) {
+            const obj = JSON.parse(olahStr);
+            if (obj.user) {
+                name = obj.user.nama || obj.user.username || "Guru";
+                let kls = obj.user.kelas_diampu || obj.user.kelas;
+                if (Array.isArray(kls)) kls = kls.join(', ');
+                role = kls ? "Kelas " + kls : "Guru Mapel";
+            }
+        } else if (siswaStr && path.includes('dashboard-siswa')) {
+            const obj = JSON.parse(siswaStr);
+            name = obj.nama_siswa || obj.username || "Siswa";
+            role = obj.kelas ? "Kelas " + obj.kelas : "Siswa Aktif";
+        }
+    } catch(e) { console.error("Error updating global profile:", e); }
+    
+    const nameEl = document.getElementById('header-profile-name');
+    const roleEl = document.getElementById('header-profile-class');
+    if (nameEl) nameEl.innerText = name;
+    if (roleEl) roleEl.innerText = role;
+};
+document.addEventListener('DOMContentLoaded', window.updateGlobalHeaderProfileInfo);
+// Re-call when app re-renders if applicable
+const originalRenderApp = window.renderApp;
+if (originalRenderApp) {
+    window.renderApp = function() {
+        originalRenderApp.apply(this, arguments);
+        setTimeout(window.updateGlobalHeaderProfileInfo, 100);
+    };
+}
