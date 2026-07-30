@@ -114,8 +114,35 @@
         /* Selection Colors */
         ::selection { background: #fecaca; color: #7f1d1d; }
 
-        /* Smooth scroll */
-        html { scroll-behavior: smooth; }
+        /* Smooth scroll + Global font scale 80% */
+        html { scroll-behavior: smooth; font-size: 80%; }
+
+        /* Visi blockquote style */
+        #visi-text {
+            border-left: 3px solid rgba(239, 68, 68, 0.4);
+            padding-left: 1.25rem;
+            font-style: italic;
+        }
+
+        /* Misi list style */
+        #misi-text .misi-item {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        #misi-text .misi-item:last-child { border-bottom: none; }
+        #misi-text .misi-label {
+            font-weight: 600;
+            color: #f8fafc;
+            white-space: nowrap;
+            flex-shrink: 0;
+            min-width: 5rem;
+        }
+        #misi-text .misi-desc {
+            color: #94a3b8;
+        }
     </style>
 
 </head>
@@ -322,27 +349,25 @@
                     </div>
                 </div>
 
-                <!-- Box Visi (Teks didapat dari Admin - DIUBAH KE TEXT-JUSTIFY) -->
+                <!-- Box Visi -->
                 <div class="col-span-1 lg:col-span-12 bg-white/5 backdrop-blur-xl border border-white/10 p-6 sm:p-8 md:p-10 rounded-[2rem] sm:rounded-[2.5rem] reveal relative overflow-hidden group w-full">
-                    <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity"><i class="ph-fill ph-target text-8xl text-white"></i></div>
-                    <div class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 mb-6 border border-red-500/30">
-                        <i class="ph-fill ph-target text-xl"></i>
-                    </div>
-                    <h3 class="text-lg font-semibold mb-4">Visi Institusi</h3>
-                    <div id="visi-text" class="text-justify text-slate-300 leading-relaxed font-normal text-sm whitespace-pre-line relative z-10 break-words pointer-events-auto">
+                    <h3 class="text-base font-semibold mb-5 flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-lg bg-red-500/15 flex items-center justify-center text-red-400 border border-red-500/20 shrink-0"><i class="ph-fill ph-target text-base"></i></span>
+                        Visi Institusi
+                    </h3>
+                    <div id="visi-text" class="text-slate-300 leading-relaxed font-normal text-sm relative z-10 break-words pointer-events-auto">
                         <span class="shimmer w-full h-4 block mb-2 rounded opacity-30"></span>
                         <span class="shimmer w-3/4 h-4 block rounded opacity-30"></span>
                     </div>
                 </div>
 
-                <!-- Box Misi (Teks didapat dari Admin - DIUBAH KE TEXT-JUSTIFY) -->
+                <!-- Box Misi -->
                 <div class="col-span-1 lg:col-span-12 bg-white/5 backdrop-blur-xl border border-white/10 p-6 sm:p-8 md:p-10 rounded-[2rem] sm:rounded-[2.5rem] reveal delay-100 relative overflow-hidden group w-full">
-                    <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity"><i class="ph-fill ph-rocket-launch text-8xl text-white"></i></div>
-                    <div class="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-400 mb-6 border border-orange-500/30">
-                        <i class="ph-fill ph-rocket-launch text-xl"></i>
-                    </div>
-                    <h3 class="text-lg font-semibold mb-4">Misi Institusi</h3>
-                    <div id="misi-text" class="text-justify text-slate-300 leading-relaxed font-normal text-sm whitespace-pre-line relative z-10 break-words pointer-events-auto">
+                    <h3 class="text-base font-semibold mb-5 flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-lg bg-orange-500/15 flex items-center justify-center text-orange-400 border border-orange-500/20 shrink-0"><i class="ph-fill ph-rocket-launch text-base"></i></span>
+                        Misi Institusi
+                    </h3>
+                    <div id="misi-text" class="text-slate-300 leading-relaxed font-normal text-sm relative z-10 break-words pointer-events-auto">
                         <span class="shimmer w-full h-4 block mb-2 rounded opacity-30"></span>
                         <span class="shimmer w-full h-4 block mb-2 rounded opacity-30"></span>
                         <span class="shimmer w-2/3 h-4 block rounded opacity-30"></span>
@@ -979,7 +1004,28 @@
                     const data = docSnap.data();
                     
                     document.getElementById('visi-text').innerHTML = data.visi ? linkify(escapeHTML(data.visi)) : '<span class="text-slate-500 italic">Data belum disetel.</span>';
-                    document.getElementById('misi-text').innerHTML = data.misi ? linkify(escapeHTML(data.misi)) : '<span class="text-slate-500 italic">Data belum disetel.</span>';
+                    // Format misi: parse "Label: Deskripsi" per baris menjadi list terstruktur
+                    if (data.misi) {
+                        const lines = data.misi.split('\n').filter(l => l.trim());
+                        const hasColonFormat = lines.some(l => l.includes(':'));
+                        if (hasColonFormat) {
+                            const formatted = lines.map(line => {
+                                const colonIdx = line.indexOf(':');
+                                if (colonIdx > 0 && colonIdx < 30) {
+                                    const label = line.substring(0, colonIdx).trim();
+                                    const desc = line.substring(colonIdx + 1).trim();
+                                    return `<div class="misi-item"><span class="misi-label">${escapeHTML(label)}</span><span class="misi-desc">${linkify(escapeHTML(desc))}</span></div>`;
+                                }
+                                return `<div class="misi-item"><span class="misi-desc">${linkify(escapeHTML(line))}</span></div>`;
+                            }).join('');
+                            document.getElementById('misi-text').innerHTML = formatted;
+                        } else {
+                            document.getElementById('misi-text').innerHTML = linkify(escapeHTML(data.misi));
+                            document.getElementById('misi-text').style.whiteSpace = 'pre-line';
+                        }
+                    } else {
+                        document.getElementById('misi-text').innerHTML = '<span class="text-slate-500 italic">Data belum disetel.</span>';
+                    }
                     
                     document.getElementById('footer-alamat').innerText = data.alamat || '-';
                     document.getElementById('footer-telepon').innerText = data.telepon || '-';
