@@ -1251,56 +1251,104 @@ document.addEventListener('scroll', (e) => {
 }, true);
 
 
-// Auto-populate uniform header profile info based on active session
+
+// ============================================================
+// GLOBAL HEADER SCRIPTS
+// ============================================================
+
+window.toggleProfileMenu = function() {
+    const profileDd = document.getElementById('profile-dropdown');
+    const notifDd = document.getElementById('notifications-dropdown');
+    if (notifDd) notifDd.classList.add('hidden');
+    if (profileDd) {
+        if (profileDd.classList.contains('hidden')) {
+            profileDd.classList.remove('hidden');
+            profileDd.classList.remove('opacity-0');
+            profileDd.style.display = 'block';
+        } else {
+            profileDd.classList.add('hidden');
+            profileDd.classList.add('opacity-0');
+            profileDd.style.display = 'none';
+        }
+    }
+};
+
+window.toggleNotifications = function() {
+    const notifDd = document.getElementById('notifications-dropdown');
+    const profileDd = document.getElementById('profile-dropdown');
+    if (profileDd) profileDd.classList.add('hidden');
+    if (notifDd) notifDd.classList.toggle('hidden');
+};
+
+document.addEventListener('click', (e) => {
+    // Close dropdowns when clicking outside
+    if (!e.target.closest('#profile-dropdown') && !e.target.closest('#unified-profile-btn')) {
+        const pd = document.getElementById('profile-dropdown');
+        if (pd) pd.classList.add('hidden');
+    }
+    if (!e.target.closest('#notifications-dropdown') && !e.target.closest('button[onclick*="toggleNotifications"]')) {
+        const nd = document.getElementById('notifications-dropdown');
+        if (nd) nd.classList.add('hidden');
+    }
+});
+
 window.updateGlobalHeaderProfileInfo = function() {
     let name = "—";
     let role = "—";
     
     try {
-        const path = window.location.pathname;
-        const adminStr = localStorage.getItem('adminSessionInfo');
-        const jurnalStr = localStorage.getItem('jurnalSessionInfo');
-        const olahStr = localStorage.getItem('olahNilaiSessionInfo');
-        const siswaStr = localStorage.getItem('siswaSessionInfo');
+        const url = window.location.href.toLowerCase();
         
-        if (adminStr && path.includes('admin')) {
-            const obj = JSON.parse(adminStr);
-            name = obj.username === 'admin' ? 'Administrator' : obj.username;
-            role = "Admin Sistem";
-        } else if (jurnalStr && path.includes('jurnal')) {
-            const obj = JSON.parse(jurnalStr);
-            if (obj.matchedGuru) {
-                name = obj.matchedGuru.nama || obj.matchedGuru.username || "Guru";
-                let kls = obj.matchedGuru.kelas_diampu || obj.matchedGuru.kelas;
-                if (Array.isArray(kls)) kls = kls.join(', ');
-                role = kls ? "Kelas " + kls : "Guru Mapel";
+        // Cek admin
+        if (url.includes('admin')) {
+            const adminStr = localStorage.getItem('adminSessionInfo');
+            if (adminStr) {
+                const obj = JSON.parse(adminStr);
+                name = obj.username === 'admin' ? 'Administrator' : obj.username;
+                role = "Admin Sistem";
             }
-        } else if (olahStr && path.includes('olah-nilai')) {
-            const obj = JSON.parse(olahStr);
-            if (obj.user) {
-                name = obj.user.nama || obj.user.username || "Guru";
-                let kls = obj.user.kelas_diampu || obj.user.kelas;
-                if (Array.isArray(kls)) kls = kls.join(', ');
-                role = kls ? "Kelas " + kls : "Guru Mapel";
+        } 
+        // Cek jurnal
+        else if (url.includes('jurnal')) {
+            const jurnalStr = localStorage.getItem('jurnalSessionInfo');
+            if (jurnalStr) {
+                const obj = JSON.parse(jurnalStr);
+                if (obj.matchedGuru) {
+                    name = obj.matchedGuru.nama || obj.matchedGuru.username || "Guru";
+                    let kls = obj.matchedGuru.kelas_diampu || obj.matchedGuru.kelas;
+                    role = kls ? "Kelas " + (Array.isArray(kls) ? kls.join(', ') : kls) : "Guru Mapel";
+                }
             }
-        } else if (siswaStr && path.includes('dashboard-siswa')) {
-            const obj = JSON.parse(siswaStr);
-            name = obj.nama_siswa || obj.username || "Siswa";
-            role = obj.kelas ? "Kelas " + obj.kelas : "Siswa Aktif";
+        } 
+        // Cek olah nilai
+        else if (url.includes('olah-nilai')) {
+            const olahStr = localStorage.getItem('olahNilaiSessionInfo');
+            if (olahStr) {
+                const obj = JSON.parse(olahStr);
+                if (obj.user) {
+                    name = obj.user.nama || obj.user.username || "Guru";
+                    let kls = obj.user.kelas_diampu || obj.user.kelas;
+                    role = kls ? "Kelas " + (Array.isArray(kls) ? kls.join(', ') : kls) : "Guru Mapel";
+                }
+            }
+        } 
+        // Cek siswa
+        else if (url.includes('siswa')) {
+            const siswaStr = localStorage.getItem('siswaSessionInfo');
+            if (siswaStr) {
+                const obj = JSON.parse(siswaStr);
+                name = obj.nama_siswa || obj.username || "Siswa";
+                role = obj.kelas ? "Kelas " + obj.kelas : "Siswa Aktif";
+            }
         }
-    } catch(e) { console.error("Error updating global profile:", e); }
+    } catch(e) { console.error("Error parsing session info", e); }
     
     const nameEl = document.getElementById('header-profile-name');
     const roleEl = document.getElementById('header-profile-class');
-    if (nameEl) nameEl.innerText = name;
-    if (roleEl) roleEl.innerText = role;
+    if (nameEl && name !== "—") nameEl.innerText = name;
+    if (roleEl && role !== "—") roleEl.innerText = role;
 };
+
 document.addEventListener('DOMContentLoaded', window.updateGlobalHeaderProfileInfo);
-// Re-call when app re-renders if applicable
-const originalRenderApp = window.renderApp;
-if (originalRenderApp) {
-    window.renderApp = function() {
-        originalRenderApp.apply(this, arguments);
-        setTimeout(window.updateGlobalHeaderProfileInfo, 100);
-    };
-}
+// Retry in case data loads late
+setTimeout(window.updateGlobalHeaderProfileInfo, 1000);
