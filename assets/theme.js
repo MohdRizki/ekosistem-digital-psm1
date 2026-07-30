@@ -1316,7 +1316,7 @@ window.updateGlobalHeaderProfileInfo = function() {
                 if (obj.matchedGuru) {
                     name = obj.matchedGuru.nama || obj.matchedGuru.username || "Guru";
                     let kls = obj.matchedGuru.kelas_diampu || obj.matchedGuru.kelas;
-                    role = kls ? "Kelas " + (Array.isArray(kls) ? kls.join(', ') : kls) : "Guru Mapel";
+                    role = kls ? (Array.isArray(kls) ? kls.join(', ') : kls).toString().toLowerCase().includes('kelas') ? kls : "Kelas " + (Array.isArray(kls) ? kls.join(', ') : kls) : "Guru Mapel";
                 }
             }
         } 
@@ -1328,7 +1328,7 @@ window.updateGlobalHeaderProfileInfo = function() {
                 if (obj.user) {
                     name = obj.user.nama || obj.user.username || "Guru";
                     let kls = obj.user.kelas_diampu || obj.user.kelas;
-                    role = kls ? "Kelas " + (Array.isArray(kls) ? kls.join(', ') : kls) : "Guru Mapel";
+                    role = kls ? (Array.isArray(kls) ? kls.join(', ') : kls).toString().toLowerCase().includes('kelas') ? kls : "Kelas " + (Array.isArray(kls) ? kls.join(', ') : kls) : "Guru Mapel";
                 }
             }
         } 
@@ -1338,7 +1338,7 @@ window.updateGlobalHeaderProfileInfo = function() {
             if (siswaStr) {
                 const obj = JSON.parse(siswaStr);
                 name = obj.nama_siswa || obj.username || "Siswa";
-                role = obj.kelas ? "Kelas " + obj.kelas : "Siswa Aktif";
+                role = obj.kelas ? (obj.kelas.toString().toLowerCase().includes('kelas') ? obj.kelas : "Kelas " + obj.kelas) : "Siswa Aktif";
             }
         }
     } catch(e) { console.error("Error parsing session info", e); }
