@@ -762,15 +762,6 @@
             100% { opacity: 1; transform: scale(1); }
         }
 
-        /* Dynamic Header Shrink into Floating Pill Symbol Overlay */
-        header.dynamic-header {
-            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
-        }
-        header.dynamic-header { transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important; }
-        header.dynamic-header.header-shrunk { margin: 0.75rem 1.5rem !important; border-radius: 9999px !important; padding-left: 1.5rem !important; padding-right: 1.5rem !important; height: 4rem !important; background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(16px) !important; border: 1px solid rgba(0, 0, 0, 0.05) !important; box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1) !important; top: 0.75rem !important; width: calc(100% - 3rem) !important; }
-        .dark header.dynamic-header.header-shrunk { background: rgba(30, 41, 59, 0.92) !important; border-color: rgba(51, 65, 85, 0.9) !important; box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4) !important; }
-
-
         /* Mirror mode for QR scanner (front camera) */
         .mirror-mode video { transform: scaleX(-1); }
 
@@ -1145,39 +1136,9 @@ window.setupGlidingSidebar = function() {
     });
 };
 
-window.setupDynamicHeaders = () => {
-    const headers = document.querySelectorAll('header.dynamic-header');
-    headers.forEach(header => {
-        const mainContent = header.closest('.flex-1.flex.flex-col')?.querySelector('.overflow-y-auto') ||
-                            header.parentElement?.querySelector('main') ||
-                            header.nextElementSibling ||
-                            document.querySelector('main') ||
-                            window;
-                            
-        const handleScroll = (target) => {
-            const scrollTop = target === window ? window.scrollY : target.scrollTop;
-            if (scrollTop > 50) {
-                header.classList.add('header-shrunk');
-            } else {
-                header.classList.remove('header-shrunk');
-            }
-        };
-
-        if (mainContent && mainContent !== window) {
-            mainContent.removeEventListener('scroll', mainContent._headerScrollHandler);
-            mainContent._headerScrollHandler = () => handleScroll(mainContent);
-            mainContent.addEventListener('scroll', mainContent._headerScrollHandler);
-        } else {
-            window.removeEventListener('scroll', window._headerScrollHandler);
-            window._headerScrollHandler = () => handleScroll(window);
-            window.addEventListener('scroll', window._headerScrollHandler);
-        }
-    });
-};
-
 const initAppThemeBehaviors = () => {
     window.setupGlidingSidebar();
-    window.setupDynamicHeaders();
+    
 };
 
 if (document.readyState === 'loading') {
@@ -1191,120 +1152,6 @@ if (document.readyState === 'loading') {
 
 
 
-
-
-
-/* ==========================================================================
-   DYNAMIC HEADER SCROLL OVERLAY (FIXED OVERLAP)
-   ========================================================================== */
-const dynamicHeaderStyles = document.createElement('style');
-  dynamicHeaderStyles.textContent = `
-      
-      /* Dynamic Header Styles */
-      
-      /* Header must be absolute so it overlaps and scrolls away, leaving the fixed profile icon */
-      .dynamic-header {
-          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
-          position: absolute !important;
-          top: 0 !important;
-          left: 0 !important;
-          width: 100% !important;
-          z-index: 40 !important;
-      }
-      
-      /* Dummy spacer INSIDE the scrolling container so content scrolls UP BEHIND the absolute header to the top edge */
-      #main-content::before,
-      #view-container::before,
-      main.flex-1.overflow-y-auto::before {
-          content: "";
-          display: block;
-          height: 80px; /* Same as header h-20 */
-          width: 100%;
-          flex-shrink: 0;
-      }
-
-      
-      /* When Scrolled: transparent, pointer-events none except profile */
-      .dynamic-header.header-collapsed {
-          background: transparent !important;
-          border-color: transparent !important;
-          box-shadow: none !important;
-          backdrop-filter: none !important;
-          pointer-events: none !important;
-      }
-      
-      /* Left section fades out */
-      .dynamic-header > .header-left {
-          transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .dynamic-header.header-collapsed > .header-left {
-          opacity: 0 !important;
-          transform: translateX(-16px) !important;
-          pointer-events: none !important;
-      }
-      
-      /* Icon buttons fade out */
-      .dynamic-header .header-icon-btn {
-          transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .dynamic-header.header-collapsed .header-icon-btn {
-          opacity: 0 !important;
-          transform: scale(0.6) !important;
-          pointer-events: none !important;
-      }
-      
-      /* Profile text info fades out when scrolled */
-      .dynamic-header .header-profile-info {
-          transition: all 0.3s ease;
-      }
-      .dynamic-header.header-collapsed .header-profile-info {
-          display: none !important;
-      }
-      
-      /* Profile container stays visible and clickable */
-      .dynamic-header .profile-container {
-          pointer-events: auto !important;
-          transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      
-      /* Profile button morphs into floating circle */
-      .dynamic-header.header-collapsed #unified-profile-btn {
-          padding: 0.25rem !important;
-          border-radius: 9999px !important;
-          background: var(--surface, #fff) !important;
-          box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
-          border-color: transparent !important;
-          position: fixed !important;
-          top: 1rem !important;
-          right: 1rem !important;
-          z-index: 9999 !important;
-      }
-      
-      /* Dropdown repositioning when collapsed */
-      .dynamic-header.header-collapsed #profile-dropdown {
-          position: fixed !important;
-          top: 4rem !important;
-          right: 1rem !important;
-          z-index: 9999 !important;
-      }
-  `;
-  document.head.appendChild(dynamicHeaderStyles);
-
-// Universal Scroll Listener via Capture Phase
-document.addEventListener('scroll', (e) => {
-    const target = e.target;
-    if (target === document || (target.classList && (target.classList.contains('overflow-y-auto') || target.classList.contains('custom-scrollbar') || target.classList.contains('custom-scroll')))) {
-        const scrollTop = target.scrollTop || document.documentElement.scrollTop || window.scrollY || 0;
-        const headers = document.querySelectorAll('.dynamic-header');
-        headers.forEach(header => {
-            if (scrollTop > 20) {
-                header.classList.add('header-collapsed');
-            } else {
-                header.classList.remove('header-collapsed');
-            }
-        });
-    }
-}, true);
 
 
 
