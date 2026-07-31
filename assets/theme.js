@@ -283,7 +283,7 @@
 
         /* Navigation Buttons */
         .app-sidebar nav {
-            padding: 0 0 0 16px !important;
+            padding: 24px 0 24px 16px !important;
         }
         .nav-btn {
             width: 100%;
@@ -360,7 +360,7 @@
             display: none !important;
         }
 
-        /* Ultra-Premium Dribbble Cutout Indicator with Vector Notches (Exact copy of preview-sidebar.html) */
+                /* Ultra-Premium Dribbble Cutout Indicator with Vector Notches (Exact copy of preview-sidebar.html) */
         #sidebar-gliding-indicator {
             position: absolute !important;
             right: 0 !important;
