@@ -120,6 +120,11 @@
         <div class="absolute inset-0 bg-grid-pattern pointer-events-none opacity-40"></div>
 
         <aside id="admin-sidebar" class="app-sidebar absolute md:relative z-[60] shadow-[4px_0_24px_rgba(0,0,0,0.02)] -translate-x-full md:translate-x-0 transform transition-transform duration-300 flex flex-col">
+    <div class="floating-mini-logo absolute top-6 left-6 z-30">
+        <div class="w-8 h-8 rounded-2xl flex items-center justify-center text-white bg-white/10 backdrop-blur-md border border-white/20 shadow-sm">
+            <i class="ph-bold ph-circles-four text-lg"></i>
+        </div>
+    </div>
         <button onclick="toggleSidebar()" class="md:hidden absolute top-5 right-4 p-2 text-textSecondary hover:text-textPrimary rounded-lg z-10"><i class="ph-bold ph-x text-xl"></i></button>
         
         <div class="sidebar-header sticky top-0 z-20 shrink-0 flex flex-col bg-transparent" style="isolation: isolate;"><!-- Logo & Symbol Collapse Toggle -->
@@ -209,19 +214,23 @@
                 </div>
             </button>
             
-            <!-- Dropdown Menu -->
-            <div id="profile-dropdown" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 hidden opacity-0 transition-all duration-200 origin-top-right z-50">
-                <div class="p-2">
-                    <button onclick="if(window.openModal) openModal('settings'); if(window.toggleProfileMenu) window.toggleProfileMenu()" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary hover:bg-slate-50 rounded-xl transition-colors flex items-center gap-2">
-                        <i class="ph-bold ph-gear text-lg"></i> Pengaturan
-                    </button>
-                    <div class="h-px bg-slate-100 my-1"></div>
-                    <button onclick="if(window.logout) window.logout(); else if(window.handleLogout) window.handleLogout();" class="w-full text-left px-4 py-2.5 text-xs font-medium text-red-500 hover:bg-red-50 rounded-xl transition-colors flex items-center gap-2">
-                        <i class="ph-bold ph-sign-out text-lg"></i> Keluar
-                    </button>
-                </div>
-            </div>
-        </div>
+                          <!-- Dropdown Menu -->
+              <div id="profile-dropdown" class="modern-profile-dropdown absolute right-0 top-full mt-2 w-56 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-slate-100 hidden opacity-0 z-50 overflow-hidden">
+                  <div class="p-2">
+                      <button onclick="if(window.openModal) openModal('profil');" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary hover:bg-slate-50 hover:text-primary rounded-xl transition-all duration-200 flex items-center gap-3">
+                          <i class="ph-bold ph-user-circle text-lg opacity-70"></i> Profil Saya
+                      </button>
+                      <button onclick="if(window.openModal) openModal('settings');" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary hover:bg-slate-50 hover:text-primary rounded-xl transition-all duration-200 flex items-center gap-3">
+                          <i class="ph-bold ph-gear text-lg opacity-70"></i> Pengaturan Akun
+                      </button>
+                      <div class="h-px bg-slate-100 my-1 mx-2"></div>
+                      <button onclick="if(window.logout) window.logout(); else if(window.handleLogout) window.handleLogout();" class="w-full text-left px-4 py-2.5 text-xs font-medium text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all duration-200 flex items-center gap-3">
+                          <i class="ph-bold ph-sign-out text-lg opacity-70"></i> Keluar
+                      </button>
+                  </div>
+              </div>
+          </div>
+      </div>
     </div>
 </header>
 <main class="flex-1 overflow-y-auto bg-background p-6 md:p-8 pt-6 custom-scrollbar relative"><div class="w-full space-y-6 pb-20">

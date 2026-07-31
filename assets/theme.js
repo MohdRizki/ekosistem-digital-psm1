@@ -643,6 +643,52 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+        /* Smart Sidebar Transitions */
+        .app-sidebar .sidebar-header {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+        }
+        .app-sidebar.scrolled-down .sidebar-header {
+            transform: translateX(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .app-sidebar .custom-scrollbar {
+            transition: margin-top 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .app-sidebar.scrolled-down .custom-scrollbar {
+            margin-top: calc(-1 * var(--sidebar-header-h, 80px));
+        }
+        .app-sidebar .floating-mini-logo {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            transform: translateX(-20px);
+            pointer-events: none;
+        }
+        .app-sidebar.scrolled-down .floating-mini-logo {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+        
+        /* Modern Profile Dropdown */
+        .modern-profile-dropdown {
+            transform-origin: top right;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modern-profile-dropdown.hidden {
+            display: none;
+        }
+        .modern-profile-dropdown.opacity-0 {
+            opacity: 0;
+            transform: scale(0.95) translateY(-10px);
+            pointer-events: none;
+        }
+        .modern-profile-dropdown.active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: auto;
+        }
+
         .animate-fadeIn { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-slideDown { animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -1079,6 +1125,23 @@ window.setupGlidingSidebar = function() {
             requestAnimationFrame(updateIndicator);
         });
         observer.observe(sidebar, { attributes: true, subtree: true, attributeFilter: ['class'] });
+
+        // Smart Sidebar Scroll Logic
+        const scrollWrapper = sidebar.querySelector('.custom-scrollbar');
+        const header = sidebar.querySelector('.sidebar-header');
+        if (scrollWrapper && header) {
+            // Set initial header height variable for CSS
+            sidebar.style.setProperty('--sidebar-header-h', header.offsetHeight + 'px');
+            window.addEventListener('resize', () => sidebar.style.setProperty('--sidebar-header-h', header.offsetHeight + 'px'));
+
+            scrollWrapper.addEventListener('scroll', () => {
+                if (scrollWrapper.scrollTop > 20) {
+                    sidebar.classList.add('scrolled-down');
+                } else {
+                    sidebar.classList.remove('scrolled-down');
+                }
+            });
+        }
     });
 };
 
