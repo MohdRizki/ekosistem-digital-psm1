@@ -1082,8 +1082,8 @@
                             <i class="ph-bold ph-list text-2xl"></i>
                         </button>
                     </header>
-                    <aside id="jurnal-sidebar" class="app-sidebar absolute md:relative z-[60] shadow-[4px_0_24px_rgba(0,0,0,0.02)] ${window.appState.mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} transform transition-transform duration-300 ${localStorage.getItem('sidebarCollapsed') === '1' ? 'collapsed' : ''}">
-                        <button onclick="window.appState.mobileMenuOpen = false; window.renderApp();" class="md:hidden absolute top-5 right-4 p-2 text-textSecondary hover:text-textPrimary rounded-lg z-10"><i class="ph-bold ph-x text-xl"></i></button>
+                    <aside id="jurnal-sidebar" class="app-sidebar absolute md:relative z-[60] shadow-[4px_0_24px_rgba(0,0,0,0.02)] ${window.appState.mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} transform transition-transform duration-300 ${localStorage.getItem('sidebarCollapsed') === '1' ? 'collapsed' : ''} flex flex-col">
+                        <div class="sidebar-header sticky top-0 z-20 shrink-0 flex flex-col bg-transparent" style="isolation: isolate;"><button onclick="window.appState.mobileMenuOpen = false; window.renderApp();" class="md:hidden absolute top-5 right-4 p-2 text-textSecondary hover:text-textPrimary rounded-lg z-10"><i class="ph-bold ph-x text-xl"></i></button>
                         
                         <!-- Logo & Symbol Collapse Toggle -->
                         <div class="h-20 flex items-center justify-between shrink-0 px-6">
@@ -1100,7 +1100,7 @@
                             </button>
                         </div>
 
-                        <nav class="flex-1 overflow-y-auto custom-scrollbar px-3 pt-2 pb-4 flex flex-col gap-1">
+                        </div><nav class="flex-1 overflow-y-auto relative z-10 custom-scrollbar px-3 pt-2 pb-4 flex flex-col gap-1">
                             ${window.renderNavItem('dashboard', 'ph-squares-four', 'Beranda')}
                             ${window.renderNavItem('scanner', 'ph-qr-code', 'Scan QR')}
                             ${window.renderNavItem('input', 'ph-pencil-simple', 'Isi Jurnal')}
@@ -1113,8 +1113,7 @@
                             ${window.renderNavItem('info', 'ph-info', 'Tentang')}
                         </nav>
 
-                        <!-- Footer -->
-                        <div class="p-3 border-t border-border/10 shrink-0 mt-auto flex flex-col gap-0.5">
+                        <div class="sidebar-footer sticky bottom-0 z-20 p-3 border-t border-border/10 shrink-0 mt-auto flex flex-col gap-0.5 bg-transparent" style="isolation: isolate;"><!-- Footer -->
                             <a href="index.html" target="_blank" class="sidebar-footer-item">
                                 <i class="ph-bold ph-globe text-lg shrink-0"></i>
                                 <span class="nav-label nav-text">Buka Situs Utama</span>

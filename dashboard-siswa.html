@@ -111,40 +111,44 @@
     <div id="app-screen" class="hidden h-full w-full flex overflow-hidden absolute inset-0 z-40 bg-transparent">
         
         <!-- SIDEBAR NAVIGASI -->
-        <aside id="siswa-sidebar" class="app-sidebar absolute md:relative z-[60] shadow-[4px_0_24px_rgba(0,0,0,0.02)] -translate-x-full md:translate-x-0 transform transition-transform duration-300">
-            <button onclick="toggleSidebar()" class="md:hidden absolute top-5 right-4 p-2 text-textSecondary hover:text-textPrimary rounded-lg z-10"><i class="ph-bold ph-x text-xl"></i></button>
+        <aside id="siswa-sidebar" class="app-sidebar absolute md:relative z-[60] shadow-[4px_0_24px_rgba(0,0,0,0.02)] -translate-x-full md:translate-x-0 transform transition-transform duration-300 flex flex-col">
             
-            <!-- Logo & Symbol Collapse Toggle -->
-            <div class="h-20 flex items-center justify-between shrink-0 px-4 mt-2">
-                <div class="flex items-center gap-3 min-w-0">
-                    <div class="flex relative items-center justify-center shrink-0 w-8 h-8">
-                        <div class="w-5 h-5 rounded-full bg-primary absolute left-0 opacity-90 mix-blend-multiply"></div>
-                        <div class="w-5 h-5 rounded-full bg-accent absolute right-0 opacity-90 mix-blend-multiply"></div>
+            <!-- Header Sidebar (Sticky & Terpisah) -->
+            <div class="sidebar-header sticky top-0 z-20 shrink-0 flex flex-col bg-transparent" style="isolation: isolate;">
+                <button onclick="toggleSidebar()" class="md:hidden absolute top-5 right-4 p-2 text-textSecondary hover:text-textPrimary rounded-lg z-10"><i class="ph-bold ph-x text-xl"></i></button>
+                
+                <!-- Logo & Symbol Collapse Toggle -->
+                <div class="h-20 flex items-center justify-between shrink-0 px-4 mt-2">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="flex relative items-center justify-center shrink-0 w-8 h-8">
+                            <div class="w-5 h-5 rounded-full bg-primary absolute left-0 opacity-90 mix-blend-multiply"></div>
+                            <div class="w-5 h-5 rounded-full bg-accent absolute right-0 opacity-90 mix-blend-multiply"></div>
+                        </div>
+                        <div class="min-w-0 sidebar-logo-text">
+                            <h2 class="font-black text-white text-base leading-none tracking-tight">PORTAL<span class="block text-[10px] font-bold text-white/70 uppercase tracking-widest mt-1">Belajar Siswa</span></h2>
+                        </div>
+                    </div>
+                    <button onclick="window.toggleSidebarCollapse('siswa-sidebar')" class="sidebar-collapse-btn-mini" title="Perkecil / Perbesar Sidebar">
+                        <i class="ph-bold ph-caret-left collapse-icon transition-transform duration-300 text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Student profile widget -->
+                <div class="px-4 py-2.5 mx-3 mb-2 bg-slate-50  rounded-xl border border-border/40 flex items-center gap-3 shrink-0 sidebar-profile-card">
+                    <div class="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center text-primary shrink-0 font-bold">
+                        <i class="ph-fill ph-student text-lg"></i>
                     </div>
                     <div class="min-w-0 sidebar-logo-text">
-                        <h2 class="font-black text-white text-base leading-none tracking-tight">PORTAL<span class="block text-[10px] font-bold text-white/70 uppercase tracking-widest mt-1">Belajar Siswa</span></h2>
-                    </div>
-                </div>
-                <button onclick="window.toggleSidebarCollapse('siswa-sidebar')" class="sidebar-collapse-btn-mini" title="Perkecil / Perbesar Sidebar">
-                    <i class="ph-bold ph-caret-left collapse-icon transition-transform duration-300 text-lg"></i>
-                </button>
-            </div>
-
-            <!-- Student profile widget -->
-            <div class="px-4 py-2.5 mx-3 mb-2 bg-slate-50  rounded-xl border border-border/40 flex items-center gap-3 shrink-0 sidebar-profile-card">
-                <div class="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center text-primary shrink-0 font-bold">
-                    <i class="ph-fill ph-student text-lg"></i>
-                </div>
-                <div class="min-w-0 sidebar-logo-text">
-                    <h2 id="profil-nama" class="font-bold text-textPrimary text-[11px] leading-tight line-clamp-1 tracking-tight">-</h2>
-                    <div class="flex items-center gap-1 mt-0.5">
-                        <span id="profil-kelas" class="bg-primary/10 text-primary text-[7px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-widest">-</span>
-                        <span id="profil-nisn" class="text-textSecondary text-[7px] font-bold truncate">-</span>
+                        <h2 id="profil-nama" class="font-bold text-textPrimary text-[11px] leading-tight line-clamp-1 tracking-tight">-</h2>
+                        <div class="flex items-center gap-1 mt-0.5">
+                            <span id="profil-kelas" class="bg-primary/10 text-primary text-[7px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-widest">-</span>
+                            <span id="profil-nisn" class="text-textSecondary text-[7px] font-bold truncate">-</span>
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <nav class="flex-1 overflow-y-auto custom-scrollbar px-3 py-4 flex flex-col gap-1" id="main-nav-container">
+            <nav class="flex-1 overflow-y-auto custom-scrollbar px-3 py-4 flex flex-col gap-1 relative z-10" id="main-nav-container">
                 <button onclick="switchTabSiswa('beranda', this)" class="nav-btn active" data-tab="beranda">
                     <i class="ph-bold ph-squares-four text-lg shrink-0"></i> 
                     <span class="nav-label">Beranda Belajar</span>
@@ -163,7 +167,7 @@
             </nav>
 
             <!-- Footer -->
-            <div class="p-3 border-t border-border/10 shrink-0 mt-auto flex flex-col gap-0.5">
+            <div class="sidebar-footer sticky bottom-0 z-20 p-3 border-t border-border/10 shrink-0 mt-auto flex flex-col gap-0.5 bg-transparent" style="isolation: isolate;">
                 <a href="index.html" target="_blank" class="sidebar-footer-item">
                     <i class="ph-bold ph-globe text-lg shrink-0"></i>
                     <span class="nav-label">Buka Situs Utama</span>

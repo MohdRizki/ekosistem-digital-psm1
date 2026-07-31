@@ -1042,19 +1042,15 @@ window.setupGlidingSidebar = function() {
         if (!indicator) {
             indicator = document.createElement('div');
             indicator.id = 'sidebar-gliding-indicator';
-            sidebar.insertBefore(indicator, nav);
+            nav.appendChild(indicator); // INSIDE nav
         }
         
         const updateIndicator = () => {
             const activeBtn = nav.querySelector('.nav-btn.active');
             if (activeBtn) {
                 indicator.style.setProperty('opacity', '1', 'important');
-                const sidebarRect = sidebar.getBoundingClientRect();
-                const btnRect = activeBtn.getBoundingClientRect();
-                
-                // Lebar dan posisi kiri diatur mutlak oleh CSS (left: 16px, right: 0) agar otomatis mengikuti lebar parent tanpa delay JS
-                indicator.style.setProperty('top', (btnRect.top - sidebarRect.top) + 'px', 'important');
-                indicator.style.setProperty('height', btnRect.height + 'px', 'important');
+                indicator.style.setProperty('top', activeBtn.offsetTop + 'px', 'important');
+                indicator.style.setProperty('height', activeBtn.offsetHeight + 'px', 'important');
             } else {
                 indicator.style.setProperty('opacity', '0', 'important');
             }
@@ -1066,9 +1062,6 @@ window.setupGlidingSidebar = function() {
         setTimeout(updateIndicator, 150);
         requestAnimationFrame(updateIndicator);
         window.addEventListener('resize', updateIndicator);
-        nav.addEventListener('scroll', () => {
-            requestAnimationFrame(updateIndicator);
-        });
         
         // Cukup gunakan 1 event listener delegasi yang bersihkan timer berlebih
         nav.addEventListener('click', (e) => {
