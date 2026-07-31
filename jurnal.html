@@ -1115,7 +1115,68 @@
                             ${window.renderNavItem('reports', 'ph-file-text', 'Laporan')}
                             ${window.renderNavItem('students', 'ph-users', 'Siswa')}
                             ${window.renderNavItem('holidays', 'ph-calendar', 'Izin & Libur')}
-                                                        ${window.renderNavItem('info', 'ph-info', 'Tentang')}
+                            
+                        </nav></div>
+
+                        <div class="sidebar-footer sticky bottom-0 z-20 p-3 border-t border-border/10 shrink-0 mt-auto flex flex-col gap-0.5 bg-transparent" style="isolation: isolate;"><!-- Footer -->
+                            <a href="index.html" target="_blank" class="sidebar-footer-item">
+                                <i class="ph-bold ph-globe text-lg shrink-0"></i>
+                                <span class="nav-label nav-text">Buka Situs Utama</span>
+                                <span class="nav-tooltip">Buka Situs Utama</span>
+                            </a>
+                            <button onclick="window.handleLogout()" class="sidebar-footer-item text-red-500 hover:bg-red-50 ">
+                                <i class="ph-bold ph-sign-out text-lg shrink-0"></i>
+                                <span class="nav-label nav-text">Keluar Sesi</span>
+                                <span class="nav-tooltip">Keluar Sesi</span>
+                            </button>
+                        </div>
+                    </aside>
+                    <div id="mobile-menu-backdrop" onclick="window.appState.mobileMenuOpen = false; window.renderApp();" class="${window.appState.mobileMenuOpen ? 'block' : 'hidden'} absolute inset-0 bg-slate-900/20 backdrop-blur-sm z-40 md:hidden"></div>
+                    <div class="flex-1 flex flex-col h-full overflow-hidden relative">
+                        <header class="dynamic-header h-20 bg-surface/90 backdrop-blur-md sticky top-0 z-40 px-4 md:px-8 border-b border-border transition-all duration-500 w-full flex justify-between items-center no-print shrink-0">
+    <!-- Left Section -->
+    <div class="header-left flex items-center gap-4 transition-all duration-500">
+        <!-- Mobile Menu Toggle -->
+        <button onclick="window.toggleSidebar ? window.toggleSidebar() : (window.appState.mobileMenuOpen = !window.appState.mobileMenuOpen, window.renderApp())" class="md:hidden p-2 -ml-2 text-textSecondary hover:text-textPrimary rounded-lg">
+            <i class="ph-bold ph-list text-2xl"></i>
+        </button>
+        <!-- Title -->
+        <div>
+            <h1 class="font-bold text-textPrimary text-lg md:text-xl tracking-tight leading-none">${viewTitles[v]||v}</h1>
+            <p class="text-[10px] text-primary uppercase font-semibold tracking-wider mt-1">Sistem Presensi</p>
+        </div>
+    </div>
+
+    <!-- Right Section -->
+    <div class="header-right flex items-center gap-2 md:gap-3 transition-all duration-500 relative">
+        <!-- Messages -->
+        <button class="header-icon-btn relative p-2 text-textSecondary hover:text-primary transition-all duration-300 rounded-full hover:bg-primary/5" onclick="if(window.bukaKotakPesan) window.bukaKotakPesan()">
+            <i class="ph-bold ph-envelope-simple text-xl"></i>
+        </button>
+        <!-- Notifications -->
+        <button class="header-icon-btn relative p-2 text-textSecondary hover:text-primary transition-all duration-300 rounded-full hover:bg-primary/5" onclick="if(window.toggleNotifications) window.toggleNotifications()">
+            <i class="ph-bold ph-bell text-xl"></i>
+            <span class="absolute top-1 right-1 w-2 h-2 bg-teal-500 border-2 border-white rounded-full"></span>
+        </button>
+        <!-- Profile Container -->
+        <div class="profile-container relative z-50 ml-1 flex items-center gap-3">
+            <button id="unified-profile-btn" onclick="if(window.toggleProfileMenu) window.toggleProfileMenu()" class="flex items-center gap-3 px-3 py-1.5 rounded-full bg-surface border border-border/50 hover:border-primary/30 hover:shadow-md transition-all duration-300">
+                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                    <i class="ph-bold ph-user text-base"></i>
+                </div>
+                <div class="header-profile-info hidden md:block text-left min-w-0">
+                    <p id="header-profile-name" class="text-xs font-semibold text-textPrimary leading-tight truncate max-w-[120px]">—</p>
+                    <p id="header-profile-class" class="text-[10px] text-textSecondary leading-tight truncate max-w-[120px]">—</p>
+                            <nav id="main-nav-container" class="px-3 flex flex-col gap-1 relative w-full">
+                            ${window.renderNavItem('dashboard', 'ph-squares-four', 'Beranda')}
+                            ${window.renderNavItem('scanner', 'ph-qr-code', 'Scan QR')}
+                            ${window.renderNavItem('input', 'ph-pencil-simple', 'Isi Jurnal')}
+                            ${window.renderNavItem('mapel', 'ph-book-open', 'Mata Pelajaran')}
+                            ${window.renderNavItem('history', 'ph-clock-counter-clockwise', 'Riwayat')}
+                            ${window.renderNavItem('reports', 'ph-file-text', 'Laporan')}
+                            ${window.renderNavItem('students', 'ph-users', 'Siswa')}
+                            ${window.renderNavItem('holidays', 'ph-calendar', 'Izin & Libur')}
+                            
                         </nav></div>
 
                         <div class="sidebar-footer sticky bottom-0 z-20 p-3 border-t border-border/10 shrink-0 mt-auto flex flex-col gap-0.5 bg-transparent" style="isolation: isolate;"><!-- Footer -->
@@ -1173,13 +1234,13 @@
                           <!-- Dropdown Menu -->
               <div id="profile-dropdown" class="modern-profile-dropdown absolute right-0 top-full mt-2 w-56 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-slate-100 hidden opacity-0 z-50 overflow-hidden">
                   <div class="p-2">
-                      <button onclick="if(window.openModal) openModal('profil');" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary hover:bg-slate-50 hover:text-primary rounded-xl transition-all duration-200 flex items-center gap-3">
-                          <i class="ph-bold ph-user-circle text-lg opacity-70"></i> Profil Saya
-                      </button>
-                      <button onclick="if(window.openModal) openModal('settings');" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary hover:bg-slate-50 hover:text-primary rounded-xl transition-all duration-200 flex items-center gap-3">
-                          <i class="ph-bold ph-gear text-lg opacity-70"></i> Pengaturan Akun
-                      </button>
-                      <div class="h-px bg-slate-100 my-1 mx-2"></div>
+                        <button onclick="if(window.setView) { window.setView('settings'); if(window.toggleProfileMenu) window.toggleProfileMenu(); }" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary hover:bg-slate-50 hover:text-primary rounded-xl transition-all duration-200 flex items-center gap-3">
+                              <i class="ph-bold ph-gear text-lg opacity-70"></i> Pengaturan Akun
+                          </button>
+                          <button onclick="if(window.setView) { window.setView('info'); if(window.toggleProfileMenu) window.toggleProfileMenu(); }" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary hover:bg-slate-50 hover:text-primary rounded-xl transition-all duration-200 flex items-center gap-3">
+                              <i class="ph-bold ph-info text-lg opacity-70"></i> Tentang Aplikasi
+                          </button>
+                        <div class="h-px bg-slate-100 my-1 mx-2"></div>
                       <button onclick="if(window.logout) window.logout(); else if(window.handleLogout) window.handleLogout();" class="w-full text-left px-4 py-2.5 text-xs font-medium text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all duration-200 flex items-center gap-3">
                           <i class="ph-bold ph-sign-out text-lg opacity-70"></i> Keluar
                       </button>

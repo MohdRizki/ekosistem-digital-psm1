@@ -290,12 +290,12 @@
                           <!-- Dropdown Menu -->
               <div id="profile-dropdown" class="modern-profile-dropdown absolute right-0 top-full mt-2 w-56 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-slate-100 hidden opacity-0 z-50 overflow-hidden">
                   <div class="p-2">
-                      <button onclick="if(window.openModal) openModal('profil');" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary hover:bg-slate-50 hover:text-primary rounded-xl transition-all duration-200 flex items-center gap-3">
-                          <i class="ph-bold ph-user-circle text-lg opacity-70"></i> Profil Saya
-                      </button>
-                      <button onclick="if(window.openModal) openModal('settings');" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary hover:bg-slate-50 hover:text-primary rounded-xl transition-all duration-200 flex items-center gap-3">
-                          <i class="ph-bold ph-gear text-lg opacity-70"></i> Pengaturan Akun
-                      </button>
+                      <button onclick="if(window.showToast) window.showToast('Profil Guru Aktif'); if(window.toggleProfileMenu) window.toggleProfileMenu();" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary hover:bg-slate-50 hover:text-primary rounded-xl transition-all duration-200 flex items-center gap-3">
+                            <i class="ph-bold ph-user-circle text-lg opacity-70"></i> Profil Saya
+                        </button>
+                        <button onclick="if(window.openModal) window.openModal('settings'); if(window.toggleProfileMenu) window.toggleProfileMenu();" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary hover:bg-slate-50 hover:text-primary rounded-xl transition-all duration-200 flex items-center gap-3">
+                            <i class="ph-bold ph-gear text-lg opacity-70"></i> Pengaturan Akun
+                        </button>
                       <div class="h-px bg-slate-100 my-1 mx-2"></div>
                       <button onclick="if(window.logout) window.logout(); else if(window.handleLogout) window.handleLogout();" class="w-full text-left px-4 py-2.5 text-xs font-medium text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all duration-200 flex items-center gap-3">
                           <i class="ph-bold ph-sign-out text-lg opacity-70"></i> Keluar
