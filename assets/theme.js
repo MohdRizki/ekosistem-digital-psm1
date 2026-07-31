@@ -1158,6 +1158,59 @@ if (document.readyState === 'loading') {
 
 
 
+// ==========================================================================
+// TRANSPARENT FLOATING HEADER
+// ==========================================================================
+const dynamicHeaderStyles = document.createElement('style');
+dynamicHeaderStyles.textContent = `
+    header.dynamic-header {
+        background: transparent !important;
+        border-color: transparent !important;
+        backdrop-filter: none !important;
+        box-shadow: none !important;
+        pointer-events: none !important;
+    }
+    header.dynamic-header > div {
+        pointer-events: auto;
+    }
+    header.dynamic-header > .header-left {
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    header.dynamic-header.header-collapsed > .header-left {
+        opacity: 0 !important;
+        transform: translateX(-16px) !important;
+        pointer-events: none !important;
+    }
+    header.dynamic-header .profile-container {
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    header.dynamic-header.header-collapsed #unified-profile-btn {
+        padding: 0.5rem !important;
+        background: var(--surface, #fff) !important;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+        border-color: transparent !important;
+    }
+    header.dynamic-header.header-collapsed .header-profile-info {
+        display: none !important;
+    }
+`;
+document.head.appendChild(dynamicHeaderStyles);
+
+document.addEventListener('scroll', (e) => {
+    const target = e.target;
+    if (target === document || (target.classList && (target.classList.contains('overflow-y-auto') || target.classList.contains('custom-scrollbar')))) {
+        const scrollTop = target.scrollTop || document.documentElement.scrollTop || window.scrollY || 0;
+        const headers = document.querySelectorAll('header.dynamic-header');
+        headers.forEach(header => {
+            if (scrollTop > 20) {
+                header.classList.add('header-collapsed');
+            } else {
+                header.classList.remove('header-collapsed');
+            }
+        });
+    }
+}, true);
+
 // ============================================================
 // GLOBAL HEADER SCRIPTS
 // ============================================================
