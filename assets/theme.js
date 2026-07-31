@@ -104,6 +104,9 @@
     const tailwindStyle = document.createElement('style');
     tailwindStyle.type = 'text/css';
     tailwindStyle.innerHTML = `
+        /* Scale entire UI to 90% as requested */
+        html { font-size: 90% !important; }
+
         /* Theme Utility Colors Fallback for Production CDN */
         .bg-background { background-color: #EEF2F6; }
         .bg-surface { background-color: #FFFFFF; }

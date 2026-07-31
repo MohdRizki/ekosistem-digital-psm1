@@ -1332,7 +1332,7 @@
         window.updateProfileDisplay = () => {
             const username = localStorage.getItem('adminUsername') || 'admin';
             const nameEl = document.getElementById('header-profile-name');
-            const handleEl = document.getElementById('header-profile-handle');
+            const handleEl = document.getElementById('header-profile-class');
             
             let displayName = username === 'admin' ? 'Administrator' : username;
             let displayHandle = username === 'admin' ? 'administrator' : username.toLowerCase().replace(/\s+/g, '_');

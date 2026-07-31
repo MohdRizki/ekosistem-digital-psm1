@@ -1186,7 +1186,9 @@
              document.getElementById('app-screen').classList.remove('hidden');
              
              document.getElementById('profil-nama').innerText = data.nama || data.nama_siswa;
+             if(document.getElementById('header-profile-name')) document.getElementById('header-profile-name').innerText = data.nama || data.nama_siswa;
              document.getElementById('profil-kelas').innerText = data.kelas || 'Belum ada kelas';
+             if(document.getElementById('header-profile-class')) document.getElementById('header-profile-class').innerText = data.kelas || 'Belum ada kelas';
              document.getElementById('profil-nisn').innerText = `NISN: ${data.nisn || data.nis || '-'}`;
              
              aturSapaan(data.nama || data.nama_siswa || '');
