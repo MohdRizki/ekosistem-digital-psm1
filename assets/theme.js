@@ -565,17 +565,12 @@
             display: none;
         }
         .app-sidebar.collapsed nav {
-            padding: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
         }
         .app-sidebar.collapsed .nav-btn {
             padding-left: 0 !important;
             padding-right: 0 !important;
-            border-radius: 9999px !important;
-        }
-        .app-sidebar.collapsed #sidebar-gliding-indicator {
-            left: 12px !important;
-            right: 12px !important;
-            border-radius: 9999px !important;
         }
         .app-sidebar.collapsed .sidebar-footer-item {
             justify-content: center !important;
