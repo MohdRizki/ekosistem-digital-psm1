@@ -1,0 +1,25 @@
+{
+  "name": "SIJURU - Jurnal Mengajar",
+  "short_name": "SIJURU",
+  "description": "Sistem Presensi & Jurnal Mengajar Digital untuk Guru SDN Pasirmae 1",
+  "start_url": "/jurnal.html",
+  "display": "standalone",
+  "background_color": "#FAFAFA",
+  "theme_color": "#004E9B",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "assets/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "reezapps.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "lang": "id"
+}

@@ -6,6 +6,11 @@
     <meta name="app-primary" content="#004E9B">
     <title>SIJURU - Jurnal Mengajar</title>
     <link rel="icon" type="image/x-icon" href="reezapps.ico">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#004E9B">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SIJURU">
     
     <!-- Preconnect ke CDN Utama -->
     <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
@@ -1091,19 +1096,24 @@
                         <div class="sidebar-header sticky top-0 z-20 shrink-0 flex flex-col bg-transparent" style="isolation: isolate;"><button onclick="window.appState.mobileMenuOpen = false; window.renderApp();" class="md:hidden absolute top-5 right-4 p-2 text-textSecondary hover:text-textPrimary rounded-lg z-10"><i class="ph-bold ph-x text-xl"></i></button>
                         
                         <!-- Logo & Symbol Collapse Toggle -->
-                        <div class="h-20 flex items-center justify-between shrink-0 px-6">
-                            <div class="flex items-center gap-3.5 min-w-0">
-                                <div class="w-9 h-9 rounded-2xl flex items-center justify-center text-white shrink-0">
+                        <div class="sidebar-header-inner h-20 flex items-center justify-between shrink-0 px-6 relative overflow-hidden">
+                            <!-- Ornamental blobs -->
+                            <div class="sidebar-ornament-blob-1"></div>
+                            <div class="sidebar-ornament-blob-2"></div>
+                            <div class="flex items-center gap-3.5 min-w-0 relative z-10">
+                                <div class="w-9 h-9 rounded-2xl flex items-center justify-center text-white shrink-0 sidebar-logo-icon">
                                     <i class="ph-bold ph-circles-four text-xl"></i>
                                 </div>
                                 <div class="min-w-0 sidebar-logo-text">
                                     <h2 class="font-semibold text-white text-base leading-none tracking-tight">SIJURU<span class="block text-[10px] font-bold text-white/70 tracking-widest mt-1">Sistem Presensi & Jurnal Mengajar</span></h2>
                                 </div>
                             </div>
-                            <button onclick="window.toggleSidebarCollapse('jurnal-sidebar')" class="sidebar-collapse-btn-mini hover:bg-white/5 rounded-xl p-2 transition-colors" title="Perkecil / Perbesar Sidebar">
+                            <button onclick="window.toggleSidebarCollapse('jurnal-sidebar')" class="sidebar-collapse-btn-mini hover:bg-white/5 rounded-xl p-2 transition-colors relative z-10" title="Perkecil / Perbesar Sidebar">
                                 <i class="ph-bold ph-caret-left collapse-icon transition-transform duration-300 text-lg"></i>
                             </button>
                         </div>
+                        <!-- Accent line -->
+                        <div class="sidebar-accent-line"></div>
 
                         </div><div class="flex-1 overflow-y-auto relative z-10 custom-scrollbar pt-6 pb-4 w-full">
                             <nav id="main-nav-container" class="px-3 flex flex-col gap-1 relative w-full">
@@ -1132,22 +1142,22 @@
                     </aside>
                     <div id="mobile-menu-backdrop" onclick="window.appState.mobileMenuOpen = false; window.renderApp();" class="${window.appState.mobileMenuOpen ? 'block' : 'hidden'} absolute inset-0 bg-slate-900/20 backdrop-blur-sm z-40 md:hidden"></div>
                     <div class="flex-1 flex flex-col h-full overflow-hidden relative">
-                        <header class="dynamic-header h-20 bg-surface/90 backdrop-blur-md sticky top-0 z-40 px-4 md:px-8 border-b border-border transition-all duration-500 w-full flex justify-between items-center no-print shrink-0">
+                        <header class="dynamic-header h-16 sticky top-0 z-40 px-4 md:px-8 transition-all duration-500 w-full flex justify-between items-center no-print shrink-0" style="background:transparent !important; border:none !important; backdrop-filter:none !important; box-shadow:none !important; pointer-events:none;">
     <!-- Left Section -->
-    <div class="header-left flex items-center gap-4 transition-all duration-500">
+    <div class="header-left flex items-center gap-4 transition-all duration-500" style="pointer-events:auto;">
         <!-- Mobile Menu Toggle -->
         <button onclick="window.toggleSidebar ? window.toggleSidebar() : (window.appState.mobileMenuOpen = !window.appState.mobileMenuOpen, window.renderApp())" class="md:hidden p-2 -ml-2 text-textSecondary hover:text-textPrimary rounded-lg">
             <i class="ph-bold ph-list text-2xl"></i>
         </button>
         <!-- Title -->
-        <div>
-            <h1 class="font-bold text-textPrimary text-lg md:text-xl tracking-tight leading-none">${viewTitles[v]||v}</h1>
-            <p class="text-[10px] text-primary uppercase font-semibold tracking-wider mt-1">Sistem Presensi</p>
+        <div class="hidden md:block">
+            <h1 class="font-bold text-textPrimary text-base tracking-tight leading-none">${viewTitles[v]||v}</h1>
+            <p class="text-[9px] text-primary uppercase font-semibold tracking-wider mt-0.5">Sistem Presensi</p>
         </div>
     </div>
 
     <!-- Right Section -->
-    <div class="header-right flex items-center gap-2 md:gap-3 transition-all duration-500 relative">
+    <div class="header-right flex items-center gap-2 md:gap-3 transition-all duration-500 relative" style="pointer-events:auto;">
         
         
         <!-- Profile Container -->
@@ -1188,7 +1198,7 @@
       </div>
   </header>
 
-                        <main class="flex-1 overflow-y-auto bg-background p-6 md:p-8 pt-6 custom-scrollbar relative">
+                        <main class="flex-1 overflow-y-auto bg-background p-4 md:p-6 pt-2 custom-scrollbar relative">
                             <div id="jurnal-main-content" class="w-full space-y-6 pb-20">
                                 ${window.renderCurrentView()}
                             </div>
@@ -1347,9 +1357,9 @@
 
             // --- RESTORED & ENHANCED: HOLIDAYS VIEW ---
             if (v === 'holidays') {
-                return `<div class="max-w-4xl mx-auto animate-fadeIn space-y-8 pb-10 text-left">
+                return `<div class="max-w-4xl mx-auto animate-fadeIn space-y-5 pb-10 text-left">
                     <!-- NEW: Section Izin/Sakit Berjangka -->
-                    <div class="bg-surface rounded-2xl md:rounded-2xl p-8 border shadow-sm">
+                    <div class="bg-surface rounded-2xl md:rounded-2xl p-5 border shadow-sm">
                         <div class="flex items-center gap-4 mb-6">
                             <div class="w-10 h-10 bg-primary/20 text-primary rounded-xl flex items-center justify-center"><i class="ph-bold ph-first-aid"></i></div>
                             <h4 class="font-semibold text-xl text-textPrimary">Izin & Sakit Berjangka</h4>
@@ -1380,7 +1390,7 @@
                     </div>
 
                     <!-- NEW: Display & Manage Long Term Permissions -->
-                    <div class="bg-surface rounded-2xl md:rounded-2xl p-8 border shadow-sm mt-8">
+                    <div class="bg-surface rounded-2xl md:rounded-2xl p-5 border shadow-sm">
                         <div class="flex items-center gap-4 mb-6">
                             <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center"><i class="ph-bold ph-list-checks"></i></div>
                             <h4 class="font-semibold text-xl text-textPrimary">Daftar Siswa Absen Aktif</h4>
@@ -1414,7 +1424,7 @@
                     </div>
 
                     <!-- Existing: Hari Libur -->
-                    <div class="bg-surface rounded-2xl md:rounded-2xl p-8 border shadow-sm">
+                    <div class="bg-surface rounded-2xl md:rounded-2xl p-5 border shadow-sm">
                         <div class="flex items-center gap-4 mb-6">
                             <div class="w-10 h-10 bg-rose-100 text-error rounded-xl flex items-center justify-center"><i class="ph-bold ph-calendar-x"></i></div>
                             <h4 class="font-semibold text-xl text-textPrimary">Hari Libur Nasional & Sekolah</h4>
@@ -1481,9 +1491,9 @@
                 // -----------------------------------------------------
 
                 return `
-                <div class="space-y-6 animate-fadeIn text-left">
+                <div class="space-y-4 animate-fadeIn text-left">
                     <!-- HERO SECTION / BANNER (Seperti Admin) -->
-                    <div class="bg-accent rounded-3xl p-6 sm:p-10 relative overflow-hidden flex flex-col sm:flex-row items-center justify-between shadow-lg shadow-accent/20">
+                    <div class="bg-accent rounded-2xl p-5 sm:p-6 relative overflow-hidden flex flex-col sm:flex-row items-center justify-between shadow-lg shadow-accent/20">
                         <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
                         <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
                         
@@ -1503,47 +1513,47 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                        <div class="lg:col-span-8 space-y-5">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                        <div class="lg:col-span-8 space-y-4">
                             <!-- STATS ROW -->
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                                <div class="bg-surface border border-border/40 p-4 rounded-2xl shadow-sm text-center hover:shadow-md transition-shadow">
-                                    <h3 class="text-xs font-bold text-textSecondary tracking-wider mb-1">Jurnal Terisi</h3>
-                                    <p class="text-2xl font-semibold text-primary leading-none">${journalToday}</p>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <div class="bg-surface border border-border/40 p-3 rounded-xl shadow-sm text-center hover:shadow-md transition-shadow">
+                                    <h3 class="text-[10px] font-bold text-textSecondary tracking-wider mb-0.5">Jurnal Terisi</h3>
+                                    <p class="text-xl font-semibold text-primary leading-none">${journalToday}</p>
                                 </div>
-                                <div class="bg-surface border border-border/40 p-4 rounded-2xl shadow-sm text-center hover:shadow-md transition-shadow">
-                                    <h3 class="text-xs font-bold text-textSecondary tracking-wider mb-1">Siswa Hadir</h3>
-                                    <p class="text-2xl font-semibold text-success leading-none">${hadirToday}</p>
+                                <div class="bg-surface border border-border/40 p-3 rounded-xl shadow-sm text-center hover:shadow-md transition-shadow">
+                                    <h3 class="text-[10px] font-bold text-textSecondary tracking-wider mb-0.5">Siswa Hadir</h3>
+                                    <p class="text-xl font-semibold text-success leading-none">${hadirToday}</p>
                                 </div>
-                                <div class="bg-surface border border-border/40 p-4 rounded-2xl shadow-sm text-center hover:shadow-md transition-shadow">
-                                    <h3 class="text-xs font-bold text-textSecondary tracking-wider mb-1">Total Siswa</h3>
-                                    <p class="text-2xl font-semibold text-indigo-500 leading-none">${studentCount}</p>
+                                <div class="bg-surface border border-border/40 p-3 rounded-xl shadow-sm text-center hover:shadow-md transition-shadow">
+                                    <h3 class="text-[10px] font-bold text-textSecondary tracking-wider mb-0.5">Total Siswa</h3>
+                                    <p class="text-xl font-semibold text-indigo-500 leading-none">${studentCount}</p>
                                 </div>
-                                <div class="bg-surface border border-border/40 p-4 rounded-2xl shadow-sm text-center hover:shadow-md transition-shadow">
-                                    <h3 class="text-xs font-bold text-textSecondary tracking-wider mb-1">Status Web</h3>
-                                    <p class="text-lg font-semibold text-accent leading-none mt-1">ONLINE</p>
+                                <div class="bg-surface border border-border/40 p-3 rounded-xl shadow-sm text-center hover:shadow-md transition-shadow">
+                                    <h3 class="text-[10px] font-bold text-textSecondary tracking-wider mb-0.5">Status Web</h3>
+                                    <p class="text-sm font-semibold text-accent leading-none mt-0.5">ONLINE</p>
                                 </div>
                             </div>
                             
                             <!-- ATTENDANCE CHART -->
-                            <div class="bg-surface p-6 md:p-8 rounded-2xl border border-border shadow-xl shadow-slate-200/50">
-                                <div class="flex justify-between items-center mb-8">
+                            <div class="bg-surface p-5 rounded-2xl border border-border shadow-xl shadow-slate-200/50">
+                                <div class="flex justify-between items-center mb-4">
                                     <div>
-                                        <h4 class="text-xs font-bold text-textSecondary tracking-wider">Aktivitas Kehadiran</h4>
-                                        <p class="text-base font-semibold text-textPrimary tracking-tighter">Statistik 7 Hari Terakhir</p>
+                                        <h4 class="text-[10px] font-bold text-textSecondary tracking-wider">Aktivitas Kehadiran</h4>
+                                        <p class="text-sm font-semibold text-textPrimary tracking-tighter">Statistik 7 Hari Terakhir</p>
                                     </div>
                                     <i class="ph-bold ph-chart-line-up text-primary/50 text-xl"></i>
                                 </div>
-                                <div class="h-56 relative w-full"><canvas id="attendanceChart"></canvas></div>
+                                <div class="h-44 relative w-full"><canvas id="attendanceChart"></canvas></div>
                             </div>
                             
                             <!-- SISWA IZIN/SAKIT HARI INI CARD -->
-                            <div class="bg-surface p-6 md:p-8 rounded-2xl border border-border shadow-xl shadow-slate-200/50">
-                                <div class="flex items-center gap-3 mb-6">
-                                    <div class="w-10 h-10 bg-sky-100 text-info rounded-xl flex items-center justify-center"><i class="ph-bold ph-first-aid-kit text-xl"></i></div>
+                            <div class="bg-surface p-5 rounded-2xl border border-border shadow-xl shadow-slate-200/50">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="w-8 h-8 bg-sky-100 text-info rounded-lg flex items-center justify-center"><i class="ph-bold ph-first-aid-kit text-base"></i></div>
                                     <div>
-                                        <h4 class="font-semibold text-xl text-textPrimary">Siswa Absen Hari Ini</h4>
-                                        <p class="text-xs text-textSecondary font-medium">Daftar siswa yang tidak hadir beserta keterangannya.</p>
+                                        <h4 class="font-semibold text-sm text-textPrimary">Siswa Absen Hari Ini</h4>
+                                        <p class="text-[10px] text-textSecondary font-medium">Siswa yang tidak hadir beserta keterangan.</p>
                                     </div>
                                 </div>
                                 <div class="space-y-3">
@@ -1569,10 +1579,10 @@
                         </div>
 
                         <!-- RIGHT COLUMN (col-span-4) -->
-                        <div class="lg:col-span-4 space-y-5">
+                        <div class="lg:col-span-4 space-y-4">
                             
                             <!-- CALENDAR WIDGET (RESTORED) -->
-                            <div class="bg-surface p-6 rounded-2xl border border-border shadow-xl shadow-slate-200/50 flex flex-col relative overflow-hidden">
+                            <div class="bg-surface p-4 rounded-2xl border border-border shadow-xl shadow-slate-200/50 flex flex-col relative overflow-hidden">
                                 <div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
                                 <div class="mb-4"><h3 class="text-xl font-semibold text-textPrimary tracking-tight">${todayDayName}</h3><p class="text-xs font-bold text-textSecondary tracking-wider">${todayDateStr}</p></div>
                                 <div class="grid grid-cols-7 gap-1 mb-4">${['M','S','S','R','K','J','S'].map(d => `<div class="text-center text-[8px] font-semibold text-textSecondary/50 ">${d}</div>`).join('')}${calendarHTML}</div>
@@ -1587,7 +1597,7 @@
                             </div>
                             
                             <!-- TOP 5 ALPA -->
-                            <div class="bg-surface p-6 rounded-2xl border border-border shadow-xl shadow-slate-200/50">
+                            <div class="bg-surface p-4 rounded-2xl border border-border shadow-xl shadow-slate-200/50">
                                 <div class="flex items-center gap-3 mb-5">
                                     <div class="w-10 h-10 bg-rose-100 text-error rounded-xl flex items-center justify-center"><i class="ph-bold ph-warning text-xl"></i></div>
                                     <h4 class="font-semibold text-sm text-textPrimary leading-tight">Perlu Perhatian<br><span class="text-xs text-textSecondary tracking-wider">(Alpa Terbanyak)</span></h4>
@@ -1606,7 +1616,7 @@
                             </div>
 
                             <!-- AKSI CEPAT -->
-                            <div class="bg-surface p-6 rounded-2xl border border-border shadow-xl shadow-slate-200/50">
+                            <div class="bg-surface p-4 rounded-2xl border border-border shadow-xl shadow-slate-200/50">
                                 <h4 class="text-xs font-bold text-textSecondary tracking-wider mb-4">Aksi Cepat</h4>
                                 <div class="grid grid-cols-1 gap-3">${[{ icon: 'ph-file-text', label: 'Ekspor Laporan', view: 'reports', color: 'blue' },{ icon: 'ph-book-open', label: 'Data Mapel', view: 'mapel', color: 'indigo' },{ icon: 'ph-user-plus', label: 'Tambah Siswa', view: 'students', color: 'emerald' }].map(btn => `<button onclick="window.setView('${btn.view}')" class="bg-slate-50  border border-border/80 p-3.5 rounded-2xl flex items-center gap-4 hover:bg-white  hover:border-${btn.color}-400 hover:shadow-md hover:shadow-${btn.color}-500/10 transition-all group text-left"><div class="w-10 h-10 bg-${btn.color}-50 text-${btn.color}-500 rounded-xl flex items-center justify-center text-lg group-hover:scale-110 group-hover:bg-${btn.color}-500 group-hover:text-white transition-all"><i class="ph-bold ${btn.icon}"></i></div><span class="font-bold text-sm tracking-wide text-textPrimary group-hover:text-${btn.color}-600 transition-colors">${btn.label}</span><i class="ph-bold ph-caret-right ml-auto text-textSecondary/50 group-hover:translate-x-1 group-hover:text-${btn.color}-500 transition-all text-xs"></i></button>`).join('')}</div>
                             </div>
@@ -1617,32 +1627,51 @@
             
             if (v === 'input') return `<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 animate-fadeIn text-left"><form onsubmit="window.handleSaveJournal(event)" class="glass-card p-6 md:p-8 space-y-6 text-left"><div class="grid grid-cols-2 gap-4 text-left"><div class="text-left"><label class="text-xs font-semibold ${window.isHoliday(window.appState.selectedDate) ? 'text-error' : 'text-textSecondary'} mb-1 block text-left">Tanggal (${window.getDayName(window.appState.selectedDate)})</label><input type="date" name="tanggal" required value="${window.appState.selectedDate}" onchange="window.appState.selectedDate = this.value; window.renderApp();" class="w-full bg-surface rounded-xl p-4 font-semibold border-none outline-none text-xs text-left"></div><div class="text-left"><label class="text-xs font-semibold text-textSecondary mb-1 block text-left">Kelas</label><select name="kelas_mengajar" onchange="window.appState.selectedKelas = this.value; window.renderApp();" class="w-full bg-surface rounded-xl p-4 font-semibold border-none outline-none text-xs text-left">${(diampu.length > 0 ? diampu : [1,2,3,4,5,6]).map(k => `<option value="${k}" ${k==window.appState.selectedKelas?'selected':''}>Kelas ${k}</option>`).join('')}</select></div></div><div class="grid grid-cols-2 gap-4 text-left"><div class="text-left"><label class="text-xs font-semibold text-textSecondary mb-1 block text-left">Jam Ke-</label><select name="jam_ke" required class="w-full bg-surface rounded-xl p-4 font-semibold border-none outline-none text-xs text-left">${[1,2,3,4,5,6,7,8].map(j => `<option value="${j}">Jam Ke-${j}</option>`).join('')}</select></div><div class="flex items-end pb-3 text-left"><label class="flex items-center gap-2 cursor-pointer text-left"><input type="checkbox" name="is_kerja_khusus" class="w-4 h-4"><span class="text-xs font-semibold text-left">Hari Kerja Khusus</span></label></div></div><select name="mata_pelajaran" onchange="window.appState.selectedMapel = this.value; window.renderApp();" required class="w-full bg-surface rounded-xl p-4 font-semibold border-none outline-none text-xs text-left"><option value="">Pilih Mapel...</option>${window.appState.mapels.filter(m => String(m.kelas) === String(window.appState.selectedKelas)).map(m => `<option value="${m.nama}" ${window.appState.selectedMapel===m.nama?'selected':''}>${m.nama}</option>`).join('')}</select><select onchange="document.getElementsByName('tujuan_pembelajaran')[0].value = this.value" class="w-full bg-surface rounded-xl p-4 font-semibold border-none outline-none text-xs text-left"><option value="">Pilih TP Database...</option>${(window.appState.mapels.filter(m => String(m.kelas) === String(window.appState.selectedKelas)).find(m => m.nama === window.appState.selectedMapel)?.tp || []).map(t => `<option value="${t}">${t}</option>`).join('')}</select><textarea name="tujuan_pembelajaran" placeholder="TP Manual..." required class="w-full bg-surface rounded-xl p-4 font-semibold outline-none min-h-[100px] border-none text-xs text-left"></textarea><textarea name="catatan" placeholder="Catatan..." class="w-full bg-surface rounded-xl p-4 font-semibold outline-none min-h-[60px] border-none text-xs text-left"></textarea><button type="submit" class="w-full bg-primary text-white py-5 rounded-2xl font-semibold text-sm tracking-wider shadow-xl text-center"><i class="ph-bold ph-floppy-disk mr-2"></i> Simpan Jurnal</button></form><div class="glass-card p-6 md:p-8 flex flex-col h-full min-h-[400px] text-left"><div class="flex items-center justify-between mb-4 shrink-0 text-left"><h4 class="font-semibold text-xl leading-none text-textPrimary text-left">Presensi</h4><div class="flex gap-2 text-center text-center"><button onclick="window.markAllPresent('${window.appState.selectedKelas}')" class="bg-primary/10 text-primary px-3 py-2 rounded-xl text-xs font-semibold tracking-tight shadow-sm text-center text-center text-center"><i class="ph-bold ph-checks mr-1"></i> Hadir Semua</button><button onclick="window.setView('scanner')" class="bg-slate-100 hover:bg-slate-200   border border-slate-300  text-textPrimary w-9 h-9 rounded-xl flex items-center justify-center shadow-sm text-center transition-all"><i class="ph-bold ph-qr-code text-center"></i></button></div></div><div class="space-y-2 overflow-y-auto custom-scroll pr-1 flex-grow text-left">${window.appState.students.filter(s => String(s.kelas) === String(window.appState.selectedKelas)).sort((a,b)=>a.nama_siswa.localeCompare(b.nama_siswa)).filter(s => s.nama_siswa.toLowerCase().includes(window.appState.attendanceSearch.toLowerCase())).map(s => { const log = window.appState.attendance.find(a => a.studentId === s.id && a.date === window.appState.selectedDate); return `<div class="flex items-center justify-between p-4 bg-surface rounded-2xl border text-left text-left"><span class="text-xs font-semibold text-textPrimary truncate w-1/3 text-left">${s.nama_siswa}</span><div class="flex gap-1 text-center text-center"><button onclick="window.markAttendance('${s.id}', 'Hadir')" class="w-8 h-8 md:w-9 md:h-8 rounded-lg font-semibold text-[8px] flex items-center justify-center text-center ${log?.status === 'Hadir' ? 'bg-primary text-white shadow-md' : 'bg-slate-100 hover:bg-slate-200   text-textSecondary border border-slate-300 '}">H</button><button onclick="window.markAttendance('${s.id}', 'Izin')" class="w-8 h-8 md:w-9 md:h-8 rounded-lg font-semibold text-[8px] flex items-center justify-center text-center ${log?.status === 'Izin' ? 'bg-info text-white shadow-md' : 'bg-slate-100 hover:bg-slate-200   text-textSecondary border border-slate-300 '}">I</button><button onclick="window.markAttendance('${s.id}', 'Sakit')" class="w-8 h-8 md:w-9 md:h-8 rounded-lg font-semibold text-[8px] flex items-center justify-center text-center ${log?.status === 'Sakit' ? 'bg-warning text-white shadow-md' : 'bg-slate-100 hover:bg-slate-200   text-textSecondary border border-slate-300 '}">S</button><button onclick="window.markAttendance('${s.id}', 'Alpa')" class="w-8 h-8 md:w-9 md:h-8 rounded-lg font-semibold text-[8px] flex items-center justify-center text-center ${log?.status === 'Alpa' ? 'bg-error text-white shadow-md' : 'bg-slate-100 hover:bg-slate-200   text-textSecondary border border-slate-300 '}">A</button></div></div>`}).join('') || '<p class="text-center py-20 text-textSecondary/50 font-semibold text-xs text-center">Data Tidak Ditemukan</p>'}</div></div></div>`;
 
-            if (v === 'students') return `<div class="animate-fadeIn text-left">
-                <div class="glass-card p-8 flex flex-col h-full min-h-[400px]">
-                    <div class="flex justify-between items-center mb-6 shrink-0 border-b border-border/50 pb-4">
+            if (v === 'students') {
+                const semester = window.appState.settings.semester;
+                return `<div class="animate-fadeIn text-left">
+                <div class="glass-card p-5 flex flex-col h-full">
+                    <div class="flex justify-between items-center mb-4 shrink-0 border-b border-border/50 pb-3">
                         <div>
-                            <h4 class="font-semibold text-xl leading-none text-textPrimary tracking-tight">Database Siswa</h4>
-                            <p class="text-xs text-textSecondary font-bold mt-1 tracking-wider">Tersinkronisasi otomatis dari Ekosistem Sekolah</p>
+                            <h4 class="font-semibold text-base leading-none text-textPrimary tracking-tight">Database Siswa</h4>
+                            <p class="text-[10px] text-textSecondary font-bold mt-0.5 tracking-wider">Tersinkronisasi otomatis dari Ekosistem Sekolah</p>
                         </div>
-                        <button onclick="window.downloadBulkQR()" class="bg-primary/10 text-primary px-5 py-2.5 rounded-xl text-xs font-semibold tracking-wider transition-all hover:bg-primary/20"><i class="ph-bold ph-file-zip mr-2"></i> ZIP QR</button>
+                        <button onclick="window.downloadBulkQR()" class="bg-primary/10 text-primary px-4 py-2 rounded-xl text-[10px] font-semibold tracking-wider transition-all hover:bg-primary/20"><i class="ph-bold ph-file-zip mr-1"></i> ZIP QR</button>
                     </div>
-                    <div class="space-y-2 overflow-y-auto custom-scrollbar pr-1 flex-grow">
-                        ${window.appState.students.sort((a,b)=>a.kelas.localeCompare(b.kelas) || a.nama_siswa.localeCompare(b.nama_siswa)).map(s => 
-                        `<div class="flex items-center justify-between p-4 bg-background border border-border rounded-2xl hover:border-primary/20 transition-all group">
-                            <div class="flex items-center gap-4">
-                                <div class="w-8 h-8 bg-surface border border-border rounded-lg flex items-center justify-center font-semibold text-xs text-textPrimary shadow-sm group-hover:bg-primary group-hover:text-white transition-colors">${s.kelas}</div>
-                                <div class="flex flex-col">
-                                    <span class="font-semibold text-xs text-textPrimary">${s.nama_siswa}</span>
-                                    <span class="font-bold text-xs text-textSecondary tracking-wider">NISN: ${s.nisn || '-'} | L/P: ${s.jk || '-'}</span>
-                                </div>
-                            </div>
-                            <div class="flex gap-1">
-                                <button onclick='window.viewQR(${JSON.stringify(s)})' class="text-textSecondary hover:text-primary p-2 hover:bg-surface rounded-lg transition-all" title="Lihat QR Code"><i class="ph-bold ph-qr-code text-lg"></i></button>
-                            </div>
-                        </div>`).join('') || '<p class="text-center py-20 text-textSecondary font-bold text-xs ">Siswa Kosong. Pastikan Admin telah memasukkan data siswa untuk kelas Anda.</p>'}
+                    <div class="overflow-x-auto custom-scrollbar flex-grow">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="border-b border-border">
+                                    <th class="py-2 px-2 text-[10px] w-8">No</th>
+                                    <th class="py-2 px-2 text-[10px] w-12">Kls</th>
+                                    <th class="py-2 px-2 text-[10px]">Nama Siswa</th>
+                                    <th class="py-2 px-2 text-[10px] w-24">NISN</th>
+                                    <th class="py-2 px-2 text-[10px] w-10 text-center">L/P</th>
+                                    <th class="py-2 px-2 text-[10px] w-16 text-center">Hadir</th>
+                                    <th class="py-2 px-2 text-[10px] w-16 text-center">Alpa</th>
+                                    <th class="py-2 px-2 text-[10px] w-10 text-center">QR</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${window.appState.students.sort((a,b)=>a.kelas.localeCompare(b.kelas) || a.nama_siswa.localeCompare(b.nama_siswa)).map((s, idx) => {
+                                    const hadirCount = window.appState.attendance.filter(a => a.studentId === s.id && a.semester === semester && a.status === 'Hadir').length;
+                                    const alpaCount = window.appState.attendance.filter(a => a.studentId === s.id && a.semester === semester && a.status === 'Alpa').length;
+                                    return `<tr class="border-b border-border/30 hover:bg-primary/5 transition-colors cursor-pointer" onclick="window.showStudentStats('${s.id}')">
+                                    <td class="py-2 px-2 text-[11px] text-textSecondary">${idx+1}</td>
+                                    <td class="py-2 px-2"><span class="bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[10px] font-bold">${s.kelas}</span></td>
+                                    <td class="py-2 px-2 text-[11px] font-semibold text-textPrimary">${s.nama_siswa}</td>
+                                    <td class="py-2 px-2 text-[10px] text-textSecondary font-mono">${s.nisn || '-'}</td>
+                                    <td class="py-2 px-2 text-[10px] text-center text-textSecondary">${s.jk || '-'}</td>
+                                    <td class="py-2 px-2 text-center"><span class="text-[10px] font-bold ${hadirCount > 0 ? 'text-success' : 'text-textSecondary'}">${hadirCount}</span></td>
+                                    <td class="py-2 px-2 text-center"><span class="text-[10px] font-bold ${alpaCount > 0 ? 'text-error' : 'text-textSecondary'}">${alpaCount}</span></td>
+                                    <td class="py-2 px-2 text-center" onclick="event.stopPropagation();"><button onclick='window.viewQR(${JSON.stringify(s)})' class="text-textSecondary hover:text-primary p-1 hover:bg-surface rounded transition-all" title="Lihat QR Code"><i class="ph-bold ph-qr-code text-sm"></i></button></td>
+                                </tr>`}).join('') || '<tr><td colspan="8" class="text-center py-10 text-textSecondary font-bold text-xs">Siswa Kosong. Pastikan Admin telah memasukkan data siswa untuk kelas Anda.</td></tr>'}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>`;
+            }
             
             if (v === 'mapel') return `<div class="max-w-2xl mx-auto animate-fadeIn text-left text-left"><div class="bg-surface rounded-2xl md:rounded-2xl p-8 border shadow-sm mb-8 text-left text-left text-left"><h4 class="font-semibold text-xl mb-6 leading-none text-textPrimary text-left">Kelola Mapel Baru</h4><form onsubmit="window.handleSaveMapel(event)" class="space-y-4 text-left"><select name="kelas" required class="w-full bg-slate-100  rounded-xl p-4 font-semibold border border-border/50 outline-none text-xs text-left">${(diampu.length > 0 ? diampu : [1,2,3,4,5,6]).map(v => `<option value="${v}">Kelas ${v}</option>`).join('')}</select><input type="text" name="nama_mapel" placeholder="Nama Mapel..." required class="w-full bg-slate-100  rounded-xl p-4 font-semibold border border-border/50 outline-none text-xs text-left"><textarea name="tujuan_pembelajaran" placeholder="TP (Gunakan Enter untuk list baru)..." required class="w-full bg-slate-100  rounded-xl p-4 font-semibold border border-border/50 outline-none min-h-[120px] text-xs shadow-inner text-left text-left"></textarea><button type="submit" class="w-full bg-primary text-white py-4 rounded-2xl font-semibold text-xs tracking-wider shadow-xl text-center"><i class="ph-bold ph-floppy-disk mr-2"></i> Simpan Mapel & TP</button></form></div><div class="space-y-4 pb-10 text-left text-left"><h4 class="font-semibold text-lg mb-4 text-textSecondary text-left">Daftar Mata Pelajaran & TP Terdaftar</h4>${window.appState.mapels.sort((a,b)=>a.kelas-b.kelas).map(m => `<div class="bg-surface p-6 rounded-3xl border text-left text-left"><div class="flex justify-between items-start mb-4 text-left text-left"><div class="flex items-center gap-2 text-left"><span class="bg-primary/10 text-primary px-2 py-1 rounded-lg text-xs font-semibold text-center text-center">KLS ${m.kelas}</span><h5 class="font-semibold text-textPrimary text-left">${m.nama}</h5></div><button onclick="window.deleteDocData('mapels', '${m.id}')" class="text-rose-400 p-2 hover:bg-rose-100 rounded-lg transition-all text-center text-center"><i class="ph-bold ph-trash text-center"></i></button></div><ul class="space-y-2 mb-6 text-left">${(m.tp || []).map((t, idx) => `<li class="flex items-center justify-between gap-4 bg-slate-50  p-3 rounded-xl border-l-4 border-primary/30 text-left text-left"><span class="text-xs text-textSecondary font-bold leading-tight text-left">${t}</span><button onclick="window.deleteTP('${m.id}', ${idx})" class="text-rose-300 hover:text-error transition-colors shrink-0 text-center text-center"><i class="ph-bold ph-x text-center"></i></button></li>`).join('')}</ul><div class="flex gap-2 text-left"><input type="text" id="new-tp-${m.id}" placeholder="Tambah TP baru..." class="flex-grow bg-slate-100  border border-border/50 outline-none rounded-xl px-4 py-3 text-xs font-bold text-left"><button onclick="window.addTPToExisting('${m.id}')" class="bg-primary text-white px-4 rounded-xl text-xs flex items-center justify-center text-center text-center"><i class="ph-bold ph-plus text-center"></i></button></div></div>`).join('')}</div></div>`;
             
@@ -1705,9 +1734,21 @@
             } catch (e) { 
                 window.appState.loading = false; 
                 window.renderApp(); 
-            } 
+            }
         };
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startApp); else startApp();
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
     </script>
     <style>
         body { font-family: 'Poppins', sans-serif; background: #FAFAFA; -webkit-font-smoothing: antialiased; touch-action: manipulation; direction: ltr; margin: 0; padding: 0; }
@@ -1752,7 +1793,6 @@
             font-size: 0.75rem !important;
             color: #475569 !important;
             letter-spacing: 0.05em !important;
-            text-transform: !important;
         }
         td {
             font-family: 'Poppins', sans-serif !important;
@@ -1788,7 +1828,179 @@
         html, body { height: 100%; width: 100%; overflow: hidden; }
         #root { height: 100%; display: flex; flex-direction: column; }
         th.sticky, td.sticky { background-clip: padding-box; z-index: 20; }
+
+        /* ====== SIDEBAR HEADER ORNAMENTS ====== */
+        .sidebar-header-inner {
+            position: relative;
+        }
+        .sidebar-ornament-blob-1 {
+            position: absolute;
+            top: -20px; right: -15px;
+            width: 70px; height: 70px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            filter: blur(8px);
+            pointer-events: none;
+            animation: blobFloat 6s ease-in-out infinite;
+        }
+        .sidebar-ornament-blob-2 {
+            position: absolute;
+            bottom: -10px; left: 20px;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            filter: blur(6px);
+            pointer-events: none;
+            animation: blobFloat 8s ease-in-out infinite reverse;
+        }
+        @keyframes blobFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(6px, -4px) scale(1.1); }
+        }
+        .sidebar-logo-icon {
+            background: rgba(255,255,255,0.12) !important;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .sidebar-accent-line {
+            height: 1px;
+            margin: 0 1.5rem;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+        }
+        .app-sidebar.collapsed .sidebar-accent-line {
+            margin: 0 0.5rem;
+        }
+        .app-sidebar.collapsed .sidebar-ornament-blob-1,
+        .app-sidebar.collapsed .sidebar-ornament-blob-2 {
+            display: none;
+        }
+
+        /* ====== TRANSPARENT HEADER SCROLL FADE ====== */
+        .dynamic-header .header-left {
+            transition: opacity 0.35s cubic-bezier(0.16,1,0.3,1), transform 0.35s cubic-bezier(0.16,1,0.3,1);
+        }
+        .dynamic-header.header-faded .header-left {
+            opacity: 0 !important;
+            transform: translateX(-12px) !important;
+            pointer-events: none !important;
+        }
+        .dynamic-header .profile-container {
+            transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+        }
+        .dynamic-header.header-faded .header-profile-info {
+            display: none !important;
+        }
+        .dynamic-header.header-faded #unified-profile-btn {
+            padding: 0.375rem !important;
+            background: rgba(255,255,255,0.95) !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+            border-color: transparent !important;
+        }
+
+        /* ====== STUDENT STATS MODAL ====== */
+        .student-stats-modal {
+            animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .sparkline-bar {
+            display: inline-block;
+            width: 100%;
+            border-radius: 2px;
+            min-height: 2px;
+            transition: all 0.3s ease;
+        }
     </style>
+    <script>
+        /* Header scroll fade — listen on main content scroll */
+        document.addEventListener('scroll', (e) => {
+            const target = e.target;
+            if (target && target.classList && (target.classList.contains('overflow-y-auto') || target.classList.contains('custom-scrollbar'))) {
+                const scrollTop = target.scrollTop || 0;
+                const headers = document.querySelectorAll('.dynamic-header');
+                headers.forEach(header => {
+                    if (scrollTop > 20) {
+                        header.classList.add('header-faded');
+                    } else {
+                        header.classList.remove('header-faded');
+                    }
+                });
+            }
+        }, true);
+
+        /* Student Stats Modal */
+        window.showStudentStats = function(studentId) {
+            const student = window.appState.students.find(s => s.id === studentId);
+            if (!student) return;
+            const semester = window.appState.settings.semester;
+            const att = window.appState.attendance.filter(a => a.studentId === studentId && a.semester === semester);
+            const hadir = att.filter(a => a.status === 'Hadir').length;
+            const izin = att.filter(a => a.status === 'Izin').length;
+            const sakit = att.filter(a => a.status === 'Sakit').length;
+            const alpa = att.filter(a => a.status === 'Alpa').length;
+            const total = hadir + izin + sakit + alpa;
+            const pct = (v) => total > 0 ? Math.round(v / total * 100) : 0;
+
+            // Monthly breakdown (last 6 months)
+            const months = [];
+            const now = new Date();
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const key = d.toISOString().slice(0, 7);
+                const label = d.toLocaleDateString('id-ID', { month: 'short' });
+                const mAtt = att.filter(a => a.date && a.date.startsWith(key));
+                months.push({ label, hadir: mAtt.filter(a=>a.status==='Hadir').length, alpa: mAtt.filter(a=>a.status==='Alpa').length, total: mAtt.length });
+            }
+            const maxVal = Math.max(...months.map(m => m.total), 1);
+
+            const modal = document.getElementById('overlay-mount');
+            modal.innerHTML = `
+            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[99999] flex items-center justify-center p-4 pointer-events-auto" onclick="if(event.target===this)this.parentElement.innerHTML=''">
+                <div class="student-stats-modal bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-5 text-white relative overflow-hidden">
+                        <div class="absolute -right-8 -top-8 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
+                        <div class="flex items-center gap-3 relative z-10">
+                            <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-lg font-bold backdrop-blur-sm border border-white/20">${student.nama_siswa.charAt(0)}</div>
+                            <div>
+                                <h3 class="font-bold text-base leading-tight">${student.nama_siswa}</h3>
+                                <p class="text-white/70 text-[10px] font-semibold tracking-wider">Kelas ${student.kelas} • NISN: ${student.nisn || '-'} • Smt ${semester}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-5 space-y-5">
+                        <div class="grid grid-cols-4 gap-2 text-center">
+                            <div class="bg-emerald-50 p-2.5 rounded-xl"><p class="text-lg font-bold text-emerald-600">${hadir}</p><p class="text-[9px] font-bold text-emerald-600/60">Hadir</p></div>
+                            <div class="bg-blue-50 p-2.5 rounded-xl"><p class="text-lg font-bold text-blue-600">${izin}</p><p class="text-[9px] font-bold text-blue-600/60">Izin</p></div>
+                            <div class="bg-amber-50 p-2.5 rounded-xl"><p class="text-lg font-bold text-amber-600">${sakit}</p><p class="text-[9px] font-bold text-amber-600/60">Sakit</p></div>
+                            <div class="bg-red-50 p-2.5 rounded-xl"><p class="text-lg font-bold text-red-600">${alpa}</p><p class="text-[9px] font-bold text-red-600/60">Alpa</p></div>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 tracking-wider mb-2">PERSENTASE KEHADIRAN</p>
+                            <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden flex">
+                                <div style="width:${pct(hadir)}%" class="bg-emerald-500 h-full"></div>
+                                <div style="width:${pct(izin)}%" class="bg-blue-400 h-full"></div>
+                                <div style="width:${pct(sakit)}%" class="bg-amber-400 h-full"></div>
+                                <div style="width:${pct(alpa)}%" class="bg-red-400 h-full"></div>
+                            </div>
+                            <div class="flex justify-between mt-1"><span class="text-[9px] font-bold text-emerald-600">${pct(hadir)}%</span><span class="text-[9px] font-bold text-red-500">${pct(alpa)}% alpa</span></div>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 tracking-wider mb-2">TREN 6 BULAN TERAKHIR</p>
+                            <div class="grid grid-cols-6 gap-1 items-end" style="height:60px;">
+                                ${months.map(m => `<div class="flex flex-col items-center gap-0.5 h-full justify-end">
+                                    <div class="w-full flex flex-col gap-0.5 items-center" style="height:${Math.max(m.total/maxVal*44, 2)}px;">
+                                        <div class="sparkline-bar bg-emerald-400" style="height:${m.hadir ? Math.max(m.hadir/maxVal*44,2) : 0}px;"></div>
+                                        <div class="sparkline-bar bg-red-300" style="height:${m.alpa ? Math.max(m.alpa/maxVal*44,2) : 0}px;"></div>
+                                    </div>
+                                    <span class="text-[8px] font-bold text-slate-400">${m.label}</span>
+                                </div>`).join('')}
+                            </div>
+                        </div>
+                        <button onclick="document.getElementById('overlay-mount').innerHTML=''" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold text-xs transition-colors">Tutup</button>
+                    </div>
+                </div>
+            </div>`;
+        };
+    </script>
 </head>
 <body class="bg-background text-textPrimary font-poppins antialiased overflow-hidden h-screen h-[100dvh]" style="-webkit-tap-highlight-color: transparent;">
     <div id="root" class="h-full relative z-0"></div>
