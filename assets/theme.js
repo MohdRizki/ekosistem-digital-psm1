@@ -570,21 +570,17 @@
         .app-sidebar.collapsed .nav-btn {
             padding-left: 0 !important;
             padding-right: 0 !important;
-            width: calc(100% - 12px) !important;
-            margin-left: 12px !important;
-            border-radius: 9999px 0 0 9999px !important;
+            border-radius: 9999px !important;
         }
         .app-sidebar.collapsed #sidebar-gliding-indicator {
             left: 12px !important;
-            right: 0 !important;
-            border-radius: 9999px 0 0 9999px !important;
+            right: 12px !important;
+            border-radius: 9999px !important;
         }
         .app-sidebar.collapsed .sidebar-footer-item {
             justify-content: center !important;
             padding-left: 0 !important;
             padding-right: 0 !important;
-            margin-left: 12px !important;
-            margin-right: 12px !important;
             border-radius: 1rem !important;
             width: auto !important;
         }
