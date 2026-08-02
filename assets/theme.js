@@ -568,15 +568,20 @@
             padding: 0 !important;
         }
         .app-sidebar.collapsed .nav-btn {
-            padding: 12px 0 !important;
-            width: 100% !important;
-            margin: 0 !important;
+            padding: 0.625rem 0 !important;
+            width: calc(100% - 12px) !important;
+            margin: 0 0 0 12px !important;
+            border-radius: 9999px 0 0 9999px !important;
+        }
+        .app-sidebar.collapsed #sidebar-gliding-indicator {
+            left: 12px !important;
+            right: 0 !important;
             border-radius: 9999px 0 0 9999px !important;
         }
         .app-sidebar.collapsed .sidebar-footer-item {
             justify-content: center !important;
             padding: 0.625rem 0 !important;
-            margin: 0 0.5rem !important;
+            margin: 0 12px !important;
             border-radius: 1rem !important;
             width: auto !important;
         }
