@@ -164,27 +164,31 @@
             <i class="ph-bold ph-circles-four text-lg"></i>
         </div>
     </div>
-            <div class="sidebar-header sticky top-0 z-20 shrink-0 flex flex-col bg-transparent" style="isolation: isolate;"><!-- Logo & Symbol Collapse Toggle -->
-            <div class="h-20 flex items-center justify-between shrink-0 px-4 mt-2">
-                <div class="flex items-center gap-3 min-w-0">
-                    <div class="flex relative items-center justify-center shrink-0 w-8 h-8">
-                        <div class="w-5 h-5 rounded-full bg-primary absolute left-0 opacity-90 mix-blend-multiply"></div>
-                        <div class="w-5 h-5 rounded-full bg-accent absolute right-0 opacity-90 mix-blend-multiply"></div>
+            <div class="sidebar-header sticky top-0 z-20 shrink-0 flex flex-col bg-transparent" style="isolation: isolate;">
+                <div class="sidebar-header-inner h-20 flex items-center justify-between shrink-0 px-4 mt-2 overflow-hidden">
+                    <!-- Ornamental blobs -->
+                    <div class="sidebar-ornament-blob-1"></div>
+                    <div class="sidebar-ornament-blob-2"></div>
+                    <div class="flex items-center gap-3 min-w-0 relative z-10">
+                        <div class="flex relative items-center justify-center shrink-0 w-8 h-8 sidebar-logo-icon rounded-2xl">
+                            <div class="w-5 h-5 rounded-full bg-primary absolute left-1 opacity-90 mix-blend-multiply"></div>
+                            <div class="w-5 h-5 rounded-full bg-accent absolute right-1 opacity-90 mix-blend-multiply"></div>
+                        </div>
+                        <div class="min-w-0 sidebar-logo-text">
+                            <h2 id="sidebar-logo" class="font-black text-white text-base leading-none tracking-tight">OLAH NILAI<span class="block text-[10px] font-bold text-white/70 uppercase tracking-widest mt-1">Sistem Penilaian</span></h2>
+                        </div>
                     </div>
-                    <div class="min-w-0 sidebar-logo-text">
-                        <h2 id="sidebar-logo" class="font-black text-white text-base leading-none tracking-tight">OLAH NILAI<span class="block text-[10px] font-bold text-white/70 uppercase tracking-widest mt-1">Sistem Penilaian</span></h2>
+                    <div class="flex items-center gap-1 relative z-10">
+                        <button onclick="toggleSidebar()" class="md:hidden p-2 text-white/70 hover:text-white rounded-lg transition-colors z-10">
+                            <i class="ph-bold ph-x text-lg"></i>
+                        </button>
+                        <button onclick="window.toggleSidebarCollapse('sidebar')" class="sidebar-collapse-btn-mini hover:bg-white/5 rounded-xl p-2 transition-colors" title="Perkecil / Perbesar Sidebar">
+                            <i class="ph-bold ph-caret-left collapse-icon transition-transform duration-300 text-lg"></i>
+                        </button>
                     </div>
                 </div>
-                <div class="flex items-center gap-1">
-                    <button onclick="toggleSidebar()" class="md:hidden p-2 text-white/70 hover:text-white rounded-lg transition-colors z-10">
-                        <i class="ph-bold ph-x text-lg"></i>
-                    </button>
-                    <button onclick="window.toggleSidebarCollapse('sidebar')" class="sidebar-collapse-btn-mini" title="Perkecil / Perbesar Sidebar">
-                        <i class="ph-bold ph-caret-left collapse-icon transition-transform duration-300 text-lg"></i>
-                    </button>
-                </div>
-            </div>
-
+                <!-- Accent line -->
+                <div class="sidebar-accent-line"></div>
             </div><div class="flex-1 overflow-y-auto relative z-10 custom-scrollbar pt-6 pb-4 w-full">
             <nav id="main-nav-container" class="px-3 flex flex-col gap-1 relative w-full">
                 <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn active">
@@ -250,9 +254,9 @@
 
         <!-- MAIN CONTAINER -->
         <main class="flex-1 flex flex-col overflow-hidden relative">
-            <header class="dynamic-header h-20 bg-surface/90 backdrop-blur-md sticky top-0 z-40 px-4 md:px-8 border-b border-border transition-all duration-500 w-full flex justify-between items-center no-print shrink-0">
+            <header class="dynamic-header h-16 sticky top-0 z-40 px-4 md:px-8 transition-all duration-500 w-full flex justify-between items-center no-print shrink-0" style="background:transparent !important; border:none !important; backdrop-filter:none !important; box-shadow:none !important; pointer-events:none;">
     <!-- Left Section -->
-    <div class="header-left flex items-center gap-4 transition-all duration-500">
+    <div class="header-left flex items-center gap-4 transition-all duration-500" style="pointer-events:auto;">
         <!-- Mobile Menu Toggle -->
         <button onclick="window.toggleSidebar ? window.toggleSidebar() : (window.appState.mobileMenuOpen = !window.appState.mobileMenuOpen, window.renderApp())" class="md:hidden p-2 -ml-2 text-textSecondary hover:text-textPrimary rounded-lg">
             <i class="ph-bold ph-list text-2xl"></i>
@@ -265,7 +269,7 @@
     </div>
 
     <!-- Right Section -->
-    <div class="header-right flex items-center gap-2 md:gap-3 transition-all duration-500 relative">
+    <div class="header-right flex items-center gap-2 md:gap-3 transition-all duration-500 relative" style="pointer-events:auto;">
         
         
         <!-- Profile Container -->

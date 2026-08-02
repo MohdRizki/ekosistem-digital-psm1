@@ -598,6 +598,24 @@
         .app-sidebar.collapsed .sidebar-collapse-btn i {
             transform: rotate(180deg);
         }
+
+        /* ====== SIDEBAR HEADER ORNAMENTS ====== */
+        .sidebar-header-inner { position: relative; }
+        .sidebar-ornament-blob-1 { position: absolute; top: -20px; right: -15px; width: 70px; height: 70px; border-radius: 50%; background: rgba(255,255,255,0.08); filter: blur(8px); pointer-events: none; animation: blobFloat 6s ease-in-out infinite; }
+        .sidebar-ornament-blob-2 { position: absolute; bottom: -10px; left: 20px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.06); filter: blur(6px); pointer-events: none; animation: blobFloat 8s ease-in-out infinite reverse; }
+        @keyframes blobFloat { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(6px, -4px) scale(1.1); } }
+        .sidebar-logo-icon { background: rgba(255,255,255,0.12) !important; backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .sidebar-accent-line { height: 1px; margin: 0 1.5rem; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%); }
+        .app-sidebar.collapsed .sidebar-accent-line { margin: 0 0.5rem; }
+        .app-sidebar.collapsed .sidebar-ornament-blob-1, .app-sidebar.collapsed .sidebar-ornament-blob-2 { display: none; }
+
+        /* ====== TRANSPARENT HEADER SCROLL FADE ====== */
+        .dynamic-header .header-left { transition: opacity 0.35s cubic-bezier(0.16,1,0.3,1), transform 0.35s cubic-bezier(0.16,1,0.3,1); }
+        .dynamic-header.header-faded .header-left, .dynamic-header.header-collapsed .header-left { opacity: 0 !important; transform: translateX(-12px) !important; pointer-events: none !important; }
+        .dynamic-header .profile-container { transition: all 0.35s cubic-bezier(0.16,1,0.3,1); }
+        .dynamic-header.header-faded .header-profile-info, .dynamic-header.header-collapsed .header-profile-info { display: none !important; }
+        .dynamic-header.header-faded #unified-profile-btn, .dynamic-header.header-collapsed #unified-profile-btn { padding: 0.375rem !important; background: rgba(255,255,255,0.95) !important; box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important; border-color: transparent !important; }
+
         .app-sidebar.collapsed .sidebar-collapse-btn .nav-label {
             display: none;
         }
