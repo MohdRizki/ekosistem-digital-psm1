@@ -609,7 +609,18 @@
         .app-sidebar.collapsed .sidebar-ornament-blob-1, .app-sidebar.collapsed .sidebar-ornament-blob-2 { display: none; }
 
         /* ====== TRANSPARENT HEADER SCROLL FADE ====== */
+        .dynamic-header { transition: all 0.35s cubic-bezier(0.16,1,0.3,1); }
         .dynamic-header .header-left { transition: opacity 0.35s cubic-bezier(0.16,1,0.3,1), transform 0.35s cubic-bezier(0.16,1,0.3,1); }
+        .dynamic-header.header-faded, .dynamic-header.header-collapsed {
+            background-color: transparent !important;
+            border-color: transparent !important;
+            backdrop-filter: none !important;
+            box-shadow: none !important;
+            pointer-events: none !important;
+        }
+        .dynamic-header.header-faded .header-right, .dynamic-header.header-collapsed .header-right {
+            pointer-events: auto !important;
+        }
         .dynamic-header.header-faded .header-left, .dynamic-header.header-collapsed .header-left { opacity: 0 !important; transform: translateX(-12px) !important; pointer-events: none !important; }
         .dynamic-header .profile-container { transition: all 0.35s cubic-bezier(0.16,1,0.3,1); }
         .dynamic-header.header-faded .header-profile-info, .dynamic-header.header-collapsed .header-profile-info { display: none !important; }
