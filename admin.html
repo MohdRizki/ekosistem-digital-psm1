@@ -1349,31 +1349,6 @@
             });
         };
 
-        window.toggleNotifications = () => {
-            const dd = document.getElementById('notifications-dropdown');
-            const profileDd = document.getElementById('profile-dropdown');
-            if(profileDd) profileDd.classList.add('hidden');
-            if(dd) dd.classList.toggle('hidden');
-        };
-
-        window.toggleProfileMenu = () => {
-            const profileDd = document.getElementById('profile-dropdown');
-            const notifDd = document.getElementById('notifications-dropdown');
-            if(notifDd) notifDd.classList.add('hidden');
-            if(profileDd) profileDd.classList.toggle('hidden');
-        };
-
-        // Menutup dropdown jika klik di luar
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('#notifications-dropdown') && !e.target.closest('button[title="Notifikasi"]')) {
-                const dd = document.getElementById('notifications-dropdown');
-                if (dd) dd.classList.add('hidden');
-            }
-            if (!e.target.closest('#profile-dropdown') && !e.target.closest('#profile-menu-button')) {
-                const pd = document.getElementById('profile-dropdown');
-                if (pd) pd.classList.add('hidden');
-            }
-        });
 
         // Set Profil Dinamis
         window.updateProfileDisplay = () => {

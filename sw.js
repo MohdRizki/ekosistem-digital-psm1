@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sijuru-cache-v10';
+const CACHE_NAME = 'sijuru-cache-v11';
 const urlsToCache = [
   './',
   './jurnal.html',
