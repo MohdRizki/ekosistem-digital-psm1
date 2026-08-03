@@ -1289,25 +1289,25 @@
                     <table class="w-full text-left text-[11px] font-bold">
                         <thead class="bg-slate-50 font-bold text-slate-400 uppercase border-b tracking-widest">
                             <tr>
-                                <th class="p-5 text-center w-12">No</th>
-                                <th class="p-5 min-w-[200px]">Nama Siswa</th>
-                                ${data.settings.subjects.map(s => `<th class="p-5 text-center">${s.label}</th>`).join('')}
-                                <th class="p-5 text-center bg-teal-50 text-teal-600">Total</th>
+                                <th class="p-3 md:p-5 text-center w-12">No</th>
+                                <th class="p-3 md:p-5 min-w-[200px]">Nama Siswa</th>
+                                ${data.settings.subjects.map(s => `<th class="p-3 md:p-5 text-center">${s.label}</th>`).join('')}
+                                <th class="p-3 md:p-5 text-center bg-teal-50 text-teal-600">Total</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-50">
                             ${data.students.sort((a,b)=>a.nama.localeCompare(b.nama)).map((s, i) => `
                             <tr class="hover:bg-slate-50/50">
-                                <td class="p-5 text-center text-slate-300">${i+1}</td>
-                                <td class="p-5 uppercase font-bold text-textPrimary">${s.nama}</td>
+                                <td class="p-3 md:p-5 text-center text-slate-300">${i+1}</td>
+                                <td class="p-3 md:p-5 uppercase font-bold text-textPrimary">${s.nama}</td>
                                 ${data.settings.subjects.map(sub => {
                                     const rawData = s[sub.id];
                                     const isBelumDiinput = rawData === undefined || rawData === null || rawData === '';
                                     const v = calcValue(rawData, sub.id, data.settings);
                                     const isLow = !isBelumDiinput && v < (data.settings.kktp[sub.id] || 75);
-                                    return `<td class="p-5 text-center ${isBelumDiinput ? 'text-slate-300' : (!isLow ? 'text-emerald-600' : 'text-rose-600 font-bold italic')}">${isBelumDiinput ? '-' : v.toFixed(1).replace(/\.0$/, '')}</td>`;
+                                    return `<td class="p-3 md:p-5 text-center ${isBelumDiinput ? 'text-slate-300' : (!isLow ? 'text-emerald-600' : 'text-rose-600 font-bold italic')}">${isBelumDiinput ? '-' : v.toFixed(1).replace(/\.0$/, '')}</td>`;
                                 }).join('')}
-                                <td class="p-5 text-center bg-teal-50/30 font-bold text-teal-900">
+                                <td class="p-3 md:p-5 text-center bg-teal-50/30 font-bold text-teal-900">
                                     ${data.settings.subjects.reduce((a, b) => a + calcValue(s[b.id], b.id, data.settings), 0).toFixed(1).replace(/\.0$/, '')}
                                 </td>
                             </tr>`).join('')}
@@ -1611,10 +1611,10 @@
                             <table class="w-full text-left">
                                 <thead class="bg-background/50 text-[10px] text-textSecondary uppercase font-bold border-b border-border tracking-widest">
                                     <tr>
-                                        <th class="p-5 w-16 text-center">No</th>
-                                        <th class="p-5">Nama Peserta Didik</th>
-                                        <th class="p-5 text-center w-32">Skor Mentah</th>
-                                        <th class="p-5 text-center w-32">Nilai Akhir</th>
+                                        <th class="p-3 md:p-5 w-16 text-center">No</th>
+                                        <th class="p-3 md:p-5">Nama Peserta Didik</th>
+                                        <th class="p-3 md:p-5 text-center w-32">Skor Mentah</th>
+                                        <th class="p-3 md:p-5 text-center w-32">Nilai Akhir</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-border/50">
@@ -1628,13 +1628,13 @@
 
                                         return `
                                         <tr class="hover:bg-background/30 transition-colors">
-                                            <td class="p-5 text-center text-textSecondary font-bold">${i+1}</td>
-                                            <td class="p-5 font-bold text-textPrimary uppercase text-xs">
+                                            <td class="p-3 md:p-5 text-center text-textSecondary font-bold">${i+1}</td>
+                                            <td class="p-3 md:p-5 font-bold text-textPrimary uppercase text-xs">
                                                 ${s.nama}
                                                 ${(s.remedial && s.remedial[state.activeSubjectId] !== undefined && s.remedial[state.activeSubjectId] !== '') ? `<i class="ph-bold ph-check-circle text-success inline-block ml-2 text-base align-middle" title="Sudah Remedial"></i>` : ''}
                                                 ${(s.pengayaan && s.pengayaan[state.activeSubjectId] !== undefined && s.pengayaan[state.activeSubjectId] !== '') ? `<i class="ph-bold ph-check-circle text-sky-500 inline-block ml-2 text-base align-middle" title="Sudah Pengayaan"></i>` : ''}
                                             </td>
-                                            <td class="p-5 text-center">
+                                            <td class="p-3 md:p-5 text-center">
                                                 <input type="number" inputmode="decimal" 
                                                     data-index="${i}"
                                                     onkeydown="handleKeyNav(event, ${i})"
@@ -1644,7 +1644,7 @@
                                                     placeholder="-"
                                                     value="${inputVal}">
                                             </td>
-                                            <td class="p-5 text-center">
+                                            <td class="p-3 md:p-5 text-center">
                                                 <div class="inline-flex py-2 px-4 rounded-xl font-bold text-sm ${isBelumDiinput ? 'bg-background text-textSecondary border border-border/50' : (!isLow ? 'bg-success/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600')}">
                                                     ${formatVal(rawData, state.activeSubjectId)}
                                                 </div>
@@ -1721,11 +1721,11 @@
                             <table class="w-full text-left">
                                 <thead class="bg-background/50 text-[10px] text-textSecondary uppercase font-bold border-b border-border tracking-widest">
                                     <tr>
-                                        <th class="p-5 w-16 text-center">No</th>
-                                        <th class="p-5">Nama Peserta Didik</th>
-                                        <th class="p-5 text-center w-32">Nilai Asli</th>
-                                        <th class="p-5 text-center w-32">+ Tambah</th>
-                                        <th class="p-5 text-center w-32">Hasil Akhir</th>
+                                        <th class="p-3 md:p-5 w-16 text-center">No</th>
+                                        <th class="p-3 md:p-5">Nama Peserta Didik</th>
+                                        <th class="p-3 md:p-5 text-center w-32">Nilai Asli</th>
+                                        <th class="p-3 md:p-5 text-center w-32">+ Tambah</th>
+                                        <th class="p-3 md:p-5 text-center w-32">Hasil Akhir</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-border/50">
@@ -1745,18 +1745,18 @@
                                         const finalScore = getEffectiveRawScore(s, state.activeSubjectId, true);
                                         return `
                                         <tr class="hover:bg-background/30 transition-colors">
-                                            <td class="p-5 text-center text-textSecondary font-bold">${i+1}</td>
-                                            <td class="p-5 font-bold text-textPrimary uppercase text-xs">
+                                            <td class="p-3 md:p-5 text-center text-textSecondary font-bold">${i+1}</td>
+                                            <td class="p-3 md:p-5 font-bold text-textPrimary uppercase text-xs">
                                                 ${s.nama}
                                                 ${(s.remedial && s.remedial[state.activeSubjectId] !== undefined && s.remedial[state.activeSubjectId] !== '') ? `<i class="ph-bold ph-check-circle text-success inline-block ml-2 align-middle text-base" title="Sudah Remedial"></i>` : ''}
                                                 ${(s.pengayaan && s.pengayaan[state.activeSubjectId] !== undefined && s.pengayaan[state.activeSubjectId] !== '') ? `<i class="ph-bold ph-check-circle text-sky-500 inline-block ml-2 align-middle text-base" title="Sudah Pengayaan"></i>` : ''}
                                             </td>
-                                            <td class="p-5 text-center">
+                                            <td class="p-3 md:p-5 text-center">
                                                 <div class="inline-flex py-2 px-4 rounded-xl font-bold text-sm bg-rose-500/10 text-rose-600">
                                                     ${formatVal(rawData, state.activeSubjectId)}
                                                 </div>
                                             </td>
-                                            <td class="p-5 text-center">
+                                            <td class="p-3 md:p-5 text-center">
                                                 <input type="number" inputmode="decimal" 
                                                     onfocus="this.select()"
                                                     onchange="updateRemedialScore('${s.id}', '${state.activeSubjectId}', this.value)" 
@@ -1764,7 +1764,7 @@
                                                     placeholder="0"
                                                     value="${inputValFormatted}">
                                             </td>
-                                            <td class="p-5 text-center">
+                                            <td class="p-3 md:p-5 text-center">
                                                 <input type="number" inputmode="decimal" 
                                                     onfocus="this.select()"
                                                     onchange="updateRemedialFinalScore('${s.id}', '${state.activeSubjectId}', this.value)" 
@@ -1826,11 +1826,11 @@
                             <table class="w-full text-left">
                                 <thead class="bg-background/50 text-[10px] text-textSecondary uppercase font-bold border-b border-border tracking-widest">
                                     <tr>
-                                        <th class="p-5 w-16 text-center">No</th>
-                                        <th class="p-5">Nama Peserta Didik</th>
-                                        <th class="p-5 text-center w-32">Nilai Asli</th>
-                                        <th class="p-5 text-center w-32">+ Tambah</th>
-                                        <th class="p-5 text-center w-32">Hasil Akhir</th>
+                                        <th class="p-3 md:p-5 w-16 text-center">No</th>
+                                        <th class="p-3 md:p-5">Nama Peserta Didik</th>
+                                        <th class="p-3 md:p-5 text-center w-32">Nilai Asli</th>
+                                        <th class="p-3 md:p-5 text-center w-32">+ Tambah</th>
+                                        <th class="p-3 md:p-5 text-center w-32">Hasil Akhir</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-border/50">
@@ -1850,18 +1850,18 @@
                                         const finalScore = getEffectiveRawScore(s, state.activeSubjectId, true);
                                         return `
                                         <tr class="hover:bg-background/30 transition-colors">
-                                            <td class="p-5 text-center text-textSecondary font-bold">${i+1}</td>
-                                            <td class="p-5 font-bold text-textPrimary uppercase text-xs">
+                                            <td class="p-3 md:p-5 text-center text-textSecondary font-bold">${i+1}</td>
+                                            <td class="p-3 md:p-5 font-bold text-textPrimary uppercase text-xs">
                                                 ${s.nama}
                                                 ${(s.remedial && s.remedial[state.activeSubjectId] !== undefined && s.remedial[state.activeSubjectId] !== '') ? `<i class="ph-bold ph-check-circle text-success inline-block ml-2 align-middle text-base" title="Sudah Remedial"></i>` : ''}
                                                 ${(s.pengayaan && s.pengayaan[state.activeSubjectId] !== undefined && s.pengayaan[state.activeSubjectId] !== '') ? `<i class="ph-bold ph-check-circle text-sky-500 inline-block ml-2 align-middle text-base" title="Sudah Pengayaan"></i>` : ''}
                                             </td>
-                                            <td class="p-5 text-center">
+                                            <td class="p-3 md:p-5 text-center">
                                                 <div class="inline-flex py-2 px-4 rounded-xl font-bold text-sm bg-success/10 text-emerald-600">
                                                     ${formatVal(rawData, state.activeSubjectId)}
                                                 </div>
                                             </td>
-                                            <td class="p-5 text-center">
+                                            <td class="p-3 md:p-5 text-center">
                                                 <input type="number" inputmode="decimal" 
                                                     onfocus="this.select()"
                                                     onchange="updatePengayaanScore('${s.id}', '${state.activeSubjectId}', this.value)" 
@@ -1869,7 +1869,7 @@
                                                     placeholder="0"
                                                     value="${inputValFormatted}">
                                             </td>
-                                            <td class="p-5 text-center">
+                                            <td class="p-3 md:p-5 text-center">
                                                 <input type="number" inputmode="decimal" 
                                                     onfocus="this.select()"
                                                     onchange="updatePengayaanFinalScore('${s.id}', '${state.activeSubjectId}', this.value)" 
@@ -1895,25 +1895,25 @@
                             <table class="w-full text-left text-[11px] font-bold">
                                 <thead class="bg-background/50 font-bold text-textSecondary uppercase border-b border-border tracking-widest">
                                     <tr>
-                                        <th class="p-5 text-center w-12">No</th>
-                                        <th class="p-5 min-w-[200px]">Nama Siswa</th>
-                                        ${state.settings.subjects.map(s => `<th class="p-5 text-center">${s.label}</th>`).join('')}
-                                        <th class="p-5 text-center bg-primary/10 text-primary font-bold">Total</th>
+                                        <th class="p-3 md:p-5 text-center w-12">No</th>
+                                        <th class="p-3 md:p-5 min-w-[200px]">Nama Siswa</th>
+                                        ${state.settings.subjects.map(s => `<th class="p-3 md:p-5 text-center">${s.label}</th>`).join('')}
+                                        <th class="p-3 md:p-5 text-center bg-primary/10 text-primary font-bold">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-border/50">
                                     ${students.map((s, i) => `
                                     <tr class="hover:bg-background/30 transition-colors">
-                                        <td class="p-5 text-center text-textSecondary">${i+1}</td>
-                                        <td class="p-5 uppercase font-bold text-textPrimary">${s.nama}</td>
+                                        <td class="p-3 md:p-5 text-center text-textSecondary">${i+1}</td>
+                                        <td class="p-3 md:p-5 uppercase font-bold text-textPrimary">${s.nama}</td>
                                         ${state.settings.subjects.map(sub => {
                                             const rawData = s[sub.id];
                                             const isBelumDiinput = rawData === undefined || rawData === null || rawData === '';
                                             const v = calcValue(rawData, sub.id);
                                             const isLow = !isBelumDiinput && v < (state.settings.kktp[sub.id] || 75);
-                                            return `<td class="p-5 text-center ${isBelumDiinput ? 'text-textSecondary' : (!isLow ? 'text-success' : 'text-rose-500 font-bold italic')}">${isBelumDiinput ? '-' : v.toFixed(1).replace(/\.0$/, '')}</td>`;
+                                            return `<td class="p-3 md:p-5 text-center ${isBelumDiinput ? 'text-textSecondary' : (!isLow ? 'text-success' : 'text-rose-500 font-bold italic')}">${isBelumDiinput ? '-' : v.toFixed(1).replace(/\.0$/, '')}</td>`;
                                         }).join('')}
-                                        <td class="p-5 text-center bg-primary/5 font-bold text-primary">
+                                        <td class="p-3 md:p-5 text-center bg-primary/5 font-bold text-primary">
                                             ${state.settings.subjects.reduce((a, b) => a + calcValue(s[b.id], b.id), 0).toFixed(1).replace(/\.0$/, '')}
                                         </td>
                                     </tr>`).join('')}
@@ -1928,21 +1928,21 @@
                 
                 container.innerHTML = `
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-fade-in">
-                        <div class="glass-card p-10">
+                        <div class="glass-card p-5 md:p-10">
                             <h4 class="font-bold text-textPrimary flex items-center gap-3 mb-8 uppercase tracking-tight"><i class="ph-bold ph-medal text-warning text-2xl"></i> 10 Siswa Terbaik Kelas</h4>
-                            <div class="space-y-4">
+                            <div class="space-y-2 md:space-y-4">
                                 ${rankings.map((s, i) => `
-                                <div class="flex items-center gap-6 p-5 bg-background/50 rounded-2xl border border-transparent hover:border-primary/20 transition-all">
-                                    <div class="w-10 h-10 flex items-center justify-center rounded-full font-bold text-sm ${i===0?'bg-amber-400 text-white':i===1?'bg-slate-300 text-white':i===2?'bg-amber-600 text-white':'bg-surface text-textSecondary border border-border'}">
+                                <div class="flex items-center gap-3 md:gap-6 p-3 md:p-5 bg-background/50 rounded-xl md:rounded-2xl border border-transparent hover:border-primary/20 transition-all">
+                                    <div class="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full font-bold text-xs md:text-sm ${i===0?'bg-amber-400 text-white':i===1?'bg-slate-300 text-white':i===2?'bg-amber-600 text-white':'bg-surface text-textSecondary border border-border'}">
                                         ${i+1}
                                     </div>
-                                    <div class="flex-1 font-bold text-textPrimary uppercase text-xs truncate">${s.nama}</div>
-                                    <div class="text-xl font-black text-primary">${s.total}</div>
+                                    <div class="flex-1 font-bold text-textPrimary uppercase text-[10px] md:text-xs truncate">${s.nama}</div>
+                                    <div class="text-base md:text-xl font-black text-primary">${s.total}</div>
                                 </div>`).join('')}
                             </div>
                         </div>
                         <div class="space-y-8">
-                            <div class="glass-card p-10">
+                            <div class="glass-card p-5 md:p-10">
                                 <h4 class="font-bold text-textPrimary uppercase tracking-tight mb-8">Statistik Ketuntasan (KKTP)</h4>
                                 <div class="space-y-6">
                                     ${state.settings.subjects.map(sub => {
