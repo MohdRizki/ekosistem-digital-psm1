@@ -33,24 +33,31 @@
     <!-- ========================================== -->
     <div id="login-screen" class="w-full h-screen bg-slate-50 relative overflow-hidden flex font-poppins">
         
-        <!-- 1. BACKGROUND ORBS (MOBILE & DESKTOP) -->
-        <div class="absolute inset-0 z-[0] pointer-events-none overflow-hidden">
-            <div class="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] max-w-[400px] max-h-[400px] rounded-full bg-blue-600/20 blur-[80px]"></div>
-            <div class="absolute bottom-[-10%] right-[-10%] w-[70vw] h-[70vw] max-w-[500px] max-h-[500px] rounded-full bg-indigo-500/10 blur-[100px]"></div>
+        <!-- 1. MOBILE BACKGROUND (RICH GRADIENT TOP HALF) -->
+        <div class="absolute inset-0 z-[0] lg:hidden bg-slate-50 flex flex-col pointer-events-none">
+            <div class="w-full h-[45%] bg-gradient-to-br from-blue-600 to-indigo-700 rounded-b-[3rem] shadow-lg relative overflow-hidden">
+                <div class="absolute inset-0 opacity-40 mix-blend-overlay" style="background-image: url('./assets/wave.png'); background-size: cover; background-position: right center;"></div>
+            </div>
+            <div class="flex-1"></div>
         </div>
 
-        <!-- 2. DESKTOP BACKGROUND WAVE MASK -->
+        <!-- MOBILE HEADER TEXT & ILLUSTRATION -->
+        <div class="absolute top-8 left-0 right-0 z-20 flex flex-col items-center lg:hidden pointer-events-none px-6">
+            <img src="./assets/lari.png" alt="Ilustrasi" class="w-[120px] h-auto drop-shadow-xl animate-slideUp" onerror="this.style.display='none'">
+        </div>
+
+        <!-- 2. DESKTOP BACKGROUND WAVE MASK (Original) -->
         <div class="absolute inset-0 z-[1] pointer-events-none hidden lg:block">
-            <div class="w-full h-full bg-gradient-to-br from-blue-600 to-indigo-800 scale-[1.02] origin-right" 
+            <div class="w-full h-full bg-gradient-to-br from-blue-600 to-indigo-700 scale-[1.02] origin-right" 
                  style="-webkit-mask-image: url('./assets/wave.png'); -webkit-mask-size: auto 100%; -webkit-mask-position: right center; -webkit-mask-repeat: no-repeat; mask-image: url('./assets/wave.png'); mask-size: auto 100%; mask-position: right center; mask-repeat: no-repeat;">
             </div>
         </div>
         
         <!-- 3. LEFT COLUMN (LOGIN FORM) — centered in white zone -->
-        <div class="w-full lg:w-[45%] h-full flex flex-col justify-center items-center relative z-30 px-6">
+        <div class="w-full lg:w-[45%] h-full flex flex-col justify-center items-center relative z-30 px-6 pt-16 lg:pt-0">
             
             <!-- Login Card -->
-            <div class="w-full max-w-[380px] bg-white/70 backdrop-blur-2xl rounded-[2.5rem] p-8 lg:p-10 text-center relative shadow-[0_8px_40px_rgba(0,0,0,0.06)] border border-white/60 animate-slideDown">
+            <div class="w-full max-w-[380px] bg-white rounded-[2rem] p-8 lg:p-10 text-center relative shadow-[0_8px_40px_rgba(0,0,0,0.08)] border border-slate-100 animate-slideDown">
                 <!-- School Logo -->
                 <div class="w-[72px] h-[72px] mx-auto mb-5 bg-gradient-to-br from-slate-50 to-white rounded-2xl flex items-center justify-center border border-slate-100 shadow-sm">
                     <img src="assets/logo.png" class="w-11 h-11 object-contain" alt="Logo">
