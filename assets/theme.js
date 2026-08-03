@@ -1192,11 +1192,8 @@ if (document.readyState === 'loading') {
 const dynamicHeaderStyles = document.createElement('style');
 dynamicHeaderStyles.textContent = `
     header.dynamic-header {
-        background: transparent !important;
-        border-color: transparent !important;
-        backdrop-filter: none !important;
-        box-shadow: none !important;
-        pointer-events: none !important;
+        pointer-events: auto !important;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
     header.dynamic-header > div {
         pointer-events: auto;
