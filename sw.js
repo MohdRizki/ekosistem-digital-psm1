@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sijuru-cache-v1';
+const CACHE_NAME = 'sijuru-cache-v2';
 const urlsToCache = [
   './',
   './jurnal.html',
@@ -8,6 +8,7 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -39,6 +40,6 @@ self.addEventListener('activate', event => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
 });
