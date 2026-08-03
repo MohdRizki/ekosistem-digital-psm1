@@ -1,0 +1,25 @@
+{
+  "name": "Portal Siswa - SDN Pasirmae 1",
+  "short_name": "Portal Siswa",
+  "description": "Portal Informasi & Akademik Siswa SDN Pasirmae 1",
+  "start_url": "/dashboard-siswa.html",
+  "display": "standalone",
+  "background_color": "#FAFAFA",
+  "theme_color": "#9333ea",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "assets/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "reezapps.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["education"],
+  "lang": "id"
+}

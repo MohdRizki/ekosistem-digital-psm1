@@ -1,0 +1,25 @@
+{
+  "name": "Olah Nilai - SDN Pasirmae 1",
+  "short_name": "Olah Nilai",
+  "description": "Sistem Penilaian & Rapor Digital SDN Pasirmae 1",
+  "start_url": "/olah-nilai.html",
+  "display": "standalone",
+  "background_color": "#FAFAFA",
+  "theme_color": "#e11d48",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "assets/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "reezapps.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "lang": "id"
+}
