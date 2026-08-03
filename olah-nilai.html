@@ -313,6 +313,26 @@
 
             <div id="view-container" class="flex-1 overflow-auto p-4 md:p-8 pt-24 md:pt-28 scroll-smooth custom-scrollbar relative z-10"></div>
         </main>
+
+        <!-- Mobile Bottom Navbar -->
+        <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-4 inset-x-4 bg-white/95 backdrop-blur-xl border border-border shadow-[0_8px_30px_rgb(0,0,0,0.08)] rounded-2xl z-[60] px-2 py-2 flex items-center justify-around">
+            <button onclick="switchView('dashboard')" class="mobile-nav-btn flex flex-col items-center p-2 rounded-xl transition-all min-w-[64px] text-teal-600 bg-teal-50" data-view="dashboard">
+                <i class="ph-bold ph-squares-four text-xl mb-1"></i>
+                <span class="text-[9px] font-bold tracking-wider">Beranda</span>
+            </button>
+            <button onclick="switchView('input')" class="mobile-nav-btn flex flex-col items-center p-2 rounded-xl transition-all min-w-[64px] text-slate-400 hover:text-slate-600" data-view="input">
+                <i class="ph-bold ph-pencil-simple text-xl mb-1"></i>
+                <span class="text-[9px] font-bold tracking-wider">Input</span>
+            </button>
+            <button onclick="switchView('table')" class="mobile-nav-btn flex flex-col items-center p-2 rounded-xl transition-all min-w-[64px] text-slate-400 hover:text-slate-600" data-view="table">
+                <i class="ph-bold ph-table text-xl mb-1"></i>
+                <span class="text-[9px] font-bold tracking-wider">Matriks</span>
+            </button>
+            <button onclick="switchView('stats')" class="mobile-nav-btn flex flex-col items-center p-2 rounded-xl transition-all min-w-[64px] text-slate-400 hover:text-slate-600" data-view="stats">
+                <i class="ph-bold ph-chart-bar text-xl mb-1"></i>
+                <span class="text-[9px] font-bold tracking-wider">Statistik</span>
+            </button>
+        </nav>
     </div>
 
     <!-- MODAL SETTINGS -->
@@ -2268,10 +2288,20 @@
             document.querySelectorAll('nav .nav-btn').forEach(el => {
                 el.classList.remove('active');
             });
-            const activeEl = document.getElementById(`nav-${view}`);
-            if (activeEl) {
-                activeEl.classList.add('active');
-            }
+            const activeBtn = document.getElementById(`nav-${view}`);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            // Update mobile bottom nav
+            document.querySelectorAll('#mobile-bottom-nav .mobile-nav-btn').forEach(btn => {
+                if (btn.dataset.view === view) {
+                    btn.classList.add('text-teal-600', 'bg-teal-50');
+                    btn.classList.remove('text-slate-400', 'hover:text-slate-600');
+                } else {
+                    btn.classList.remove('text-teal-600', 'bg-teal-50');
+                    btn.classList.add('text-slate-400', 'hover:text-slate-600');
+                }
+            });
+
             window.renderActiveView();
         };
 

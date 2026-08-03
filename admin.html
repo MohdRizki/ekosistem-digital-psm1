@@ -987,7 +987,24 @@
                                 </button>
                             </div>
                         </div>
-                    </div></div></main></div></div> 
+                    </div></div></main>
+                    
+        <!-- Mobile Bottom Navbar -->
+        <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-4 inset-x-4 bg-white/95 backdrop-blur-xl border border-border shadow-[0_8px_30px_rgb(0,0,0,0.08)] rounded-2xl z-[60] px-2 py-2 flex items-center justify-around">
+            <button onclick="switchTab('dasbor', this)" class="mobile-nav-btn flex flex-col items-center p-2 rounded-xl transition-all min-w-[64px] text-primary bg-primary/10" data-tab="dasbor">
+                <i class="ph-bold ph-squares-four text-xl mb-1"></i>
+                <span class="text-[9px] font-bold tracking-wider">Dasbor</span>
+            </button>
+            <button onclick="switchTab('hub-web-sekolah', this)" class="mobile-nav-btn flex flex-col items-center p-2 rounded-xl transition-all min-w-[64px] text-slate-400 hover:text-slate-600" data-tab="hub-web-sekolah">
+                <i class="ph-bold ph-globe text-xl mb-1"></i>
+                <span class="text-[9px] font-bold tracking-wider">Web</span>
+            </button>
+            <button onclick="switchTab('hub-database', this)" class="mobile-nav-btn flex flex-col items-center p-2 rounded-xl transition-all min-w-[64px] text-slate-400 hover:text-slate-600" data-tab="hub-database">
+                <i class="ph-bold ph-users text-xl mb-1"></i>
+                <span class="text-[9px] font-bold tracking-wider">Data</span>
+            </button>
+        </nav>
+        </div></div> 
 
     <!-- ========================================== -->
     <!-- MODAL & DIALOG BOX                         -->
@@ -1224,6 +1241,17 @@
                     }
                 });
             }
+            
+            // Update mobile bottom nav
+            document.querySelectorAll('#mobile-bottom-nav .mobile-nav-btn').forEach(b => {
+                if(b.dataset.tab === parentTabId) {
+                    b.classList.add('text-primary', 'bg-primary/10');
+                    b.classList.remove('text-slate-400', 'hover:text-slate-600');
+                } else {
+                    b.classList.remove('text-primary', 'bg-primary/10');
+                    b.classList.add('text-slate-400', 'hover:text-slate-600');
+                }
+            });
         }
 
         function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
