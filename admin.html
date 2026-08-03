@@ -44,15 +44,11 @@
         </div>
 
         <!-- MOBILE HEADER TEXT & ILLUSTRATION -->
-        <div class="absolute top-6 left-0 right-0 z-20 flex flex-col items-center lg:hidden pointer-events-none px-6">
-            <img src="./assets/lari.png" alt="Ilustrasi" class="w-[110px] h-auto drop-shadow-xl animate-slideUp" onerror="this.style.display='none'">
-            <div class="mt-2 animate-slideUp drop-shadow-md" style="animation-delay: 0.1s;">
-                <svg width="100" height="24" viewBox="0 0 120 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g transform="translate(4, 2)">
-                        <path d="M0 0 H20 L12 24 H4 L8 10 H0 Z" fill="#DC2626" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/>
-                        <text x="24" y="20" font-family="'Poppins', sans-serif" font-weight="900" font-size="20" fill="#FFFFFF" stroke="#0F172A" stroke-width="4" stroke-linejoin="round" paint-order="stroke fill">Reezapps</text>
-                    </g>
-                </svg>
+        <div class="absolute top-5 left-0 right-0 z-20 flex flex-col items-center lg:hidden pointer-events-none px-6">
+            <img src="./assets/lari.png" alt="Ilustrasi" class="w-[100px] h-auto drop-shadow-xl animate-slideUp" onerror="this.style.display='none'">
+            <div class="mt-1 flex items-center justify-center gap-1.5 bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/30 animate-slideUp shadow-lg" style="animation-delay: 0.1s;">
+                <img src="./assets/reezapps-logo.png" class="h-4 w-auto drop-shadow-sm" alt="Reezapps" onerror="this.style.display='none'">
+                <span class="text-white text-[13px] tracking-wide" style="font-family: 'Poppins', sans-serif; font-weight: 800;">Reezapps</span>
             </div>
         </div>
 
@@ -103,20 +99,15 @@
                     </button>
                 </form>
                 
-                <div class="mt-6 pt-5 border-t border-slate-100 flex flex-col items-center justify-center gap-3">
-                    <div class="text-[10px] text-slate-400 font-semibold flex items-center gap-1.5">
-                        <i class="ph-bold ph-shield-check text-sm text-slate-300"></i> Akses khusus administrator.
-                    </div>
-                    <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-50/50 rounded-lg border border-slate-100/50 pointer-events-auto">
-                        <span class="text-[8px] text-slate-400 font-bold uppercase tracking-widest">Designed By</span>
-                        <svg width="65" height="15" viewBox="0 0 120 28" fill="none" xmlns="http://www.w3.org/2000/svg" class="opacity-90 hover:opacity-100 transition-opacity">
-                            <g transform="translate(4, 2)">
-                                <path d="M0 0 H20 L12 24 H4 L8 10 H0 Z" fill="#DC2626" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/>
-                                <text x="24" y="20" font-family="'Poppins', sans-serif" font-weight="900" font-size="20" fill="#FFFFFF" stroke="#0F172A" stroke-width="4" stroke-linejoin="round" paint-order="stroke fill">Reezapps</text>
-                            </g>
-                        </svg>
-                    </div>
+                <div class="mt-6 pt-5 border-t border-slate-100 text-[10px] text-slate-400 font-semibold flex items-center justify-center gap-1.5">
+                    <i class="ph-bold ph-shield-check text-sm text-slate-300"></i> Akses khusus administrator.
                 </div>
+            </div>
+            
+            <!-- MOBILE CREDIT (Outside Card) -->
+            <div class="mt-5 text-center lg:hidden relative z-40 w-full animate-slideUp" style="animation-delay: 0.15s">
+                <p class="text-[8px] font-bold text-slate-400 tracking-[0.2em] mb-0.5 uppercase">Developed By</p>
+                <p class="text-[9px] font-bold text-slate-600">reezapps &middot; Mohamad Rizki, S.Pd., Gr.</p>
             </div>
         </div>
 
