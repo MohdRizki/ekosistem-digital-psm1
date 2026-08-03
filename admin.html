@@ -1211,7 +1211,7 @@
             document.getElementById('sidebar-overlay').classList.toggle('hidden');
         }
 
-        function switchTab(tabId, btn) {
+        function switchTab(tabId, btn, isAuto = false) {
             document.querySelectorAll('.tab-content').forEach(t => {
                 t.classList.remove('active');
                 t.classList.add('hidden');
@@ -1245,7 +1245,7 @@
                     b.classList.remove('active');
                 });
                 activeBtn.classList.add('active');
-                if (window.innerWidth < 768) toggleSidebar();
+                if (window.innerWidth < 768 && !isAuto) toggleSidebar();
             } else {
                 // Highlight the corresponding sidebar nav matching parentTabId
                 document.querySelectorAll('.nav-btn').forEach(b => {
@@ -1310,7 +1310,7 @@
             // Activate first menu
             const firstNavBtn = document.querySelector('.nav-btn');
             if (firstNavBtn && window.switchTab) {
-                window.switchTab('dasbor', firstNavBtn);
+                window.switchTab('dasbor', firstNavBtn, true);
             }
         }
         function handleLogout() { 
