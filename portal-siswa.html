@@ -1126,7 +1126,13 @@
         onSnapshot(colRefSiswaInit, (snap) => {
             window._cachedSiswaList = [];
             snap.forEach(docSnap => {
-                window._cachedSiswaList.push({ id: docSnap.id, ...docSnap.data() });
+                const raw = docSnap.data() || {};
+                window._cachedSiswaList.push({
+                    id: docSnap.id,
+                    ...raw,
+                    nama: raw.nama ?? raw.nama_siswa ?? raw['Nama Siswa'] ?? '',
+                    kelas: raw.kelas ?? raw.Kelas ?? raw['Nama Kelas'] ?? ''
+                });
             });
             console.log('[LOGIN] Data siswa siap (onSnapshot):', window._cachedSiswaList.length);
             if (window._cachedSiswaList.length > 0) {
@@ -1143,7 +1149,13 @@
                 if (window._dbInstance && userData?.id) {
                     const freshSnap = await window._getDocInstance(window._docInstance(window._dbInstance, 'artifacts', 'sd-negeri-pasirmae-1', 'public', 'data', 'siswa', userData.id));
                     if (freshSnap.exists()) {
-                        userData = { id: freshSnap.id, ...freshSnap.data() };
+                        const freshRaw = freshSnap.data() || {};
+                        userData = {
+                            id: freshSnap.id,
+                            ...freshRaw,
+                            nama: freshRaw.nama ?? freshRaw.nama_siswa ?? freshRaw['Nama Siswa'] ?? '',
+                            kelas: freshRaw.kelas ?? freshRaw.Kelas ?? freshRaw['Nama Kelas'] ?? ''
+                        };
                         const saved = JSON.parse(localStorage.getItem('siswaSessionInfo') || '{}');
                         localStorage.setItem('siswaSessionInfo', JSON.stringify({ data: userData, expiresAt: saved.expiresAt || (Date.now() + 86400000) }));
                         // Sinkronkan identitas header setelah refresh.
@@ -1245,6 +1257,8 @@
                     const semesterLabel = nilaiMeta.semester || 'Belum disinkronkan';
                     const tahunAjaranLabel = nilaiMeta.tahun_ajaran || 'Belum disinkronkan';
                     const tipeAsesmenLabel = nilaiMeta.tipe_asesmen || 'Penilaian';
+                    const infoAsesmen = document.getElementById('info-asesmen');
+                    if (infoAsesmen) infoAsesmen.textContent = `${tipeAsesmenLabel} • Semester ${semesterLabel} • Tahun Ajaran ${tahunAjaranLabel}`;
                     const sinkronStatus = nilaiMeta.semester && nilaiMeta.tahun_ajaran
                         ? ''
                         : '<p class="text-[9px] text-amber-700 font-semibold mt-2">Nilai lama terdeteksi. Identitas semester/tahun ajaran akan tersinkron otomatis saat guru menyimpan nilai kembali.</p>';
@@ -1302,7 +1316,7 @@
                             <div class="flex justify-between items-start relative z-10">
                                 <div>
                                     <span class="text-[8px] md:text-[9px] font-bold text-textSecondary uppercase tracking-widest block mb-0.5">Nilai Akhir</span>
-                                    <h4 class="font-black text-textPrimary text-sm md:text-base leading-tight pr-6">${sub.nama}</h4>
+                                    <h4 class="font-black text-textPrimary text-sm md:text-base leading-tight pr-6">${labelSub}</h4>
                                 </div>
                             </div>
                             <div class="flex items-end gap-1.5 relative z-10 mt-3 md:mt-4">
@@ -1359,7 +1373,13 @@
                         new Promise((_, reject) => setTimeout(() => reject(new Error('Koneksi Firestore timeout/offline')), 3000))
                     ]);
                     snap.forEach(docSnap => {
-                        siswaList.push({ id: docSnap.id, ...docSnap.data() });
+                        const raw = docSnap.data() || {};
+                        siswaList.push({
+                            id: docSnap.id,
+                            ...raw,
+                            nama: raw.nama ?? raw.nama_siswa ?? raw['Nama Siswa'] ?? '',
+                            kelas: raw.kelas ?? raw.Kelas ?? raw['Nama Kelas'] ?? ''
+                        });
                     });
                 } catch (dbErr) {
                     // Fallback ke cache jika offline/timeout
