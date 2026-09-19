@@ -255,10 +255,10 @@
                               <i class="ph-bold ph-bell text-lg opacity-70"></i> Notifikasi <span class="absolute top-2.5 right-4 w-2 h-2 bg-teal-500 rounded-full"></span>
                           </button>
                           <div class="h-px bg-slate-100 my-1 mx-2"></div>
-                        <button onclick="if(window.showToast) window.showToast('Profil Siswa Aktif'); if(window.toggleProfileMenu) window.toggleProfileMenu();" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary hover:bg-slate-50 hover:text-primary rounded-xl transition-all duration-200 flex items-center gap-3">
+                        <button onclick="if(window.bukaProfilSiswa) window.bukaProfilSiswa(); if(window.toggleProfileMenu) window.toggleProfileMenu();" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary hover:bg-slate-50 hover:text-primary rounded-xl transition-all duration-200 flex items-center gap-3">
                             <i class="ph-bold ph-user-circle text-lg opacity-70"></i> Profil Saya
                         </button>
-                        <button onclick="if(window.showToast) window.showToast('Pengaturan Akun belum tersedia'); if(window.toggleProfileMenu) window.toggleProfileMenu();" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary hover:bg-slate-50 hover:text-primary rounded-xl transition-all duration-200 flex items-center gap-3">
+                        <button onclick="if(window.bukaPengaturanProfil) window.bukaPengaturanProfil(); if(window.toggleProfileMenu) window.toggleProfileMenu();" class="w-full text-left px-4 py-2.5 text-xs font-medium text-textPrimary hover:bg-slate-50 hover:text-primary rounded-xl transition-all duration-200 flex items-center gap-3">
                             <i class="ph-bold ph-gear text-lg opacity-70"></i> Pengaturan Akun
                         </button>
                       <div class="h-px bg-slate-100 my-1 mx-2"></div>
@@ -309,6 +309,24 @@
                                     <div>
                                         <p class="text-[8px] text-white/60 font-bold uppercase tracking-wider">Kelas</p>
                                         <p id="hero-kelas" class="text-[11px] font-bold leading-tight">-</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2.5 bg-white/10 rounded-xl px-3 py-2 border border-white/10 backdrop-blur-sm">
+                                    <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+                                        <i class="ph-fill ph-bookmarks-simple text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-[8px] text-white/60 font-bold uppercase tracking-wider">Semester</p>
+                                        <p id="hero-semester" class="text-[11px] font-bold leading-tight">-</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2.5 bg-white/10 rounded-xl px-3 py-2 border border-white/10 backdrop-blur-sm">
+                                    <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+                                        <i class="ph-fill ph-calendar text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-[8px] text-white/60 font-bold uppercase tracking-wider">Tahun Ajaran</p>
+                                        <p id="hero-tahun-ajaran" class="text-[11px] font-bold leading-tight">-</p>
                                     </div>
                                 </div>
                             </div>
@@ -422,6 +440,47 @@
         </nav>
     </div>
     
+    <!-- MODAL PROFIL SISWA -->
+    <div id="modal-profil-siswa" class="hidden fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-md rounded-[1.5rem] shadow-2xl overflow-hidden">
+            <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center">
+                <div>
+                    <p class="text-[9px] font-bold text-primary uppercase tracking-widest">Identitas Siswa</p>
+                    <h3 class="text-base font-black text-slate-800">Profil Saya</h3>
+                </div>
+                <button onclick="tutupProfilSiswa()" class="p-2 rounded-full hover:bg-slate-100"><i class="ph-bold ph-x"></i></button>
+            </div>
+            <div class="p-5 space-y-3">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-slate-50 rounded-xl p-3"><p class="text-[8px] uppercase font-bold text-slate-400">Nama</p><p id="profile-detail-nama" class="text-xs font-black text-slate-800 mt-1">-</p></div>
+                    <div class="bg-slate-50 rounded-xl p-3"><p class="text-[8px] uppercase font-bold text-slate-400">Kelas</p><p id="profile-detail-kelas" class="text-xs font-black text-slate-800 mt-1">-</p></div>
+                    <div class="bg-slate-50 rounded-xl p-3"><p class="text-[8px] uppercase font-bold text-slate-400">NISN / NIS</p><p id="profile-detail-nisn" class="text-xs font-black text-slate-800 mt-1">-</p></div>
+                    <div class="bg-slate-50 rounded-xl p-3"><p class="text-[8px] uppercase font-bold text-slate-400">Semester</p><p id="profile-detail-semester" class="text-xs font-black text-slate-800 mt-1">-</p></div>
+                </div>
+                <div class="bg-slate-50 rounded-xl p-3"><p class="text-[8px] uppercase font-bold text-slate-400">Tahun Ajaran</p><p id="profile-detail-ta" class="text-xs font-black text-slate-800 mt-1">-</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PENGATURAN PROFIL -->
+    <div id="modal-pengaturan-profil" class="hidden fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-md rounded-[1.5rem] shadow-2xl overflow-hidden">
+            <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center">
+                <div>
+                    <p class="text-[9px] font-bold text-primary uppercase tracking-widest">Pengaturan Akun</p>
+                    <h3 class="text-base font-black text-slate-800">Pengaturan Profil</h3>
+                </div>
+                <button onclick="tutupPengaturanProfil()" class="p-2 rounded-full hover:bg-slate-100"><i class="ph-bold ph-x"></i></button>
+            </div>
+            <div class="p-5 space-y-4">
+                <div><label class="block text-[9px] uppercase font-bold text-slate-400 mb-1.5">Nama Siswa</label><input id="setting-profile-nama" readonly class="w-full px-4 py-3 bg-slate-100 rounded-xl text-xs font-bold text-slate-600"></div>
+                <div><label class="block text-[9px] uppercase font-bold text-slate-400 mb-1.5">PIN Baru (maks. 6 karakter)</label><input id="setting-profile-pin" type="password" maxlength="6" placeholder="Kosongkan jika tidak diubah" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold tracking-[0.25em] focus:outline-none focus:border-primary"></div>
+                <p class="text-[9px] text-slate-400 font-medium leading-relaxed">Nama, kelas, NISN/NIS, semester, dan tahun ajaran mengikuti data sekolah. Hanya PIN akses yang dapat diubah dari sini.</p>
+                <button id="btn-save-profile" onclick="simpanPengaturanProfil()" class="w-full py-3 bg-primary text-white rounded-xl text-xs font-bold">Simpan Pengaturan</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Instruksi Remedial -->
     <div id="modal-remedial" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
         <div class="bg-white w-full max-w-sm rounded-[1.5rem] shadow-2xl overflow-hidden flex flex-col transform scale-95 transition-transform duration-300" id="modal-remedial-content">
@@ -941,6 +1000,77 @@
             if (heroSapaan) heroSapaan.innerText = teksSapaan;
         }
 
+        function tampilkanIdentitasSiswa(data) {
+            const meta = data?._nilai_meta || {};
+            const nama = data?.nama || data?.nama_siswa || '-';
+            const kelas = data?.kelas || '-';
+            const nis = data?.nisn || data?.nis || '-';
+            const semester = meta.semester || 'Belum disinkronkan';
+            const ta = meta.tahun_ajaran || 'Belum disinkronkan';
+
+            const set = (id, value) => { const el = document.getElementById(id); if (el) el.innerText = value; };
+            set('profil-nama', nama);
+            set('profil-kelas', kelas);
+            set('profil-nisn', `NISN: ${nis}`);
+            set('header-profile-name', nama);
+            set('header-profile-class', kelas);
+            set('hero-kelas', kelas);
+            set('hero-semester', semester);
+            set('hero-tahun-ajaran', ta);
+            set('profile-detail-nama', nama);
+            set('profile-detail-kelas', kelas);
+            set('profile-detail-nisn', nis);
+            set('profile-detail-semester', semester);
+            set('profile-detail-ta', ta);
+            const namaInput = document.getElementById('setting-profile-nama');
+            if (namaInput) namaInput.value = nama;
+        }
+
+        window.bukaProfilSiswa = () => {
+            const session = JSON.parse(localStorage.getItem('siswaSessionInfo') || '{}');
+            const data = session.data || {};
+            tampilkanIdentitasSiswa(data);
+            document.getElementById('modal-profil-siswa')?.classList.remove('hidden');
+        };
+        window.tutupProfilSiswa = () => document.getElementById('modal-profil-siswa')?.classList.add('hidden');
+
+        window.bukaPengaturanProfil = () => {
+            const session = JSON.parse(localStorage.getItem('siswaSessionInfo') || '{}');
+            const data = session.data || {};
+            tampilkanIdentitasSiswa(data);
+            const pin = document.getElementById('setting-profile-pin');
+            if (pin) pin.value = '';
+            document.getElementById('modal-pengaturan-profil')?.classList.remove('hidden');
+        };
+        window.tutupPengaturanProfil = () => document.getElementById('modal-pengaturan-profil')?.classList.add('hidden');
+
+        window.simpanPengaturanProfil = async () => {
+            const session = JSON.parse(localStorage.getItem('siswaSessionInfo') || '{}');
+            const data = session.data || {};
+            const pinEl = document.getElementById('setting-profile-pin');
+            const btn = document.getElementById('btn-save-profile');
+            const pin = (pinEl?.value || '').trim().toUpperCase();
+            if (!data.id || !window._dbInstance) return showToast('Sesi siswa tidak valid.', true);
+            if (pin && (pin.length < 4 || pin.length > 6)) return showToast('PIN harus 4–6 karakter.', true);
+            if (!pin) { window.tutupPengaturanProfil(); return showToast('Tidak ada perubahan PIN.'); }
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> Menyimpan...';
+                const ref = window._docInstance(window._dbInstance, 'artifacts', 'sd-negeri-pasirmae-1', 'public', 'data', 'siswa', data.id);
+                await window._setDocInstance(ref, { pin }, { merge: true });
+                data.pin = pin;
+                localStorage.setItem('siswaSessionInfo', JSON.stringify({ data, expiresAt: session.expiresAt || (Date.now() + 86400000) }));
+                window.tutupPengaturanProfil();
+                showToast('Pengaturan profil berhasil disimpan.');
+            } catch (e) {
+                console.error('[SISWA] Gagal menyimpan profil:', e);
+                showToast('Gagal menyimpan pengaturan profil.', true);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Simpan Pengaturan';
+            }
+        };
+
         function logoutSiswa() {
             localStorage.removeItem('siswaSessionInfo');
             location.reload();
@@ -1007,6 +1137,23 @@
         window.bukaModalRemedial = window.bukaModalRemedial;
 
         async function muatDataSiswa(userData) {
+            // Selalu ambil dokumen siswa terbaru agar nilai yang baru disimpan guru
+            // tidak tertahan oleh data sesi/localStorage yang lama.
+            try {
+                if (window._dbInstance && userData?.id) {
+                    const freshSnap = await window._getDocInstance(window._docInstance(window._dbInstance, 'artifacts', 'sd-negeri-pasirmae-1', 'public', 'data', 'siswa', userData.id));
+                    if (freshSnap.exists()) {
+                        userData = { id: freshSnap.id, ...freshSnap.data() };
+                        const saved = JSON.parse(localStorage.getItem('siswaSessionInfo') || '{}');
+                        localStorage.setItem('siswaSessionInfo', JSON.stringify({ data: userData, expiresAt: saved.expiresAt || (Date.now() + 86400000) }));
+                        // Sinkronkan identitas header setelah refresh.
+                        tampilkanIdentitasSiswa(userData);
+                    }
+                }
+            } catch (refreshErr) {
+                console.warn('[SISWA] Gagal refresh data siswa, memakai cache sesi:', refreshErr);
+            }
+
             const lmsContainer = document.getElementById('lms-container');
             const nilaiContainer = document.getElementById('nilai-container');
             
@@ -1080,18 +1227,43 @@
                 lmsContainer.innerHTML = htmlModul || '<div class="text-center text-textSecondary py-8">Belum ada modul tersedia.</div>';
 
                 // 2. Render Nilai
-                const setRef = doc(db, 'artifacts', 'sd-negeri-pasirmae-1', 'public', 'data', 'settings', 'global');
-                const setSnap = await getDoc(setRef);
-                const teacherSettings = setSnap.exists() ? setSnap.data() : null;
+                // Gunakan metadata yang ditulis oleh Portal Olah Nilai.
+                // Ini menghilangkan ketergantungan pada settings/global yang sebelumnya
+                // dapat berbeda dengan konfigurasi guru yang menyimpan nilai.
+                const nilaiMeta = userData._nilai_meta || {};
+                const legacySubjects = [
+                    {id:'pai',label:'PAIBP'},{id:'pancasila',label:'Pancasila'},{id:'ipas',label:'IPAS'},
+                    {id:'mtk',label:'Matematika'},{id:'bind',label:'B. Indonesia'},{id:'bing',label:'B. Inggris'},
+                    {id:'bsun',label:'B. Sunda'},{id:'pjok',label:'PJOK'},{id:'seni',label:'Seni Budaya'}
+                ];
+                const subjectsNilai = Array.isArray(nilaiMeta.subjects) && nilaiMeta.subjects.length
+                    ? nilaiMeta.subjects
+                    : legacySubjects.filter(s => Object.prototype.hasOwnProperty.call(userData, s.id));
 
                 let htmlNilai = '';
-                if (teacherSettings && teacherSettings.subjects) {
-                    teacherSettings.subjects.filter(s => String(s.kelas) === String(userData.kelas)).forEach(sub => {
-                        const subId = sub.nama.replace(/\s+/g, '_').toUpperCase();
+                if (subjectsNilai.length) {
+                    const semesterLabel = nilaiMeta.semester || 'Belum disinkronkan';
+                    const tahunAjaranLabel = nilaiMeta.tahun_ajaran || 'Belum disinkronkan';
+                    const tipeAsesmenLabel = nilaiMeta.tipe_asesmen || 'Penilaian';
+                    const sinkronStatus = nilaiMeta.semester && nilaiMeta.tahun_ajaran
+                        ? ''
+                        : '<p class="text-[9px] text-amber-700 font-semibold mt-2">Nilai lama terdeteksi. Identitas semester/tahun ajaran akan tersinkron otomatis saat guru menyimpan nilai kembali.</p>';
+                    htmlNilai += `
+                        <div class="sm:col-span-2 bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-1">
+                            <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
+                                <div><p class="text-[8px] uppercase tracking-widest font-bold text-blue-400">Identitas Penilaian</p><p class="text-xs font-black text-blue-800">${tipeAsesmenLabel}</p></div>
+                                <div><p class="text-[8px] uppercase tracking-widest font-bold text-blue-400">Semester</p><p class="text-xs font-black text-blue-800">${semesterLabel}</p></div>
+                                <div><p class="text-[8px] uppercase tracking-widest font-bold text-blue-400">Tahun Ajaran</p><p class="text-xs font-black text-blue-800">${tahunAjaranLabel}</p></div>
+                            </div>
+                            ${sinkronStatus}
+                        </div>`;
+                    subjectsNilai.forEach(sub => {
+                        const subId = sub.id;
+                        const labelSub = sub.label || sub.id;
                         const valRaw = userData[subId];
-                        const val = valRaw !== undefined && valRaw !== null ? parseFloat(valRaw) : null;
-                        const isBelumDiinput = val === null;
-                        const kktp = parseFloat(teacherSettings.kktp?.[subId] || teacherSettings.kktp_global || 75);
+                        const val = valRaw !== undefined && valRaw !== null && valRaw !== '' ? parseFloat(valRaw) : null;
+                        const isBelumDiinput = val === null || Number.isNaN(val);
+                        const kktp = parseFloat(sub.kktp || 75);
                         
                         let isRemedial = !isBelumDiinput && val < kktp;
                         let isRemedialTuntas = false;
@@ -1115,7 +1287,7 @@
                         let statusBadge = '<span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 text-textSecondary border border-slate-200 inline-flex items-center gap-1"><i class="ph-bold ph-minus-circle"></i> Belum Ada Nilai</span>';
                         if (!isBelumDiinput) {
                             if (isRemedial) {
-                                statusBadge = `<button onclick="window.bukaModalRemedial('${sub.nama}', ${val}, ${kktp}, false)" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-error/10 text-error border border-error/20 inline-flex items-center gap-1 hover:bg-error hover:text-white transition-all shadow-sm"><i class="ph-bold ph-warning-circle"></i> Remedial (Klik)</button>`;
+                                statusBadge = `<button onclick="window.bukaModalRemedial('${labelSub}', ${val}, ${kktp}, false)" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-error/10 text-error border border-error/20 inline-flex items-center gap-1 hover:bg-error hover:text-white transition-all shadow-sm"><i class="ph-bold ph-warning-circle"></i> Remedial (Klik)</button>`;
                             } else if (isRemedialTuntas) {
                                 statusBadge = `<span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-500/10 text-blue-600 border border-blue-500/20 inline-flex items-center gap-1"><i class="ph-bold ph-check-circle"></i> Remedial Tuntas</span>`;
                             } else if (isPengayaan) {
@@ -1260,11 +1432,7 @@
              document.getElementById('login-screen').classList.add('hidden');
              document.getElementById('app-screen').classList.remove('hidden');
              
-             document.getElementById('profil-nama').innerText = data.nama || data.nama_siswa;
-             if(document.getElementById('header-profile-name')) document.getElementById('header-profile-name').innerText = data.nama || data.nama_siswa;
-             document.getElementById('profil-kelas').innerText = data.kelas || 'Belum ada kelas';
-             if(document.getElementById('header-profile-class')) document.getElementById('header-profile-class').innerText = data.kelas || 'Belum ada kelas';
-             document.getElementById('profil-nisn').innerText = `NISN: ${data.nisn || data.nis || '-'}`;
+             tampilkanIdentitasSiswa(data);
              
              aturSapaan(data.nama || data.nama_siswa || '');
              
@@ -1300,5 +1468,4 @@
     </script>
 </body>
 </html>
-
 
