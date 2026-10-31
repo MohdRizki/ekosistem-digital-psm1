@@ -657,6 +657,7 @@
             showLoginForm();
             window.showToast("Anda telah keluar dari portal.");
         };
+        window.handleLogout = window.logout;
 
         // --- NOTIFICATION & MODALS ---
         window.showToast = (msg, type = 'success') => {

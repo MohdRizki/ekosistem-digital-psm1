@@ -1070,7 +1070,7 @@ window.toggleProfileMenu = function() {
                 <button onclick="document.getElementById('modal-profil-global').classList.add('hidden'); if(window.setView) window.setView('settings'); else if(window.openModal) window.openModal('settings'); else if(window.switchTab) window.switchTab('admin');" class="w-full py-3.5 bg-primary/10 hover:bg-primary/20 text-primary font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2">
                     <i class="ph-bold ph-gear text-base"></i> Pengaturan Akun & Profil
                 </button>
-                <button onclick="document.getElementById('modal-profil-global').classList.add('hidden'); if(window.handleLogout) window.handleLogout(); else if(window.keluarSesi) window.keluarSesi(); else window.location.href='index.html';" class="w-full py-3.5 bg-red-50 hover:bg-red-100   text-red-600  font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2">
+                <button onclick="document.getElementById('modal-profil-global').classList.add('hidden'); if(window.handleLogout) window.handleLogout(); else if(window.logout) window.logout(); else if(window.logoutSiswa) window.logoutSiswa(); else if(window.keluarSesi) window.keluarSesi(); else window.location.reload();" class="w-full py-3.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2">
                     <i class="ph-bold ph-sign-out text-base"></i> Keluar Sesi
                 </button>
             </div>

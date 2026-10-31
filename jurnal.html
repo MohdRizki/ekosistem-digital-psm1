@@ -48,7 +48,6 @@
         };
         
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'sd-negeri-pasirmae-1'; 
-        const hubUrl = "https://mohdrizki.github.io/";
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = initializeFirestore(app, { experimentalForceLongPolling: true });
@@ -504,10 +503,16 @@
         window.handleLogout = async () => {
             await window.stopScanner();
             localStorage.removeItem('jurnalSessionInfo');
-            window.appState.isAuthenticated = false; window.appState.teacherId = null; window.appState.selectedKelas = '';
-            window.renderApp(); setTimeout(() => { const pinInput = document.querySelector('input[name="pin"]'); if (pinInput) pinInput.value = ''; }, 100);
-            window.open(hubUrl, '_blank');
+            window.appState.isAuthenticated = false; 
+            window.appState.teacherId = null; 
+            window.appState.selectedKelas = '';
+            window.renderApp(); 
+            setTimeout(() => { 
+                const pinInput = document.querySelector('input[name="pin"]'); 
+                if (pinInput) pinInput.value = ''; 
+            }, 100);
         };
+        window.logout = window.handleLogout;
 
         // --- 6. DATA ACTIONS ---
         const getColRef = (col) => collection(db, 'artifacts', appId, 'users', window.appState.teacherId, col);

@@ -1328,6 +1328,8 @@
             localStorage.removeItem('adminSessionInfo');
             location.reload(); 
         }
+        window.handleLogout = handleLogout;
+        window.logout = handleLogout;
         function updateAdminCredentials(e) {
             e.preventDefault();
             localStorage.setItem('adminUsername', document.getElementById('admin-new-user').value);
