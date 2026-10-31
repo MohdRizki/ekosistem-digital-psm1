@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hub Aplikasi Sekolah | SDN Pasirmae 1</title>
+  <meta name="description" content="Portal layanan digital terpadu SDN Pasirmae 1." />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="manifest" href="manifest-hub.json" />
+  
+  <!-- Retro Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    /* ═══════════════════════════════════════════════════════
+       SOFT RETRO NEO-BRUTALISM 2.0 — DESIGN SYSTEM
+       ═══════════════════════════════════════════════════════ */
+    :root {
+      /* ── Base Colors ── */
+      --color-retro-bg: #E0DCD3; 
+      --color-retro-dark: #2D2A26;
+      --color-retro-white: #FFFFFF;
+      --color-retro-grey: #F0EBE1;
+
+      /* ── Accent Colors ── */
+      --color-retro-yellow: #FFD56B;
+      --color-retro-blue: #B8CCE2;
+      --color-retro-pink: #FFBCB0;
+      --color-retro-mint: #B5D8B0;
+
+      /* ── Extended Accent Colors ── */
+      --color-retro-lime: #F1FF5E;
+      --color-retro-hotpink: #FF8FA3;
+      --color-retro-sky: #89E7FF;
+      --color-retro-lavender: #C9B6FF;
+
+      /* ── Typography ── */
+      --font-heading: "Space Grotesk", sans-serif;
+      --font-body: "DM Sans", sans-serif;
+    }
+
+    body {
+      background-color: var(--color-retro-bg);
+      color: var(--color-retro-dark);
+      margin: 0;
+      font-family: var(--font-body);
+      font-size: 18px;
+      position: relative;
+      /* zoom: 0.9; Removed for better mobile scaling, we will rely on responsive utilities */
+      /* Neo-brutalism Grid Pattern */
+      background-image: linear-gradient(rgba(45, 42, 38, 0.15) 2px, transparent 2px),
+                        linear-gradient(90deg, rgba(45, 42, 38, 0.15) 2px, transparent 2px);
+      background-size: 40px 40px;
+      background-position: center top;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      overflow-y: scroll;
+    }
+
+    h1, h2, h3, h4, h5, h6, .font-heading {
+      font-family: var(--font-heading);
+    }
+
+    ::selection {
+      background-color: var(--color-retro-yellow);
+      color: var(--color-retro-dark);
+    }
+
+    /* ELEVATION / SHADOW SYSTEM */
+    .shadow-lvl-1 { box-shadow: 2px 2px 0px var(--color-retro-dark); }
+    .shadow-lvl-2 { box-shadow: 4px 4px 0px var(--color-retro-dark); }
+    .shadow-lvl-3 { box-shadow: 8px 8px 0px var(--color-retro-dark); }
+    .shadow-lvl-4 { box-shadow: 12px 12px 0px var(--color-retro-dark); }
+
+    /* BORDER SYSTEM */
+    .retro-border { border: 3px solid var(--color-retro-dark); }
+    .retro-border-thin { border: 1.5px solid var(--color-retro-dark); }
+    .retro-border-thick { border: 4px solid var(--color-retro-dark); }
+
+    /* CARD SYSTEM */
+    .retro-card {
+      background-color: var(--color-retro-white);
+      border: 3px solid var(--color-retro-dark);
+      border-radius: 0.75rem;
+      box-shadow: 4px 4px 0px var(--color-retro-dark);
+      overflow: hidden;
+      position: relative;
+      transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
+    }
+    .retro-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 6px 6px 0px var(--color-retro-dark);
+    }
+
+    .retro-card-feature {
+      background-color: var(--color-retro-white);
+      border: 3px solid var(--color-retro-dark);
+      border-radius: 0.75rem;
+      box-shadow: 5px 5px 0px var(--color-retro-dark);
+      overflow: hidden;
+      position: relative;
+      transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
+    }
+    .retro-card-feature:hover {
+      transform: translateY(-4px);
+      box-shadow: 7px 7px 0px var(--color-retro-dark);
+    }
+    .retro-card-feature::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 6px;
+      background-color: var(--color-retro-yellow);
+      z-index: 1;
+      border-bottom: 3px solid var(--color-retro-dark);
+    }
+
+    /* BUTTON SYSTEM */
+    .btn-primary {
+      background-color: var(--color-retro-yellow);
+      border: 3px solid var(--color-retro-dark);
+      box-shadow: 4px 4px 0px var(--color-retro-dark);
+      cursor: pointer;
+      transition: all 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--color-retro-dark);
+    }
+    .btn-primary:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 7px 7px 0px var(--color-retro-dark);
+    }
+    .btn-primary:active {
+      transform: translate(4px, 4px);
+      box-shadow: 0 0 0 var(--color-retro-dark);
+    }
+
+    .btn-secondary {
+      background-color: var(--color-retro-white);
+      border: 3px solid var(--color-retro-dark);
+      box-shadow: 3px 3px 0px var(--color-retro-dark);
+      cursor: pointer;
+      transition: all 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--color-retro-dark);
+    }
+    .btn-secondary:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px var(--color-retro-dark);
+      background-color: var(--color-retro-grey);
+    }
+
+    /* PILLS / BADGES */
+    .retro-pill {
+      background-color: var(--color-retro-white);
+      border: 3px solid var(--color-retro-dark);
+      border-radius: 9999px;
+      box-shadow: 2px 2px 0px var(--color-retro-dark);
+      transition: all 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--color-retro-dark);
+    }
+    .retro-pill:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--color-retro-dark);
+      background-color: var(--color-retro-grey);
+    }
+    .retro-pill.active {
+      background-color: var(--color-retro-yellow);
+      box-shadow: 1px 1px 0px var(--color-retro-dark);
+      transform: translate(1px, 1px);
+    }
+
+    /* STICKER STYLE */
+    .sticker {
+      background-color: var(--color-retro-white);
+      border: 3px solid var(--color-retro-dark);
+      border-radius: 1rem;
+      box-shadow: 3px 3px 0px var(--color-retro-dark);
+      padding: 0.5rem 0.75rem;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      white-space: nowrap;
+      color: var(--color-retro-dark);
+    }
+
+    /* SOLID COLORS FOR ELEMENTS */
+    .gradient-yellow-lime { background-color: var(--color-retro-yellow); }
+    .gradient-pink-yellow { background-color: var(--color-retro-pink); }
+    .gradient-blue-mint { background-color: var(--color-retro-blue); }
+    .gradient-lavender-pink { background-color: var(--color-retro-lavender); }
+    .gradient-sky-mint { background-color: var(--color-retro-sky); }
+    .gradient-mint { background-color: var(--color-retro-mint); }
+
+    /* BACKGROUND TEXTURES */
+    .bg-noise::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(224,220,211,0.4) 0%, rgba(224,220,211,0.2) 50%, rgba(224,220,211,0.5) 100%);
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    /* CUSTOM INPUT */
+    .search-input {
+      width: 100%;
+      border: 3px solid var(--color-retro-dark);
+      background: var(--color-retro-white);
+      border-radius: 0.75rem;
+      padding: 12px 16px 12px 42px;
+      color: var(--color-retro-dark);
+      font-size: 16px;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      box-shadow: 4px 4px 0px var(--color-retro-dark);
+      transition: all 0.2s ease;
+    }
+    .search-input:focus {
+      outline: none;
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--color-retro-dark);
+      background-color: #fffaf0;
+    }
+
+    /* RETRO WINDOW */
+    .retro-window {
+      background-color: var(--color-retro-white);
+      border: 3px solid var(--color-retro-dark);
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 6px 6px 0px var(--color-retro-dark);
+    }
+    .retro-window-titlebar {
+      background-color: var(--color-retro-dark);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .retro-window-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--color-retro-dark);
+    }
+    .dot-1 { background-color: var(--color-retro-pink); }
+    .dot-2 { background-color: var(--color-retro-yellow); }
+    .dot-3 { background-color: var(--color-retro-mint); }
+
+    /* ANIMATIONS */
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0) rotate(-4deg); }
+      50% { transform: translateY(-10px) rotate(-2deg); }
+    }
+    .float-anim { animation: floaty 4s ease-in-out infinite; }
+
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+    .wiggle-anim { animation: wiggle 3s ease-in-out infinite; }
+  </style>
+</head>
+<body class="bg-noise">
+
+  <div class="bg-overlay"></div>
+
+  <!-- Navbar -->
+  <div class="max-w-[1240px] mx-auto px-4 sm:px-6 pt-6 relative z-50">
+    <header class="retro-window">
+      <div class="retro-window-titlebar flex justify-between">
+        <div class="flex gap-2">
+          <div class="retro-window-dot dot-1"></div>
+          <div class="retro-window-dot dot-2"></div>
+          <div class="retro-window-dot dot-3"></div>
+        </div>
+        <div class="text-[10px] text-white font-heading font-bold uppercase tracking-widest">
+          SDN_PASIRMAE_OS_v2.0
+        </div>
+      </div>
+      <div class="px-6 py-4 flex items-center justify-between bg-retro-grey">
+        <div class="flex items-center gap-4">
+          <div class="flex h-12 w-12 items-center justify-center rounded-lg retro-border gradient-blue-mint shadow-lvl-1 font-heading font-black text-xl">
+            SP
+          </div>
+          <div>
+            <h1 class="text-xl font-heading font-bold text-slate-900 leading-none mb-1">SDN Pasirmae 1</h1>
+            <p class="text-sm font-bold text-slate-600">Portal Layanan Digital</p>
+          </div>
+        </div>
+
+        <nav class="hidden md:flex items-center gap-4">
+          <a href="index.html" class="font-heading font-bold text-slate-800 hover:underline decoration-2 underline-offset-4">Beranda</a>
+          <a href="admin.html" target="_blank" class="font-heading font-bold text-slate-800 hover:underline decoration-2 underline-offset-4">Admin</a>
+          <a href="portal-siswa.html" target="_blank" class="btn-primary px-6 py-2.5 rounded-lg text-sm">
+            Portal Siswa
+          </a>
+        </nav>
+      </div>
+    </header>
+  </div>
+
+  <main class="max-w-[1240px] mx-auto px-4 sm:px-6 py-16">
+    <!-- Hero Section -->
+    <section class="mb-24 grid lg:grid-cols-[1.1fr_0.9fr] gap-16 items-center">
+      <div class="relative">
+        <!-- Floating Stickers -->
+        <div class="absolute -top-10 -left-6 sticker gradient-pink-yellow wiggle-anim z-10 hidden sm:flex">
+          ⭐ Akses 24/7
+        </div>
+        <div class="absolute top-32 -right-8 sticker gradient-mint float-anim z-10 hidden sm:flex">
+          🚀 Sistem Terpadu
+        </div>
+
+        <div class="sticker gradient-sky-mint mb-8">
+          <span class="w-2.5 h-2.5 rounded-full bg-slate-900 animate-pulse retro-border-thin"></span>
+          Semua Sistem Beroperasi Normal
+        </div>
+
+        <h2 class="text-5xl sm:text-6xl font-heading font-extrabold leading-[1.1] text-slate-900 mb-8 uppercase">
+          Pusat <br>
+          <span class="gradient-yellow-lime px-2 retro-border inline-block shadow-lvl-1 my-2">Informasi &</span><br>
+          Layanan
+        </h2>
+
+        <p class="text-xl text-slate-700 font-medium mb-10 max-w-xl leading-relaxed">
+          Akses cepat ke seluruh sistem informasi sekolah untuk guru, siswa, dan staf administrasi dalam satu platform bergaya retro yang asyik!
+        </p>
+
+        <div class="flex flex-wrap gap-4">
+          <a href="#aplikasi" class="btn-primary px-8 py-3.5 rounded-xl text-base">
+            Mulai Eksplorasi
+          </a>
+          <a href="admin.html" target="_blank" class="btn-secondary px-8 py-3.5 rounded-xl text-base">
+            Login Admin
+          </a>
+        </div>
+      </div>
+
+      <!-- Hero Graphic / Widget -->
+      <div class="relative hidden lg:block">
+        <div class="retro-card-feature p-8 bg-noise">
+          <h3 class="font-heading font-bold text-2xl mb-8 flex items-center justify-between border-b-[3px] border-slate-900 pb-4">
+            Aktivitas Sistem 
+            <span class="sticker gradient-pink-yellow text-xs shadow-none translate-y-0">LIVE</span>
+          </h3>
+          
+          <div class="space-y-6">
+            <div class="retro-card p-4 !shadow-lvl-1 !translate-y-0 gradient-blue-mint">
+              <div class="flex justify-between font-heading font-bold text-sm mb-3">
+                <span>Pembaruan Data Rapor</span>
+                <span>85%</span>
+              </div>
+              <div class="w-full h-4 bg-white retro-border rounded-full overflow-hidden">
+                <div class="w-[85%] h-full bg-slate-900 border-r-[3px] border-slate-900"></div>
+              </div>
+            </div>
+
+            <div class="retro-card p-4 !shadow-lvl-1 !translate-y-0 gradient-lavender-pink">
+              <div class="flex justify-between font-heading font-bold text-sm mb-3">
+                <span>Kehadiran Guru (Hari ini)</span>
+                <span>100%</span>
+              </div>
+              <div class="w-full h-4 bg-white retro-border rounded-full overflow-hidden">
+                <div class="w-full h-full gradient-yellow-lime border-r-[3px] border-slate-900"></div>
+              </div>
+            </div>
+            
+            <div class="pt-4 flex items-center gap-2">
+               <div class="w-3 h-3 bg-slate-900 rounded-full"></div>
+               <span class="text-sm font-bold text-slate-700">Sync Terakhir: 07:30 WIB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Aplikasi Section -->
+    <section id="aplikasi" class="scroll-mt-28">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+        <div>
+          <div class="sticker bg-white mb-4">🖥️ Direktori</div>
+          <h3 class="text-4xl font-heading font-bold text-slate-900 uppercase">Daftar Aplikasi</h3>
+        </div>
+
+        <div class="relative w-full md:w-96">
+          <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-900" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <input id="searchInput" type="text" placeholder="Cari modul / aplikasi..." class="search-input" />
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-3 mb-12" id="filterBar">
+        <button class="retro-pill active px-5 py-2.5" data-filter="Semua">Semua Modul</button>
+        <button class="retro-pill px-5 py-2.5" data-filter="Admin">Admin</button>
+        <button class="retro-pill px-5 py-2.5" data-filter="Guru">Guru</button>
+        <button class="retro-pill px-5 py-2.5" data-filter="Siswa">Siswa</button>
+        <button class="retro-pill px-5 py-2.5" data-filter="Umum">Umum</button>
+      </div>
+
+      <div id="appGrid" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3"></div>
+    </section>
+  </main>
+
+  <script>
+    const apps = [
+      {
+        name: 'Portal Admin',
+        url: 'admin.html',
+        description: 'Pusat pengelolaan data master siswa, akun pengguna, dan administrasi sekolah.',
+        category: 'Admin',
+        icon: 'PA',
+        theme: 'gradient-sky-mint',
+        keywords: 'admin siswa akun sekolah dashboard pengelolaan'
+      },
+      {
+        name: 'Sistem Penilaian',
+        url: 'olah-nilai.html',
+        description: 'Modul pengisian nilai harian, ujian, dan pencetakan e-Rapor kurikulum berjalan.',
+        category: 'Guru',
+        icon: 'SN',
+        theme: 'gradient-pink-yellow',
+        keywords: 'nilai guru rapor matematika mapel laporan'
+      },
+      {
+        name: 'Jurnal Mengajar',
+        url: 'jurnal.html',
+        description: 'Pencatatan agenda pembelajaran harian dan pemantauan absensi siswa di kelas.',
+        category: 'Guru',
+        icon: 'JM',
+        theme: 'gradient-yellow-lime',
+        keywords: 'jurnal guru mengajar absensi harian belajar'
+      },
+      {
+        name: 'Portal Siswa',
+        url: 'portal-siswa.html',
+        description: 'Akses informasi akademik siswa, rekap nilai, dan jadwal mata pelajaran.',
+        category: 'Siswa',
+        icon: 'PS',
+        theme: 'gradient-lavender-pink',
+        keywords: 'siswa portal belajar nilai rapor akses mandiri'
+      },
+      {
+        name: 'Website Sekolah',
+        url: 'index.html',
+        description: 'Halaman profil utama, galeri kegiatan, dan pusat informasi publik SDN Pasirmae 1.',
+        category: 'Umum',
+        icon: 'WS',
+        theme: 'gradient-blue-mint',
+        keywords: 'beranda sekolah profil berita prestasi guru mading'
+      }
+    ];
+
+    const appGrid = document.getElementById('appGrid');
+    const searchInput = document.getElementById('searchInput');
+    const filterButtons = document.querySelectorAll('.retro-pill');
+    let activeFilter = 'Semua';
+
+    function renderApps() {
+      const query = searchInput.value.trim().toLowerCase();
+      const results = apps.filter(app => {
+        const matchesFilter = activeFilter === 'Semua' || app.category === activeFilter;
+        const haystack = `${app.name} ${app.description} ${app.category} ${app.keywords}`.toLowerCase();
+        const matchesQuery = !query || haystack.includes(query);
+        return matchesFilter && matchesQuery;
+      });
+
+      if (!results.length) {
+        appGrid.innerHTML = `
+          <div class="col-span-full py-16 text-center retro-card bg-retro-grey">
+            <h4 class="text-2xl font-heading font-bold text-slate-900 mb-2">Aplikasi tidak ditemukan</h4>
+            <p class="text-slate-700 font-medium">Silakan sesuaikan kata kunci pencarian Anda.</p>
+          </div>
+        `;
+        return;
+      }
+
+      appGrid.innerHTML = results.map(app => `
+        <article class="retro-card flex flex-col p-6 group">
+          <div class="flex items-start justify-between mb-6">
+            <div class="w-14 h-14 rounded-xl retro-border flex items-center justify-center font-heading font-black text-xl shadow-lvl-1 ${app.theme} group-hover:scale-110 transition-transform duration-300">
+              ${app.icon}
+            </div>
+            <span class="sticker shadow-none translate-y-0 bg-retro-grey border-2">
+              ${app.category}
+            </span>
+          </div>
+
+          <h4 class="text-2xl font-heading font-bold text-slate-900 mb-3">${app.name}</h4>
+          <p class="text-slate-700 font-medium leading-relaxed mb-8 flex-grow">${app.description}</p>
+
+          <a href="${app.url}" target="_blank" class="btn-primary w-full text-center py-3 rounded-lg text-sm group-hover:bg-slate-900 group-hover:text-white">
+            Buka Layanan &rarr;
+          </a>
+        </article>
+      `).join('');
+    }
+
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        activeFilter = button.dataset.filter;
+        filterButtons.forEach(btn => {
+          const active = btn === button;
+          btn.classList.toggle('active', active);
+        });
+        renderApps();
+      });
+    });
+
+    searchInput.addEventListener('input', renderApps);
+    renderApps();
+  </script>
+</body>
+</html>
