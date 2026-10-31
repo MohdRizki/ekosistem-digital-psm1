@@ -1,0 +1,25 @@
+# Dependencies & builds
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Temporary, scratch & backup files
+temp*.html
+*.tmp
+*.bak
+*.orig
+*.zip
+*.tar.gz
+scratch*.py
+hierarchy.txt
+.agents/

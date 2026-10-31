@@ -593,7 +593,7 @@
                             </a>
                             
                             <!-- WEB 2: PORTAL SISWA -->
-                            <a href="dashboard-siswa.html" target="_blank" class="flex items-center gap-4 group cursor-pointer hover:bg-slate-50/50 p-1 -m-1 rounded-xl transition-colors">
+                            <a href="portal-siswa.html" target="_blank" class="flex items-center gap-4 group cursor-pointer hover:bg-slate-50/50 p-1 -m-1 rounded-xl transition-colors">
                                 <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center shrink-0 group-hover:bg-blue-500/10 transition-colors">
                                     <i class="ph-fill ph-student text-textSecondary group-hover:text-blue-500 text-2xl transition-colors"></i>
                                 </div>
@@ -978,7 +978,7 @@
                             </div>
                         </div>
                         <div class="overflow-x-auto h-[450px] overflow-y-auto custom-scrollbar border border-border rounded-2xl">
-                            <table class="w-full text-left border-collapse relative min-w-[500px]">
+                            <table class="w-full text-left border-collapse relative min-w-[650px]">
                                 <thead class="sticky top-0 bg-surface/95 backdrop-blur z-10 border-b border-border shadow-sm">
                                     <tr class="text-xs uppercase text-textSecondary font-bold tracking-wider">
                                         <th class="py-3 px-4 w-[40%]">Nama Siswa</th>
@@ -986,6 +986,7 @@
                                         <th class="py-3 px-4 w-[10%] text-center">JK</th>
                                         <th class="py-3 px-4 w-[15%]">Kelas</th>
                                         <th class="py-3 px-4 w-[15%]">PIN Akses</th>
+                                        <th class="py-3 px-4 w-[15%] text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tabel-siswa-body" class="divide-y divide-border/30"></tbody>
@@ -1964,7 +1965,7 @@
                         return (a.nama || '').localeCompare(b.nama || '');
                     });
 
-                document.getElementById('tabel-siswa-body').innerHTML = filtered.map(d => `<tr class="text-xs cursor-pointer hover:bg-slate-50  transition-colors border-b border-border/20" onclick="window.bukaEditSiswa('${d.id}')"><td class="py-3 px-4 font-semibold text-textPrimary">${d.nama}</td><td class="py-3 px-4 text-textSecondary font-medium">${d.nisn||d.nis||'-'}</td><td class="py-3 px-4 text-center font-bold text-textSecondary">${d.jk||'-'}</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-500/10 text-red-600 ">${d.kelas||'-'}</span></td><td class="py-3 px-4 font-mono font-bold text-textSecondary"><div class="flex items-center gap-1.5"><span>${d.pin||'-'}</span><button type="button" onclick="event.stopPropagation(); window.salinTeks('${d.pin}')" class="text-textSecondary hover:text-red-600 p-0.5 rounded transition-colors"><i class="ph-bold ph-copy text-xs"></i></button></div></td></tr>`).join('');
+                document.getElementById('tabel-siswa-body').innerHTML = filtered.map(d => `<tr class="text-xs cursor-pointer hover:bg-slate-50 transition-colors border-b border-border/20" onclick="window.bukaEditSiswa('${d.id}')"><td class="py-3 px-4 font-semibold text-textPrimary">${d.nama}</td><td class="py-3 px-4 text-textSecondary font-medium">${d.nisn||d.nis||'-'}</td><td class="py-3 px-4 text-center font-bold text-textSecondary">${d.jk||'-'}</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-500/10 text-red-600 ">${d.kelas||'-'}</span></td><td class="py-3 px-4 font-mono font-bold text-textSecondary"><div class="flex items-center gap-1.5"><span>${d.pin||'-'}</span><button type="button" onclick="event.stopPropagation(); window.salinTeks('${d.pin}')" class="text-textSecondary hover:text-red-600 p-0.5 rounded transition-colors" title="Salin PIN"><i class="ph-bold ph-copy text-xs"></i></button></div></td><td class="py-3 px-4"><div class="flex items-center justify-center gap-1.5"><button type="button" onclick="event.stopPropagation(); window.bukaEditSiswa('${d.id}')" title="Edit Data Siswa" class="p-2 rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors"><i class="ph-bold ph-pencil-simple text-sm"></i></button><button type="button" onclick="event.stopPropagation(); window.hapusData('siswa','${d.id}')" title="Hapus Data Siswa" class="p-2 rounded-lg text-red-600 bg-red-50 hover:bg-red-100 transition-colors"><i class="ph-bold ph-trash text-sm"></i></button></div></td></tr>`).join('');
             };
             
             window.generatePinFromName = (nama) => {
@@ -2121,7 +2122,8 @@
             });
 
             window.bukaEditSiswa = (id) => {
-                const d = window.appState.siswa.find(s => s.id === id);
+                const d = window.dataSiswaLokal.find(s => s.id === id) || (window.appState && window.appState.siswa ? window.appState.siswa.find(s => s.id === id) : null);
+                if (!d) return showToast('Data siswa tidak ditemukan.', true);
                 document.getElementById('edit-siswa-id').value = d.id; document.getElementById('edit-siswa-nama').value = d.nama;
                 document.getElementById('edit-siswa-nis').value = d.nis || ''; document.getElementById('edit-siswa-nisn').value = d.nisn || ''; 
                 document.getElementById('edit-siswa-tempat').value = d.tempatLahir || ''; document.getElementById('edit-siswa-tgl').value = d.tanggalLahir || ''; 
@@ -2132,8 +2134,12 @@
 
             document.getElementById('form-edit-siswa').addEventListener('submit', async (e) => {
                 e.preventDefault(); const id = document.getElementById('edit-siswa-id').value;
-                await updateDoc(getDocRef('siswa', id), { nama: document.getElementById('edit-siswa-nama').value, nis: document.getElementById('edit-siswa-nis').value, nisn: document.getElementById('edit-siswa-nisn').value, tempatLahir: document.getElementById('edit-siswa-tempat').value, tanggalLahir: document.getElementById('edit-siswa-tgl').value, jk: document.getElementById('edit-siswa-jk').value, kelas: document.getElementById('edit-siswa-kelas').value, pin: document.getElementById('edit-siswa-pin').value });
-                toggleModal('modal-edit-siswa'); showToast('Data siswa diperbarui!');
+                try {
+                    await updateDoc(getDocRef('siswa', id), { nama: document.getElementById('edit-siswa-nama').value, nis: document.getElementById('edit-siswa-nis').value, nisn: document.getElementById('edit-siswa-nisn').value, tempatLahir: document.getElementById('edit-siswa-tempat').value, tanggalLahir: document.getElementById('edit-siswa-tgl').value, jk: document.getElementById('edit-siswa-jk').value, kelas: document.getElementById('edit-siswa-kelas').value, pin: document.getElementById('edit-siswa-pin').value });
+                    toggleModal('modal-edit-siswa'); showToast('Data siswa diperbarui!');
+                } catch (error) {
+                    showToast('Gagal memperbarui data siswa!', true);
+                }
             });
             window.hapusSiswaLangsung = () => { toggleModal('modal-edit-siswa'); window.hapusData('siswa', document.getElementById('edit-siswa-id').value); };
 

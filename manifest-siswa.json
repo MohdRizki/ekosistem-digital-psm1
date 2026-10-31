@@ -2,7 +2,7 @@
   "name": "Portal Siswa - SDN Pasirmae 1",
   "short_name": "Portal Siswa",
   "description": "Portal Informasi & Akademik Siswa SDN Pasirmae 1",
-  "start_url": "/dashboard-siswa.html",
+  "start_url": "/portal-siswa.html",
   "display": "standalone",
   "background_color": "#FAFAFA",
   "theme_color": "#9333ea",
