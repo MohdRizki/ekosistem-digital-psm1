@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Showcase: Ekosistem Digital Sekolah & ModGen AI</title>
+    <meta name="description" content="Simulasi interaktif portofolio ekosistem aplikasi digital sekolah dan kreator perangkat ajar AI oleh Mohamad Rizki, S.Pd., Gr.">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons CDN -->
+    <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        heading: ['"Space Grotesk"', 'sans-serif'],
+                    },
+                    colors: {
+                        brandNavy: '#0F172A',
+                        brandBlue: '#2563EB',
+                        brandCyan: '#06B6D4',
+                        brandOrange: '#F97316',
+                        brandEmerald: '#10B981',
+                        surfaceBg: '#F8FAFC'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Smooth scrolling & custom scrollbar */
+        html { scroll-behavior: smooth; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .glass-header {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .tab-btn.active {
+            background: #2563EB;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .tab-btn:not(.active) {
+            background: #ffffff;
+            color: #475569;
+        }
+        .tab-btn:not(.active):hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .view-pane { display: none; }
+        .view-pane.active { display: block; animation: fadeIn 0.3s ease-out forwards; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Paper sheet look for ModGen preview */
+        .paper-shadow {
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.06);
+        }
+    </style>
+</head>
+<body class="bg-surfaceBg text-slate-800 font-sans min-h-full flex flex-col antialiased">
+
+    <!-- ======================================================== -->
+    <!-- TOP NAVIGATION BAR (PORTFOLIO SHOWCASE HEADER)           -->
+    <!-- ======================================================== -->
+    <header class="glass-header text-white sticky top-0 z-50 border-b border-white/10 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+            <!-- Brand / Creator Info -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white font-black text-xl shadow-md">
+                    <i class="ph-bold ph-graduation-cap"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-heading font-bold text-base tracking-tight">Ekosistem Sekolah & AI</span>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                            Demo Mode
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-400">Karya: <strong class="text-slate-200">Mohamad Rizki, S.Pd., Gr.</strong></p>
+                </div>
+            </div>
+
+            <!-- Context Info Badge -->
+            <div class="hidden md:flex items-center gap-2 text-xs text-slate-300 bg-white/5 border border-white/10 rounded-full px-4 py-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Data dummy in-memory • Tanpa login • Bebas dicoba</span>
+            </div>
+
+            <!-- External Links -->
+            <div class="flex items-center gap-2">
+                <a href="hub.html" class="px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold text-white transition flex items-center gap-1.5">
+                    <i class="ph-bold ph-grid-four"></i>
+                    <span>Hub Asli</span>
+                </a>
+                <a href="https://github.com/MohdRizki/ekosistem-digital-psm1" target="_blank" class="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white transition flex items-center gap-1.5 shadow-md shadow-blue-600/30">
+                    <i class="ph-bold ph-github-logo text-sm"></i>
+                    <span>Source Code</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- APP SELECTOR TABS -->
+        <div class="bg-slate-900/90 border-t border-white/5 px-4 sm:px-6 py-2.5 overflow-x-auto">
+            <div class="max-w-7xl mx-auto flex items-center gap-2 min-w-max">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-2 hidden sm:inline">Pilih Modul:</span>
+                
+                <button onclick="switchDemoApp('jurnal')" id="tab-jurnal" class="tab-btn active px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
+                    <i class="ph-bold ph-book-open text-sm"></i>
+                    <span>1. Jurnal Mengajar (SIJURU)</span>
+                </button>
+                <button onclick="switchDemoApp('nilai')" id="tab-nilai" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
+                    <i class="ph-bold ph-chart-bar text-sm"></i>
+                    <span>2. Sistem Nilai & e-Rapor</span>
+                </button>
+                <button onclick="switchDemoApp('siswa')" id="tab-siswa" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
+                    <i class="ph-bold ph-student text-sm"></i>
+                    <span>3. Portal Siswa</span>
+                </button>
+                <button onclick="switchDemoApp('admin')" id="tab-admin" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
+                    <i class="ph-bold ph-gear-six text-sm"></i>
+                    <span>4. Panel Admin</span>
+                </button>
+                <button onclick="switchDemoApp('modgen')" id="tab-modgen" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
+                    <i class="ph-bold ph-sparkle text-sm text-yellow-400"></i>
+                    <span>5. ModGen AI (Kreator RPP)</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ======================================================== -->
+    <!-- MAIN INTERACTIVE DEMO STAGE                              -->
+    <!-- ======================================================== -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- ==================================================== -->
+        <!-- PANE 1: JURNAL MENGAJAR (SIJURU)                     -->
+        <!-- ==================================================== -->
+        <section id="view-jurnal" class="view-pane active space-y-6">
+            <!-- App Highlight Card -->
+            <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6 border border-white/10">
+                <div class="space-y-2 max-w-2xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30">
+                        <i class="ph-fill ph-book-open"></i> SIJURU — Sistem Jurnal Mengajar Guru
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">Catat KBM Harian & Absensi Siswa Realtime</h2>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Aplikasi PWA untuk guru mencatat topik pembelajaran, memantau presensi peserta didik, dan mencetak laporan mutasi kehadiran bulanan.
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <span class="px-3 py-1.5 rounded-lg bg-white/10 font-mono font-semibold">PWA Offline-First</span>
+                    <span class="px-3 py-1.5 rounded-lg bg-white/10 font-mono font-semibold">Scanner QR Siswa</span>
+                    <span class="px-3 py-1.5 rounded-lg bg-white/10 font-mono font-semibold">Cloud Sync</span>
+                </div>
+            </div>
+
+            <!-- Interactive Jurnal Simulator -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left: Form Input Agenda Dummy -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <h3 class="font-bold text-slate-900 flex items-center gap-2 text-sm">
+                            <i class="ph-bold ph-plus-circle text-blue-600"></i> Tambah Agenda KBM Baru
+                        </h3>
+                        <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Simulasi Aktif</span>
+                    </div>
+
+                    <form id="form-dummy-jurnal" onsubmit="event.preventDefault(); tambahJurnalDummy();" class="space-y-3 text-xs">
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Mata Pelajaran</label>
+                            <select id="jurnal-mapel" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <option value="IPAS">IPAS (Ilmu Pengetahuan Alam & Sosial)</option>
+                                <option value="Matematika">Matematika</option>
+                                <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                                <option value="Pendidikan Pancasila">Pendidikan Pancasila</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">Kelas</label>
+                                <select id="jurnal-kelas" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                    <option value="Kelas 5">Kelas 5 (Fase C)</option>
+                                    <option value="Kelas 4">Kelas 4 (Fase B)</option>
+                                    <option value="Kelas 6">Kelas 6 (Fase C)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">Jam Ke</label>
+                                <input type="text" id="jurnal-jam" value="1 - 3 (3 JP)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Materi / Kegiatan Pembelajaran</label>
+                            <textarea id="jurnal-materi" rows="3" class="w-full border border-slate-200 rounded-xl p-3 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Tuliskan ringkasan materi KBM...">Eksplorasi Rantai Makanan & Jaring-jaring Makanan di Ekosistem Sawah melalui diskusi kelompok terpadu.</textarea>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Presensi Cepat Siswa</label>
+                            <div class="grid grid-cols-3 gap-2 text-center">
+                                <div class="bg-amber-50 border border-amber-200 rounded-xl p-2">
+                                    <span class="text-[10px] text-amber-700 font-bold block">Sakit</span>
+                                    <span id="stat-sakit" class="font-extrabold text-amber-800 text-sm">1</span>
+                                </div>
+                                <div class="bg-blue-50 border border-blue-200 rounded-xl p-2">
+                                    <span class="text-[10px] text-blue-700 font-bold block">Izin</span>
+                                    <span id="stat-izin" class="font-extrabold text-blue-800 text-sm">0</span>
+                                </div>
+                                <div class="bg-rose-50 border border-rose-200 rounded-xl p-2">
+                                    <span class="text-[10px] text-rose-700 font-bold block">Alpa</span>
+                                    <span id="stat-alpa" class="font-extrabold text-rose-800 text-sm">0</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl transition shadow-md shadow-blue-600/20 flex items-center justify-center gap-2 mt-2">
+                            <i class="ph-bold ph-floppy-disk"></i>
+                            <span>Simpan Agenda (Simulasi)</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Right: Feed Agenda Realtime Dummy -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-base">Rekam Jejak KBM Guru</h3>
+                            <p class="text-xs text-slate-500">Daftar agenda mengajar yang tersimpan di sistem.</p>
+                        </div>
+                        <span id="jurnal-count-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100">
+                            3 Agenda Tercatat
+                        </span>
+                    </div>
+
+                    <!-- Agenda Items Container -->
+                    <div id="jurnal-list-container" class="space-y-3 flex-1 overflow-y-auto max-h-[460px] pr-1">
+                        <!-- Agenda items injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================================== -->
+        <!-- PANE 2: SISTEM NILAI & RAPOR                         -->
+        <!-- ==================================================== -->
+        <section id="view-nilai" class="view-pane space-y-6">
+            <div class="bg-gradient-to-r from-emerald-900 to-teal-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6 border border-white/10">
+                <div class="space-y-2 max-w-2xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                        <i class="ph-fill ph-chart-bar"></i> SIPENILAI — Manajemen Asesmen & Rapor
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">Input Asesmen Formatif, Sumatif & Cetak e-Rapor</h2>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Pengolahan nilai otomatis berbobot, pembuatan deskripsi capaian kompetensi secara cerdas, dan rekap e-Rapor Kurikulum Merdeka.
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <span class="px-3 py-1.5 rounded-lg bg-white/10 font-mono font-semibold">Formula Otomatis</span>
+                    <span class="px-3 py-1.5 rounded-lg bg-white/10 font-mono font-semibold">Ekspor Excel / PDF</span>
+                    <span class="px-3 py-1.5 rounded-lg bg-white/10 font-mono font-semibold">Capaian TP Otomatis</span>
+                </div>
+            </div>
+
+            <!-- Grade Table Simulator -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-3">
+                        <select onchange="updateNilaiMapel(this.value)" class="border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="IPAS">Mata Pelajaran: IPAS</option>
+                            <option value="Matematika">Mata Pelajaran: Matematika</option>
+                            <option value="Bahasa Indonesia">Mata Pelajaran: Bahasa Indonesia</option>
+                        </select>
+                        <span class="text-xs text-slate-500 font-medium">Kelas: <strong>5 (Fase C)</strong> • Semester: <strong>Ganjil</strong></span>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="simulasiCetakRapor()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-2 shadow-sm">
+                            <i class="ph-bold ph-printer"></i>
+                            <span>Simulasi Cetak Rapor</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="overflow-x-auto border border-slate-100 rounded-xl">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-600 uppercase tracking-wider text-[11px] font-bold border-b border-slate-200">
+                                <th class="p-3 w-12 text-center">No</th>
+                                <th class="p-3">Nama Siswa</th>
+                                <th class="p-3 w-24 text-center">TP 1 (Formatif)</th>
+                                <th class="p-3 w-24 text-center">TP 2 (Formatif)</th>
+                                <th class="p-3 w-24 text-center">Sumatif Akhir</th>
+                                <th class="p-3 w-24 text-center font-bold text-slate-900">Nilai Akhir</th>
+                                <th class="p-3">Deskripsi Capaian Kompetensi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="nilai-table-body" class="divide-y divide-slate-100 font-medium text-slate-700">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-[11px] text-slate-400 italic flex items-center gap-1.5">
+                    <i class="ph-bold ph-info"></i> Nilai Akhir dan deskripsi capaian dihitung secara matematis otomatis berdasarkan akumulasi asesmen TP.
+                </p>
+            </div>
+        </section>
+
+        <!-- ==================================================== -->
+        <!-- PANE 3: PORTAL SISWA                                 -->
+        <!-- ==================================================== -->
+        <section id="view-siswa" class="view-pane space-y-6">
+            <div class="bg-gradient-to-r from-purple-900 to-indigo-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6 border border-white/10">
+                <div class="space-y-2 max-w-2xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-400/30">
+                        <i class="ph-fill ph-student"></i> Portal Siswa Digital
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">Akses Mandiri Rapor, Presensi & Informasi Siswa</h2>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Portal ramah anak dengan proteksi PIN sederhana untuk mengecek progres belajar dan pengumuman sekolah secara mandiri dari gawai orang tua/siswa.
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <span class="px-3 py-1.5 rounded-lg bg-white/10 font-mono font-semibold">Akses PIN Instan</span>
+                    <span class="px-3 py-1.5 rounded-lg bg-white/10 font-mono font-semibold">Tampilan Kartu Ramah Anak</span>
+                </div>
+            </div>
+
+            <!-- Student Dashboard Simulator -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Left: Student Profile Card -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center text-center space-y-4">
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 p-1 shadow-md">
+                        <div class="w-full h-full bg-white rounded-full flex items-center justify-center text-purple-600 font-extrabold text-3xl">
+                            <i class="ph-fill ph-user-circle"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-lg">Ahmad Farhan</h3>
+                        <p class="text-xs text-slate-500 font-mono mt-0.5">NISN: 0128938491 • PIN: 1234</p>
+                        <span class="inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-700 border border-purple-100">
+                            Kelas 5 - Fase C
+                        </span>
+                    </div>
+
+                    <div class="w-full pt-4 border-t border-slate-100 grid grid-cols-2 gap-3 text-left">
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <span class="text-[10px] text-slate-400 font-bold block uppercase">Kehadiran</span>
+                            <span class="font-extrabold text-slate-800 text-sm text-emerald-600">98% Hadir</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <span class="text-[10px] text-slate-400 font-bold block uppercase">Rerata Nilai</span>
+                            <span class="font-extrabold text-slate-800 text-sm text-blue-600">89.5 (A)</span>
+                        </div>
+                    </div>
+
+                    <button onclick="showToast('Fitur unduh kartu pelajar virtual berhasil disimulasikan!', 'success')" class="w-full py-2.5 rounded-xl border border-purple-200 text-purple-700 font-bold text-xs hover:bg-purple-50 transition flex items-center justify-center gap-2">
+                        <i class="ph-bold ph-identification-card"></i>
+                        <span>Unduh Kartu Pelajar Virtual</span>
+                    </button>
+                </div>
+
+                <!-- Right: Report Cards & Schedule -->
+                <div class="md:col-span-2 space-y-6">
+                    <!-- Academic Progress Cards -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                            <i class="ph-bold ph-books text-purple-600"></i> Rekap Capaian Akademik Semester Ini
+                        </h4>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div class="p-4 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between">
+                                <div>
+                                    <h5 class="font-bold text-slate-800">IPAS</h5>
+                                    <p class="text-[11px] text-slate-500">Predikat: Sangat Baik</p>
+                                </div>
+                                <span class="text-xl font-heading font-black text-emerald-600">92</span>
+                            </div>
+
+                            <div class="p-4 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between">
+                                <div>
+                                    <h5 class="font-bold text-slate-800">Matematika</h5>
+                                    <p class="text-[11px] text-slate-500">Predikat: Baik</p>
+                                </div>
+                                <span class="text-xl font-heading font-black text-blue-600">88</span>
+                            </div>
+
+                            <div class="p-4 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between">
+                                <div>
+                                    <h5 class="font-bold text-slate-800">Bahasa Indonesia</h5>
+                                    <p class="text-[11px] text-slate-500">Predikat: Sangat Baik</p>
+                                </div>
+                                <span class="text-xl font-heading font-black text-emerald-600">90</span>
+                            </div>
+
+                            <div class="p-4 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between">
+                                <div>
+                                    <h5 class="font-bold text-slate-800">Pendidikan Pancasila</h5>
+                                    <p class="text-[11px] text-slate-500">Predikat: Baik</p>
+                                </div>
+                                <span class="text-xl font-heading font-black text-blue-600">88</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Announcements banner -->
+                    <div class="bg-amber-50 border border-amber-200 p-5 rounded-2xl flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 text-xl font-bold">
+                            <i class="ph-bold ph-megaphone"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-amber-900 text-sm">Pengumuman: Pelaksanaan Penilaian Akhir Semester</h5>
+                            <p class="text-xs text-amber-700 mt-1 leading-relaxed">
+                                Penilaian Sumatif Akhir Semester ganjil dijadwalkan berlangsung tanggal 1-6 Desember. Siswa diharapkan menyiapkan perlengkapan dan belajar materi Fase C.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================================== -->
+        <!-- PANE 4: ADMIN SEKOLAH                                -->
+        <!-- ==================================================== -->
+        <section id="view-admin" class="view-pane space-y-6">
+            <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6 border border-white/10">
+                <div class="space-y-2 max-w-2xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-slate-700 text-slate-300 border border-slate-600">
+                        <i class="ph-fill ph-gear-six"></i> Panel Administrator Terpadu
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">Pusat Kendali Data Master & Manajemen Akun</h2>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Dasbor administrasi untuk mengelola data siswa, guru, pembagian rombongan belajar, dan reset PIN akses secara aman.
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <span class="px-3 py-1.5 rounded-lg bg-white/10 font-mono font-semibold">CRUD Data Master</span>
+                    <span class="px-3 py-1.5 rounded-lg bg-white/10 font-mono font-semibold">Reset PIN Keamanan</span>
+                    <span class="px-3 py-1.5 rounded-lg bg-white/10 font-mono font-semibold">Backup Database</span>
+                </div>
+            </div>
+
+            <!-- Admin Stats Row -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-bold">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <span class="text-slate-400 block text-[10px] uppercase tracking-wider mb-1">Peserta Didik</span>
+                        <span class="text-2xl font-heading font-black text-slate-900">192</span>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+                        <i class="ph-bold ph-users-three"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <span class="text-slate-400 block text-[10px] uppercase tracking-wider mb-1">Guru & Staf</span>
+                        <span class="text-2xl font-heading font-black text-slate-900">12</span>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+                        <i class="ph-bold ph-chalkboard-teacher"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <span class="text-slate-400 block text-[10px] uppercase tracking-wider mb-1">Rombongan Belajar</span>
+                        <span class="text-2xl font-heading font-black text-slate-900">6</span>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl">
+                        <i class="ph-bold ph-door"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <span class="text-slate-400 block text-[10px] uppercase tracking-wider mb-1">Status Server</span>
+                        <span class="text-sm font-bold text-emerald-600 flex items-center gap-1 mt-1">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Normal (100%)
+                        </span>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+                        <i class="ph-bold ph-hard-drives"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Master Table Simulator -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-sm">Manajemen Data Siswa (Master Siswa)</h4>
+                        <p class="text-xs text-slate-400">Kelola akun, kelas, dan PIN login peserta didik.</p>
+                    </div>
+                    <button onclick="showToast('Modal Tambah Siswa disimulasikan siap dibuka!', 'info')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-sm">
+                        <i class="ph-bold ph-user-plus"></i>
+                        <span>+ Tambah Siswa Baru</span>
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto border border-slate-100 rounded-xl">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-600 uppercase tracking-wider text-[11px] font-bold border-b border-slate-200">
+                                <th class="p-3 w-12 text-center">No</th>
+                                <th class="p-3">Nama Lengkap</th>
+                                <th class="p-3">NISN</th>
+                                <th class="p-3">Kelas</th>
+                                <th class="p-3 text-center">PIN Akses</th>
+                                <th class="p-3 text-center w-28">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
+                            <tr>
+                                <td class="p-3 text-center text-slate-400">1</td>
+                                <td class="p-3 font-bold text-slate-900">Ahmad Farhan</td>
+                                <td class="p-3 font-mono">0128938491</td>
+                                <td class="p-3"><span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700">Kelas 5</span></td>
+                                <td class="p-3 text-center font-mono font-bold text-slate-600">1234</td>
+                                <td class="p-3 text-center">
+                                    <div class="flex items-center justify-center gap-1.5">
+                                        <button onclick="showToast('Simulasi Edit: Ahmad Farhan', 'info')" class="p-1.5 rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100"><i class="ph-bold ph-pencil-simple text-sm"></i></button>
+                                        <button onclick="showToast('Simulasi Hapus: Dilindungi', 'error')" class="p-1.5 rounded-lg text-rose-600 bg-rose-50 hover:bg-rose-100"><i class="ph-bold ph-trash text-sm"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 text-center text-slate-400">2</td>
+                                <td class="p-3 font-bold text-slate-900">Aisyah Putri Ramadhani</td>
+                                <td class="p-3 font-mono">0128938492</td>
+                                <td class="p-3"><span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700">Kelas 5</span></td>
+                                <td class="p-3 text-center font-mono font-bold text-slate-600">5678</td>
+                                <td class="p-3 text-center">
+                                    <div class="flex items-center justify-center gap-1.5">
+                                        <button onclick="showToast('Simulasi Edit: Aisyah Putri', 'info')" class="p-1.5 rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100"><i class="ph-bold ph-pencil-simple text-sm"></i></button>
+                                        <button onclick="showToast('Simulasi Hapus: Dilindungi', 'error')" class="p-1.5 rounded-lg text-rose-600 bg-rose-50 hover:bg-rose-100"><i class="ph-bold ph-trash text-sm"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 text-center text-slate-400">3</td>
+                                <td class="p-3 font-bold text-slate-900">Budi Santoso</td>
+                                <td class="p-3 font-mono">0128938493</td>
+                                <td class="p-3"><span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700">Kelas 5</span></td>
+                                <td class="p-3 text-center font-mono font-bold text-slate-600">9911</td>
+                                <td class="p-3 text-center">
+                                    <div class="flex items-center justify-center gap-1.5">
+                                        <button onclick="showToast('Simulasi Edit: Budi Santoso', 'info')" class="p-1.5 rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100"><i class="ph-bold ph-pencil-simple text-sm"></i></button>
+                                        <button onclick="showToast('Simulasi Hapus: Dilindungi', 'error')" class="p-1.5 rounded-lg text-rose-600 bg-rose-50 hover:bg-rose-100"><i class="ph-bold ph-trash text-sm"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================================== -->
+        <!-- PANE 5: MODGEN AI                                    -->
+        <!-- ==================================================== -->
+        <section id="view-modgen" class="view-pane space-y-6">
+            <div class="bg-gradient-to-r from-navy to-slate-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6 border border-white/10" style="background: linear-gradient(135deg, #0b1b42 0%, #1e293b 100%);">
+                <div class="space-y-2 max-w-2xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-orange-500/20 text-orange-400 border border-orange-400/30">
+                        <i class="ph-fill ph-sparkle"></i> ModGen — AI Assistant Perangkat Ajar
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">Generasi Otomatis Modul Ajar, ATP & Prota</h2>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Aplikasi berbasis AI (Google Gemini) yang menyusun Modul Ajar Kurikulum Merdeka berstandar presisi, dilengkapi estimasi durasi menit, LKPD, rubrik asesmen, dan ekspor PDF resmi.
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <span class="px-3 py-1.5 rounded-lg bg-white/10 font-mono font-semibold">Gemini 2.5 API</span>
+                    <span class="px-3 py-1.5 rounded-lg bg-white/10 font-mono font-semibold">Ekspor PDF A4 Presisi</span>
+                    <span class="px-3 py-1.5 rounded-lg bg-white/10 font-mono font-semibold">Kurikulum Merdeka</span>
+                </div>
+            </div>
+
+            <!-- ModGen Interactive Generator Studio -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <!-- Left Input Controls -->
+                <div class="lg:col-span-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2 border-b border-slate-100 pb-3">
+                        <i class="ph-bold ph-sliders text-orange-500"></i> Parameter Modul Ajar
+                    </h3>
+
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Mata Pelajaran</label>
+                            <select id="modgen-mapel" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-orange-500 focus:outline-none">
+                                <option value="IPAS">IPAS (Fase C)</option>
+                                <option value="Matematika">Matematika (Fase C)</option>
+                                <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Materi Pokok</label>
+                            <input type="text" id="modgen-materi" value="Rantai Makanan & Keseimbangan Ekosistem" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-orange-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Model Pembelajaran</label>
+                            <select id="modgen-model" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-orange-500 focus:outline-none">
+                                <option value="Problem Based Learning (PBL)">Problem Based Learning (PBL)</option>
+                                <option value="Project Based Learning (PjBL)">Project Based Learning (PjBL)</option>
+                                <option value="Discovery Learning">Discovery Learning</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Alokasi Waktu</label>
+                            <input type="text" id="modgen-alokasi" value="2 JP (2 x 35 Menit)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                        </div>
+
+                        <div class="pt-2">
+                            <button onclick="simulasiGenerateModul()" id="btn-demo-gen" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-orange-600/30 flex items-center justify-center gap-2">
+                                <i class="ph-bold ph-sparkle text-base"></i>
+                                <span>Simulasi Susun Modul AI</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Live A4 Document Output Preview -->
+                <div class="lg:col-span-8 bg-slate-200 p-4 sm:p-8 rounded-2xl border border-slate-300 flex flex-col items-center overflow-x-auto min-h-[500px]">
+                    <!-- Control toolbar for A4 preview -->
+                    <div class="w-full max-w-[210mm] flex items-center justify-between mb-4 bg-white px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-bold">
+                        <div class="flex items-center gap-2 text-slate-700">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                            <span>Pratinjau Kertas A4 (Format Standar Kemdikbud)</span>
+                        </div>
+                        <button onclick="showToast('Simulasi download PDF berhasil dijalankan!', 'success')" class="px-3 py-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition flex items-center gap-1.5 shadow-sm">
+                            <i class="ph-bold ph-file-pdf"></i>
+                            <span>Simulasi PDF</span>
+                        </button>
+                    </div>
+
+                    <!-- Simulated A4 Paper Sheet -->
+                    <div id="demo-modul-paper" class="w-full max-w-[210mm] bg-white p-8 sm:p-12 paper-shadow text-slate-900 transition-all font-serif text-[11pt] leading-relaxed border-t-4 border-slate-900">
+                        <div class="text-center border-b-2 border-slate-900 pb-4 mb-6">
+                            <h4 class="font-bold text-lg uppercase tracking-wider font-sans text-slate-900">MODUL AJAR KURIKULUM MERDEKA</h4>
+                            <p class="text-xs uppercase font-sans text-slate-600 font-semibold tracking-wide">SD NEGERI PASIRMAE 1 • TAHUN AJARAN 2024/2025</p>
+                        </div>
+
+                        <div class="space-y-4 text-xs font-sans">
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <h5 class="font-bold text-slate-900 uppercase text-[11px] mb-2 border-b border-slate-200 pb-1">I. IDENTITAS MODUL</h5>
+                                <div class="grid grid-cols-2 gap-2 text-[11px]">
+                                    <p><strong>Penyusun:</strong> Mohamad Rizki, S.Pd., Gr.</p>
+                                    <p><strong>Mata Pelajaran:</strong> <span id="out-mapel">IPAS</span></p>
+                                    <p><strong>Fase / Kelas:</strong> Fase C / Kelas 5</p>
+                                    <p><strong>Alokasi Waktu:</strong> <span id="out-alokasi">2 JP (2 x 35 Menit)</span></p>
+                                    <p class="col-span-2"><strong>Materi Pokok:</strong> <span id="out-materi" class="text-blue-700 font-bold">Rantai Makanan & Keseimbangan Ekosistem</span></p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <h5 class="font-bold text-slate-900 uppercase text-[11px] border-b border-slate-200 pb-1">II. LANGKAH-LANGKAH PEMBELAJARAN (<span id="out-model">Problem Based Learning</span>)</h5>
+                                <div class="space-y-2 text-[11px] text-slate-700 leading-normal">
+                                    <div class="p-2.5 rounded-lg border border-slate-100 bg-slate-50">
+                                        <p class="font-bold text-slate-900">A. Kegiatan Pendahuluan (10 Menit):</p>
+                                        <p class="mt-0.5">• Guru membuka kelas dengan salam, doa bersama, dan presensi.</p>
+                                        <p>• Apersepsi: Menampilkan gambar sawah yang terserang hama tikus dan menanyakan pemantik.</p>
+                                    </div>
+                                    <div class="p-2.5 rounded-lg border border-slate-100 bg-slate-50">
+                                        <p class="font-bold text-slate-900">B. Kegiatan Inti (50 Menit):</p>
+                                        <p class="mt-0.5">• <strong>Orientasi Masalah:</strong> Siswa mengamati video terganggunya rantai makanan akibat perburuan elang.</p>
+                                        <p>• <strong>Organisasi Belajar:</strong> Siswa membentuk kelompok kerja dan menerima LKPD jaring-jaring makanan.</p>
+                                        <p>• <strong>Investigasi:</strong> Kelompok menganalisis dampak kepunahan salah satu populasi.</p>
+                                    </div>
+                                    <div class="p-2.5 rounded-lg border border-slate-100 bg-slate-50">
+                                        <p class="font-bold text-slate-900">C. Kegiatan Penutup (10 Menit):</p>
+                                        <p class="mt-0.5">• Evaluasi formatif singkat dan refleksi bersama.</p>
+                                        <p>• Doa penutup dan pesan menjaga kelestarian lingkungan sekitar.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ======================================================== -->
+    <!-- TOAST NOTIFICATION CONTAINER                             -->
+    <!-- ======================================================== -->
+    <div id="demo-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-32 opacity-0 transition-all duration-300 max-w-sm bg-slate-900 text-white px-5 py-4 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-3">
+        <div id="toast-icon-wrapper" class="text-xl shrink-0 text-emerald-400">
+            <i class="ph-fill ph-check-circle"></i>
+        </div>
+        <div class="text-xs font-medium leading-relaxed" id="toast-message">
+            Pesan notifikasi berhasil.
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- DEMO DATA & LOGIC SCRIPT                                 -->
+    <!-- ======================================================== -->
+    <script>
+        // --- 1. TAB SWITCHING LOGIC ---
+        function switchDemoApp(appId) {
+            // Update Tab Button Styles
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById(`tab-${appId}`);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            // Switch Active Pane
+            document.querySelectorAll('.view-pane').forEach(pane => pane.classList.remove('active'));
+            const targetPane = document.getElementById(`view-${appId}`);
+            if (targetPane) targetPane.classList.add('active');
+        }
+
+        // --- 2. TOAST SYSTEM ---
+        let toastTimeout;
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('demo-toast');
+            const msgEl = document.getElementById('toast-message');
+            const iconWrapper = document.getElementById('toast-icon-wrapper');
+            if (!toast || !msgEl) return;
+
+            msgEl.textContent = message;
+            if (type === 'error') {
+                iconWrapper.className = 'text-xl shrink-0 text-rose-400';
+                iconWrapper.innerHTML = '<i class="ph-fill ph-warning-circle"></i>';
+            } else if (type === 'info') {
+                iconWrapper.className = 'text-xl shrink-0 text-blue-400';
+                iconWrapper.innerHTML = '<i class="ph-fill ph-info"></i>';
+            } else {
+                iconWrapper.className = 'text-xl shrink-0 text-emerald-400';
+                iconWrapper.innerHTML = '<i class="ph-fill ph-check-circle"></i>';
+            }
+
+            toast.classList.remove('translate-y-32', 'opacity-0');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-y-32', 'opacity-0');
+            }, 3000);
+        }
+
+        // --- 3. JURNAL MENGAJAR DUMMY DATA & CONTROLLER ---
+        let dummyJurnalData = [
+            {
+                mapel: 'IPAS',
+                kelas: 'Kelas 5',
+                jam: '1 - 3 (3 JP)',
+                tanggal: 'Hari ini, 07:30 WIB',
+                materi: 'Mempelajari siklus hidup hewan dan metamorfosis sempurna serta tidak sempurna dengan model visual.',
+                sakit: 1, izin: 0, alpa: 0
+            },
+            {
+                mapel: 'Matematika',
+                kelas: 'Kelas 5',
+                jam: '4 - 5 (2 JP)',
+                tanggal: 'Kemarin, 09:45 WIB',
+                materi: 'Operasi hitung perkalian pecahan desimal dan penerapannya dalam kehidupan sehari-hari.',
+                sakit: 0, izin: 1, alpa: 0
+            },
+            {
+                mapel: 'Bahasa Indonesia',
+                kelas: 'Kelas 5',
+                jam: '1 - 2 (2 JP)',
+                tanggal: '29 Okt 2026',
+                materi: 'Membaca teks narasi fiksi, menentukan ide pokok paragraf dan watak tokoh cerita rakyat.',
+                sakit: 0, izin: 0, alpa: 0
+            }
+        ];
+
+        function renderJurnalItems() {
+            const container = document.getElementById('jurnal-list-container');
+            const badge = document.getElementById('jurnal-count-badge');
+            if (!container) return;
+
+            badge.textContent = `${dummyJurnalData.length} Agenda Tercatat`;
+            container.innerHTML = dummyJurnalData.map((item, index) => `
+                <div class="p-4 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-blue-200 transition-all space-y-2">
+                    <div class="flex items-center justify-between text-xs">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 rounded-full font-bold bg-blue-100 text-blue-800 text-[10px]">${item.mapel}</span>
+                            <span class="font-bold text-slate-700">${item.kelas} • Jam ${item.jam}</span>
+                        </div>
+                        <span class="text-slate-400 text-[11px]">${item.tanggal}</span>
+                    </div>
+                    <p class="text-xs text-slate-700 leading-relaxed font-medium">${item.materi}</p>
+                    <div class="flex items-center justify-between pt-1 border-t border-slate-200/60 text-[11px] text-slate-500">
+                        <span>Presensi: Hadir 27, Sakit ${item.sakit}, Izin ${item.izin}, Alpa ${item.alpa}</span>
+                        <button onclick="hapusJurnalDummy(${index})" class="text-rose-500 hover:text-rose-700 font-bold flex items-center gap-1">
+                            <i class="ph-bold ph-trash"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function tambahJurnalDummy() {
+            const mapel = document.getElementById('jurnal-mapel').value;
+            const kelas = document.getElementById('jurnal-kelas').value;
+            const jam = document.getElementById('jurnal-jam').value;
+            const materi = document.getElementById('jurnal-materi').value;
+
+            if (!materi.trim()) {
+                showToast('Isi materi pembelajaran terlebih dahulu!', 'error');
+                return;
+            }
+
+            dummyJurnalData.unshift({
+                mapel,
+                kelas,
+                jam,
+                tanggal: 'Baru saja',
+                materi,
+                sakit: 1, izin: 0, alpa: 0
+            });
+
+            renderJurnalItems();
+            showToast('Agenda KBM baru berhasil disimulasikan tersimpan!', 'success');
+        }
+
+        function hapusJurnalDummy(idx) {
+            dummyJurnalData.splice(idx, 1);
+            renderJurnalItems();
+            showToast('Agenda KBM simulasi dihapus.', 'info');
+        }
+
+        // --- 4. SISTEM NILAI DUMMY DATA ---
+        const dummySiswaNilai = [
+            { nama: 'Ahmad Farhan', tp1: 92, tp2: 88, sumatif: 90 },
+            { nama: 'Aisyah Putri Ramadhani', tp1: 95, tp2: 94, sumatif: 96 },
+            { nama: 'Budi Santoso', tp1: 85, tp2: 80, sumatif: 84 },
+            { nama: 'Citra Dewi Lestari', tp1: 90, tp2: 92, sumatif: 89 },
+            { nama: 'Dinda Ayu Maharani', tp1: 88, tp2: 86, sumatif: 88 }
+        ];
+
+        function renderNilaiTable(mapel = 'IPAS') {
+            const tbody = document.getElementById('nilai-table-body');
+            if (!tbody) return;
+
+            tbody.innerHTML = dummySiswaNilai.map((s, idx) => {
+                const na = Math.round((s.tp1 + s.tp2 + s.sumatif) / 3);
+                let deskripsi = `Menunjukkan penguasaan sangat baik dalam memahami konsep dasar ${mapel}. Perlu pendalaman pada variasi studi kasus terapan.`;
+                if (na >= 92) {
+                    deskripsi = `Sangat mahir dan konsisten dalam merumuskan tujuan pembelajaran ${mapel} serta mampu membimbing teman sebayanya.`;
+                }
+
+                return `
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                        <td class="p-3 text-center text-slate-400 font-bold">${idx + 1}</td>
+                        <td class="p-3 font-bold text-slate-900">${s.nama}</td>
+                        <td class="p-3 text-center font-mono">${s.tp1}</td>
+                        <td class="p-3 text-center font-mono">${s.tp2}</td>
+                        <td class="p-3 text-center font-mono">${s.sumatif}</td>
+                        <td class="p-3 text-center font-mono font-bold text-emerald-700 bg-emerald-50/50">${na}</td>
+                        <td class="p-3 text-slate-600 text-[11px] leading-relaxed">${deskripsi}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateNilaiMapel(val) {
+            renderNilaiTable(val);
+            showToast(`Menampilkan rekap nilai: ${val}`, 'info');
+        }
+
+        function simulasiCetakRapor() {
+            showToast('Simulasi generate rapor: Format e-Rapor Kurikulum Merdeka siap dicetak!', 'success');
+        }
+
+        // --- 5. MODGEN SIMULATOR CONTROLLER ---
+        function simulasiGenerateModul() {
+            const mapel = document.getElementById('modgen-mapel').value;
+            const materi = document.getElementById('modgen-materi').value;
+            const model = document.getElementById('modgen-model').value;
+            const alokasi = document.getElementById('modgen-alokasi').value;
+
+            const btn = document.getElementById('btn-demo-gen');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin text-base"></i><span>AI Menyusun Modul...</span>`;
+            btn.disabled = true;
+
+            setTimeout(() => {
+                document.getElementById('out-mapel').textContent = mapel;
+                document.getElementById('out-materi').textContent = materi;
+                document.getElementById('out-model').textContent = model;
+                document.getElementById('out-alokasi').textContent = alokasi;
+
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                showToast(`Modul Ajar (${mapel}) berhasil disusun oleh AI!`, 'success');
+            }, 750);
+        }
+
+        // Inisialisasi awal saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            renderJurnalItems();
+            renderNilaiTable();
+        });
+    </script>
+</body>
+</html>
